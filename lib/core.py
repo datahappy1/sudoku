@@ -5,13 +5,13 @@ class Core(object):
     """
     project main Core class
     """
-    def __init__(self, squares, rows):
+    def __init__(self, rows):
         """
         class Core __init__ function
         :param rows:
         """
         self.candidates_all = [candidate_index for candidate_index in range(1, 10)]
-        self.squares = squares
+        self.squares = []
         self.rows = rows
         self.cols = []
 

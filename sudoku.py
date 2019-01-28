@@ -1,20 +1,21 @@
 import copy
-from lib import core as core
+from lib import core as core, common as common
+from settings import beautify as default_beautify
 
 
-def solver(rows_in=[], beautify=True):
+def solver(rows_in, beautify=default_beautify):
     """
     the project main solver function
     :param rows_in: consuming list of lists with the sudoku to solve
-    :param beautify: return list of lists as string
+    :param beautify: default from settings.py
     :return: final solved sudoku
     """
     attempts = 0
-    max_attempts = 50
+    max_attempts = common.level_to_attempts_mapper(level='default')
     rows_ref = copy.deepcopy(rows_in)
     while attempts <= max_attempts:
         try:
-            obj = core.Core(squares=[], rows=rows_ref)
+            obj = core.Core(rows=rows_ref)
             sudoku_grid = core.Core.grid_solver(obj)
             for sudoku_row in sudoku_grid:
                 if bool(beautify):
@@ -34,18 +35,18 @@ def solver(rows_in=[], beautify=True):
         print(f'game not solved before reaching max attempts {max_attempts}')
 
 
-def generator(level, beautify):
+def generator(level, beautify=default_beautify):
     """
     the project main generator function
     :param level: level easy or medium
-    :param beautify: return list of lists as string
+    :param beautify: default from settings.py
     :return: final sudoku game
     """
     attempts = 0
-    max_attempts = 5000
+    max_attempts = common.level_to_attempts_mapper(level)
     while attempts <= max_attempts:
         try:
-            obj = core.Core(squares=[], rows=[])
+            obj = core.Core(rows=[])
             sudoku_grid = core.Core.grid_generator(obj)
             for sudoku_row in sudoku_grid:
                 if bool(beautify):
@@ -64,7 +65,7 @@ def generator(level, beautify):
     else:
         print(f'no game generated before reaching max attempts {max_attempts}')
 
-
+"""
 r= [[0,3,0,0,8,5,4,9,1],
     [6,0,4,7,3,0,8,5,0],
     [0,9,0,1,4,2,7,0,3],
@@ -74,13 +75,13 @@ r= [[0,3,0,0,8,5,4,9,1],
     [3,6,0,8,0,0,5,4,9],
     [4,0,9,3,1,6,0,0,7],
     [7,8,0,0,5,0,1,3,6]]
-"""
+
 if __name__ == '__main__':
     solver(rows_in=r)
 
 
 """
 if __name__ == '__main__':
-    # generator(level='easy', beautify=True)
-    # generator(level='medium', beautify=True)
-    generator(level='hard', beautify=True)
+    # generator(level='easy')
+    # generator(level='medium')
+    generator(level='hard')
