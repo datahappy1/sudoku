@@ -1,4 +1,4 @@
-solver without repetition
+solver without repetition storing row_index,col_index,used_value hash
 OCR
 multiprocessing
 tests

@@ -56,6 +56,7 @@ def generator(level, beautify=default_beautify):
                 else:
                     print(core.Core.row_mask(obj, sudoku_row, level))
             attempts = attempts + 1
+            print(attempts)
             break
         except ValueError:
             attempts = attempts + 1
@@ -66,7 +67,7 @@ def generator(level, beautify=default_beautify):
     else:
         print(f'no game generated before reaching max attempts {max_attempts}')
 
-
+"""
 r= [[0,3,0,0,8,5,4,9,1],
     [6,0,4,7,3,0,8,5,0],
     [0,9,0,1,4,2,7,0,3],
@@ -76,7 +77,7 @@ r= [[0,3,0,0,8,5,4,9,1],
     [3,6,0,8,0,0,5,4,9],
     [4,0,9,3,1,6,0,0,7],
     [7,8,0,0,5,0,1,3,6]]
-"""
+
 r= [[0,0,0,5,0,0,6,4,0],
     [0,0,9,6,3,0,0,1,8],
     [0,6,1,4,0,9,2,0,0],
@@ -96,14 +97,14 @@ r= [[0,6,2,8,3,0,0,1,0],
     [0,0,0,9,6,0,0,0,0],
     [0,1,0,0,0,0,2,0,0],
     [0,4,0,0,2,3,1,6,0]]
-"""
+
 
 if __name__ == '__main__':
     solver(rows_in=r)
+"""
 
-"""
 if __name__ == '__main__':
-    # generator(level='easy')
-    # generator(level='medium')
-    # generator(level='hard')
-"""
+    generator(level='easy')
+    #generator(level='medium')
+    #generator(level='hard')
+
