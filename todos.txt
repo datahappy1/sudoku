@@ -1,0 +1,4 @@
+solver without repetition
+OCR
+multiprocessing
+tests

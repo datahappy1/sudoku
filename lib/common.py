@@ -21,7 +21,7 @@ def sq_to_row_col_mapper(row_index, col_index):
     return k, v
 
 
-level_to_attempts_map = {'easy': 50, 'medium': 1000, 'hard': 50000, 'default': 50000}
+level_to_attempts_map = {'easy': 50, 'medium': 1000, 'hard': 50000, 'default': 10000000}
 
 
 def level_to_attempts_mapper(level):
@@ -30,8 +30,7 @@ def level_to_attempts_mapper(level):
     :param level:
     :return:
     """
-    attempts = level_to_attempts_map[level]
-    return attempts
+    return level_to_attempts_map[level]
 
 
 def get_random_subset_from_set(members_in, count_of_members_out):
