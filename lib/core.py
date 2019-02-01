@@ -24,14 +24,24 @@ class Core(object):
         :return: possible candidates to fill a sudoku cell
         """
         candidates_left = get_random_subset_from_set(self.candidates_all, 9)
-        if row_index not in (0, 3, 6):
-            mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
-            square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
+        mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
+        square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
+
+        if row_index in (0, 3, 6):
+            self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
+            self.squares[square_index].extend(self.rows[row_index + 2][slice(slice1, slice2)])
+
+        if row_index in (1, 4, 7):
             self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
-            candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) -
-                                   set(list(map(list, zip(*self.rows)))[col_index]))
-        else:
-            candidates_left = list(set(candidates_left) - set(row) - set(list(map(list, zip(*self.rows)))[col_index]))
+            self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
+
+        if row_index in (2, 5, 8):
+            self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
+            self.squares[square_index].extend(self.rows[row_index - 2][slice(slice1, slice2)])
+
+        candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) -
+                               set(list(map(list, zip(*self.rows)))[col_index]))
+
         return candidates_left
 
     def grid_solver(self):
@@ -44,9 +54,9 @@ class Core(object):
 
         for row_index, row in enumerate(self.rows):
             for col_index, col in enumerate(self.cols):
-                candidates_left = Core.get_cell_candidates(self, row, row_index, col_index)
                 if row[col_index] == 0:
                     cell = 0
+                    candidates_left = Core.get_cell_candidates(self, row, row_index, col_index)
                     cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
                     if cell == -1:
                         raise ValueError
