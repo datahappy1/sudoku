@@ -2,53 +2,49 @@ from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_ma
 
 
 class Core(object):
-    """
-    project main Core class
-    """
-    def __init__(self, rows):
-        """
-        class Core __init__ function
-        :param rows:
-        """
+    def __init__(self, action, rows):
+        self.action = action
+        self.rows = rows
         self.candidates_all = [candidate_index for candidate_index in range(1, 10)]
         self.squares = []
-        self.rows = rows
         self.cols = []
 
     def get_cell_candidates(self, row, row_index, col_index):
-        """
-        get cell candidates function
-        :param row: grid row
-        :param row_index: row index in the grid
-        :param col_index: column index in the grid
-        :return: possible candidates to fill a sudoku cell
-        """
         candidates_left = get_random_subset_from_set(self.candidates_all, 9)
         mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
 
-        if row_index in (0, 3, 6):
-            self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
-            self.squares[square_index].extend(self.rows[row_index + 2][slice(slice1, slice2)])
+        if self.action == 'generate':
+            if row_index not in (0, 3, 6):
+                mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
+                square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
+                self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
+                candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) -
+                                       set(list(map(list, zip(*self.rows)))[col_index]))
+            else:
+                candidates_left = list(set(candidates_left) - set(row) - set(list(map(list, zip(*self.rows)))[col_index]))
 
-        if row_index in (1, 4, 7):
-            self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
-            self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
+            return candidates_left
 
-        if row_index in (2, 5, 8):
-            self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
-            self.squares[square_index].extend(self.rows[row_index - 2][slice(slice1, slice2)])
+        elif self.action == 'solve':
+            if row_index in (0, 3, 6):
+                self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
+                self.squares[square_index].extend(self.rows[row_index + 2][slice(slice1, slice2)])
 
-        candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) -
-                               set(list(map(list, zip(*self.rows)))[col_index]))
+            if row_index in (1, 4, 7):
+                self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
+                self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
 
-        return candidates_left
+            if row_index in (2, 5, 8):
+                self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
+                self.squares[square_index].extend(self.rows[row_index - 2][slice(slice1, slice2)])
+
+            candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) -
+                                   set(list(map(list, zip(*self.rows)))[col_index]))
+
+            return candidates_left
 
     def grid_solver(self):
-        """
-        sudoku grid generator function
-        :return: grid filled with valid sudoku numbers
-        """
         self.squares = [[] for _ in range(9)]
         self.cols = [[] for _ in range(9)]
 
@@ -65,10 +61,6 @@ class Core(object):
         return self.rows
 
     def grid_generator(self):
-        """
-        sudoku grid generator function
-        :return: grid filled with valid sudoku numbers
-        """
         row_index = 1
         self.rows.append(get_random_subset_from_set(self.candidates_all, 9))
         self.squares = [[] for _ in range(9)]
@@ -87,12 +79,6 @@ class Core(object):
         return self.rows
 
     def row_mask(self, row, level):
-        """
-        row mask function masking the filled outsudoku numbers rows with _
-        :param row: input row with filled out sudoku numbers
-        :param level: level easy or medium
-        :return: masked sudoku row
-        """
         if level == 'easy':
             hidden_members = get_random_subset_from_set(self.candidates_all, 3)
             for members in hidden_members:
