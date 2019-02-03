@@ -5,11 +5,11 @@ class Core(object):
     def __init__(self, action, rows):
         self.action = action
         self.rows = rows
+        self.cols = []
         self.candidates_all = [candidate_index for candidate_index in range(1, 10)]
         self.squares = []
-        self.cols = []
 
-    def get_cell_candidates(self, row, row_index, col_index):
+    def get_cell_candidates(self, row, row_index, col, col_index):
         candidates_left = get_random_subset_from_set(self.candidates_all, 9)
         mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
@@ -27,37 +27,101 @@ class Core(object):
             return candidates_left
 
         elif self.action == 'solve':
+            self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
             if row_index in (0, 3, 6):
                 self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
                 self.squares[square_index].extend(self.rows[row_index + 2][slice(slice1, slice2)])
+
+                # sole candidates
+                candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) - set(col))
+                                       #set(list(map(list, zip(*self.rows)))[col_index]))
+
+                # unique candidates in rows
+                for sole_candidate in candidates_left:
+                    if sole_candidate in (self.rows[row_index + 1]) and sole_candidate in (self.rows[row_index + 2]):
+                        # unique candidates in cols
+                        if col_index in (0, 3, 6):
+                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index + 2]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
+
+                        # unique candidates in cols
+                        if col_index in (1, 4, 7):
+                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index - 1]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
+
+                        # unique candidates in cols
+                        if col_index in (2, 5, 8):
+                            if sole_candidate in (self.cols[col_index - 1]) and sole_candidate in (self.cols[col_index - 2]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
 
             if row_index in (1, 4, 7):
                 self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
                 self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
 
+                # sole candidates
+                candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) -
+                                       set(list(map(list, zip(*self.rows)))[col_index]))
+                # unique candidates in rows
+                for sole_candidate in candidates_left:
+                    if sole_candidate in (self.rows[row_index - 1]) and sole_candidate in (self.rows[row_index + 1]):
+                        # unique candidates in cols
+                        if col_index in (0, 3, 6):
+                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index + 2]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
+
+                        # unique candidates in cols
+                        if col_index in (1, 4, 7):
+                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index - 1]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
+
+                        # unique candidates in cols
+                        if col_index in (2, 5, 8):
+                            if sole_candidate in (self.cols[col_index - 1]) and sole_candidate in (self.cols[col_index - 2]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
+
             if row_index in (2, 5, 8):
                 self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
                 self.squares[square_index].extend(self.rows[row_index - 2][slice(slice1, slice2)])
 
-            candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) -
-                                   set(list(map(list, zip(*self.rows)))[col_index]))
+                # sole candidates
+                candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) -
+                                       set(list(map(list, zip(*self.rows)))[col_index]))
+                # unique candidates in rows
+                for sole_candidate in candidates_left:
+                    if sole_candidate in (self.rows[row_index - 1]) and sole_candidate in (self.rows[row_index - 2]):
+                        # unique candidates in cols
+                        if col_index in (0, 3, 6):
+                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index + 2]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
+
+                        # unique candidates in cols
+                        if col_index in (1, 4, 7):
+                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index - 1]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
+
+                        # unique candidates in cols
+                        if col_index in (2, 5, 8):
+                            if sole_candidate in (self.cols[col_index - 1]) and sole_candidate in (self.cols[col_index - 2]):
+                                candidates_left = [int(d) for d in str(sole_candidate)]
 
             return candidates_left
 
     def grid_solver(self):
         self.squares = [[] for _ in range(9)]
-        self.cols = [[] for _ in range(9)]
+        #self.cols = [[] for _ in range(9)]
+        self.cols = list(map(list, zip(*self.rows)))
 
         for row_index, row in enumerate(self.rows):
             for col_index, col in enumerate(self.cols):
                 if row[col_index] == 0:
                     cell = 0
-                    candidates_left = Core.get_cell_candidates(self, row, row_index, col_index)
+                    candidates_left = Core.get_cell_candidates(self, row, row_index, col, col_index)
                     cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
                     if cell == -1:
                         raise ValueError
                     else:
                         row[col_index] = cell
+                        self.cols = list(map(list, zip(*self.rows)))
         return self.rows
 
     def grid_generator(self):
@@ -68,7 +132,7 @@ class Core(object):
             row = []
             col_index = 0
             while col_index < 9:
-                candidates_left = Core.get_cell_candidates(self, row, row_index, col_index)
+                candidates_left = Core.get_cell_candidates(self, row, row_index, [], col_index)
                 cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
                 if cell == -1:
                     raise ValueError
