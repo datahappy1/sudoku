@@ -26,5 +26,9 @@ def get_random_subset_from_set(members_in, count_of_members_out):
     return random.sample(members_in, count_of_members_out)
 
 
+def get_random_subset_from_set_shuffle(members_in):
+    return random.shuffle(members_in)
+
+
 def get_randint(range_start, range_end):
     return random.randint(range_start, range_end)

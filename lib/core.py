@@ -1,4 +1,4 @@
-from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper
+from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper, get_random_subset_from_set_shuffle
 
 
 class Core(object):
@@ -116,7 +116,12 @@ class Core(object):
                 if row[col_index] == 0:
                     cell = 0
                     candidates_left = Core.get_cell_candidates(self, row, row_index, col, col_index)
-                    cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
+
+                    get_random_subset_from_set_shuffle(candidates_left)
+
+                    #cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
+                    cell = int(candidates_left[0]) if len(candidates_left) > 0 else -1
+
                     if cell == -1:
                         raise ValueError
                     else:
