@@ -1,5 +1,10 @@
 import random
 
+
+class CustomException(Exception):
+    pass
+
+
 """ {square_index : [row_index range low : row_index range high], [col_index range low : col_index range high],...}"""
 sq_to_row_col_map = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9]],
                      3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],

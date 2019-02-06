@@ -1,4 +1,5 @@
-from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper, get_random_subset_from_set_shuffle
+import _thread
+from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper, get_random_subset_from_set_shuffle, CustomException
 
 
 class Core(object):
@@ -119,11 +120,19 @@ class Core(object):
 
                     get_random_subset_from_set_shuffle(candidates_left)
 
+#                    for c in candidates_left:
+#                    # TODO _thread.start_new_thread
+
+                    if len(candidates_left) > 3:
+                        raise CustomException('RunFinished')
+
                     #cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
                     cell = int(candidates_left[0]) if len(candidates_left) > 0 else -1
 
                     if cell == -1:
-                        raise ValueError
+                        #raise ValueError
+                        raise CustomException("NoCandidatesLeft")
+
                     else:
                         row[col_index] = cell
                         self.cols = list(map(list, zip(*self.rows)))

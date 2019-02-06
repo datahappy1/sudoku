@@ -17,9 +17,14 @@ def solver(rows_in):
             attempts = attempts + 1
             print(attempts)
             break
-        except ValueError:
-            attempts = attempts + 1
-            rows_ref = copy.deepcopy(rows_in)
+        #except ValueError:
+        except common.CustomException as e:
+            if str(e) == "NoCandidatesLeft":
+                attempts = attempts + 1
+                rows_ref = copy.deepcopy(rows_in)
+            elif str(e) == "RunFinished":
+                attempts = attempts + 1
+                print(rows_ref)
             continue
         finally:
             if divmod(attempts, 10000)[1] == 1 and attempts > 1:
