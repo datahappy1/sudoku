@@ -19,6 +19,7 @@ def solver(rows_in):
             break
         #except ValueError:
         except common.CustomException as e:
+            print(e)
             if str(e) == "NoCandidatesLeft":
                 attempts = attempts + 1
                 rows_ref = copy.deepcopy(rows_in)

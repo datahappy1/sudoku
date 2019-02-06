@@ -123,7 +123,7 @@ class Core(object):
 #                    for c in candidates_left:
 #                    # TODO _thread.start_new_thread
 
-                    if len(candidates_left) > 3:
+                    if len(candidates_left) > 3 and row_index > 0:
                         raise CustomException('RunFinished')
 
                     #cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
