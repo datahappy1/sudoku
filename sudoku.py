@@ -19,13 +19,14 @@ def solver(rows_in):
             break
         #except ValueError:
         except common.CustomException as e:
-            print(e)
+            #print(e)
             if str(e) == "NoCandidatesLeft":
                 attempts = attempts + 1
                 rows_ref = copy.deepcopy(rows_in)
-            elif str(e) == "RunFinished":
-                attempts = attempts + 1
-                print(rows_ref)
+            elif str(e) == "TooMuchEntrophy":
+                #attempts = attempts + 1
+                #print(rows_ref)
+                pass
             continue
         finally:
             if divmod(attempts, 10000)[1] == 1 and attempts > 1:
@@ -65,15 +66,17 @@ def main(action, level=None, rows_in=None):
         solver(rows_in=rows_in)
 
 
-r= [[4,0,0,0,0,7,0,8,0],
-    [0,8,0,0,0,0,2,0,1],
-    [0,0,0,6,8,0,5,0,4],
-    [0,0,5,0,0,1,0,0,6],
-    [0,0,0,0,9,0,0,0,0],
-    [2,0,0,5,0,0,7,0,0],
-    [5,0,2,0,7,3,0,0,0],
-    [1,0,9,0,0,0,0,4,0],
-    [0,6,0,4,0,0,0,0,7]]
+r=[
+[4,0,9,0,3,0,8,5,0],
+[0,0,0,8,0,0,0,0,0],
+[7,0,0,0,9,0,6,0,0],
+[0,0,0,0,0,0,5,0,0],
+[2,0,8,5,0,6,3,0,9],
+[0,0,3,0,0,0,0,0,0],
+[0,0,7,0,8,0,0,0,5],
+[0,0,0,0,0,1,0,0,0],
+[0,6,1,0,2,0,7,0,3]
+]
 
 
 if __name__ == '__main__':

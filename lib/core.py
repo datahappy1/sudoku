@@ -112,19 +112,22 @@ class Core(object):
         #self.cols = [[] for _ in range(9)]
         self.cols = list(map(list, zip(*self.rows)))
 
+        unknown_cell_index = 0
+
         for row_index, row in enumerate(self.rows):
             for col_index, col in enumerate(self.cols):
                 if row[col_index] == 0:
                     cell = 0
+                    unknown_cell_index = unknown_cell_index + 1
                     candidates_left = Core.get_cell_candidates(self, row, row_index, col, col_index)
+
+                    if len(candidates_left) > 3 and unknown_cell_index > 1:
+                        raise CustomException("TooMuchEntrophy")
 
                     get_random_subset_from_set_shuffle(candidates_left)
 
 #                    for c in candidates_left:
 #                    # TODO _thread.start_new_thread
-
-                    if len(candidates_left) > 3 and row_index > 0:
-                        raise CustomException('RunFinished')
 
                     #cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
                     cell = int(candidates_left[0]) if len(candidates_left) > 0 else -1
@@ -136,6 +139,7 @@ class Core(object):
                     else:
                         row[col_index] = cell
                         self.cols = list(map(list, zip(*self.rows)))
+
         return self.rows
 
     def grid_generator(self):
