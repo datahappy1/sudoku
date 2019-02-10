@@ -1,5 +1,5 @@
-import _thread
 from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper, get_random_subset_from_set_shuffle, CustomException
+import lib.gv as gv
 
 
 class Core(object):
@@ -35,7 +35,6 @@ class Core(object):
 
                 # sole candidates
                 candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) - set(col))
-                                       #set(list(map(list, zip(*self.rows)))[col_index]))
 
                 # unique candidates in rows
                 for sole_candidate in candidates_left:
@@ -109,31 +108,23 @@ class Core(object):
 
     def grid_solver(self):
         self.squares = [[] for _ in range(9)]
-        #self.cols = [[] for _ in range(9)]
         self.cols = list(map(list, zip(*self.rows)))
-
-        unknown_cell_index = 0
+        unknown_cell_index = gv.unknown_cell_index
 
         for row_index, row in enumerate(self.rows):
             for col_index, col in enumerate(self.cols):
                 if row[col_index] == 0:
                     cell = 0
-                    unknown_cell_index = unknown_cell_index + 1
                     candidates_left = Core.get_cell_candidates(self, row, row_index, col, col_index)
 
-                    if len(candidates_left) > 3 and unknown_cell_index > 1:
-                        raise CustomException("TooMuchEntrophy")
+                    if len(candidates_left) > 2 and row_index >= unknown_cell_index[0] and col_index > unknown_cell_index[1]:
+                        gv.unknown_cell_index = [row_index, col_index]
+                        raise CustomException("TooManyCandidatesLeft")
 
                     get_random_subset_from_set_shuffle(candidates_left)
-
-#                    for c in candidates_left:
-#                    # TODO _thread.start_new_thread
-
-                    #cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
                     cell = int(candidates_left[0]) if len(candidates_left) > 0 else -1
 
                     if cell == -1:
-                        #raise ValueError
                         raise CustomException("NoCandidatesLeft")
 
                     else:

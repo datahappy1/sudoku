@@ -1,6 +1,6 @@
 import copy
 from lib import core as core, common as common
-#from settings import beautify as default_beautify
+# from settings import beautify as default_beautify
 
 
 def solver(rows_in):
@@ -12,20 +12,17 @@ def solver(rows_in):
             obj = core.Core(action='solve', rows=rows_ref)
             sudoku_grid = core.Core.grid_solver(obj)
             for sudoku_row in sudoku_grid:
-                #print(*sudoku_row)
+                # print(*sudoku_row)
                 print(sudoku_row)
             attempts = attempts + 1
-            print(attempts)
             break
-        #except ValueError:
         except common.CustomException as e:
-            #print(e)
+            # print(e)
             if str(e) == "NoCandidatesLeft":
                 attempts = attempts + 1
                 rows_ref = copy.deepcopy(rows_in)
-            elif str(e) == "TooMuchEntrophy":
-                #attempts = attempts + 1
-                #print(rows_ref)
+            elif str(e) == "TooManyCandidatesLeft":
+                print(rows_ref)
                 pass
             continue
         finally:
@@ -66,17 +63,15 @@ def main(action, level=None, rows_in=None):
         solver(rows_in=rows_in)
 
 
-r=[
-[4,0,9,0,3,0,8,5,0],
-[0,0,0,8,0,0,0,0,0],
-[7,0,0,0,9,0,6,0,0],
-[0,0,0,0,0,0,5,0,0],
-[2,0,8,5,0,6,3,0,9],
-[0,0,3,0,0,0,0,0,0],
-[0,0,7,0,8,0,0,0,5],
-[0,0,0,0,0,1,0,0,0],
-[0,6,1,0,2,0,7,0,3]
-]
+r= [[4,0,0,0,0,7,0,8,0],
+    [0,8,0,0,0,0,2,0,1],
+    [0,0,0,6,8,0,5,0,4],
+    [0,0,5,0,0,1,0,0,6],
+    [0,0,0,0,9,0,0,0,0],
+    [2,0,0,5,0,0,7,0,0],
+    [5,0,2,0,7,3,0,0,0],
+    [1,0,9,0,0,0,0,4,0],
+    [0,6,0,4,0,0,0,0,7]]
 
 
 if __name__ == '__main__':
