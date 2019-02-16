@@ -27,9 +27,11 @@ def solver(rows_in):
 
                 if gv.unknown_cell_index[0] < 4 and failed_attempts == 1000:
                     gv.unknown_cell_index = [0, 0]
-                if gv.unknown_cell_index[0] >= 4 and failed_attempts == 50000:
+                if 4 <= gv.unknown_cell_index[0] < 6 and failed_attempts == 10000:
                     gv.unknown_cell_index = [0, 0]
-                gv.unknown_cell_index = [gv.unknown_cell_index[0], gv.unknown_cell_index[1]-1]
+                if gv.unknown_cell_index[0] >= 6 and failed_attempts == 50000:
+                    gv.unknown_cell_index = [0, 0]
+                gv.unknown_cell_index = [gv.unknown_cell_index[0], 0]
 
             elif str(e) == "TooManyCandidatesLeft":
                 failed_attempts = 0

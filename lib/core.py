@@ -115,7 +115,7 @@ class Core(object):
                     # cell = 0
                     candidates_left = Core.get_cell_candidates(self, row, row_index, col, col_index)
 
-                    if len(candidates_left) > 2 and row_index >= gv.unknown_cell_index[0] and col_index > gv.unknown_cell_index[1]:
+                    if len(candidates_left) > 1 and row_index >= gv.unknown_cell_index[0] and col_index > gv.unknown_cell_index[1]:
                         gv.unknown_cell_index = [row_index, col_index]
                         raise CustomException("TooManyCandidatesLeft")
 
