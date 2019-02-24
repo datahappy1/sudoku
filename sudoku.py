@@ -22,14 +22,12 @@ def solver(rows_in):
         except common.CustomException as e:
             if str(e) == "NoCandidatesLeft":
                 rows_ref = copy.deepcopy(rows_in)
-                failed_attempts += 1
 
             elif str(e) == "TooManyCandidatesLeft":
                 # print(attempts, rows_ref)
                 if failed_attempts == 5000:
                     gv.unknown_cell_index = [0, 0]
                 gv.unknown_cell_index = [gv.unknown_cell_index[0], gv.unknown_cell_index[1]-1]
-            attempts = attempts + 1
             failed_attempts = failed_attempts + 1
             continue
         finally:
