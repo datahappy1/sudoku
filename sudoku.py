@@ -28,7 +28,7 @@ def solver(rows_in):
                 # print(attempts, rows_ref)
                 if failed_attempts == 5000:
                     gv.unknown_cell_index = [0, 0]
-                gv.unknown_cell_index = [gv.unknown_cell_index[0], gv.unknown_cell_index[1]+1]
+                gv.unknown_cell_index = [gv.unknown_cell_index[0], gv.unknown_cell_index[1]-1]
             attempts = attempts + 1
             failed_attempts = failed_attempts + 1
             continue
