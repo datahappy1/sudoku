@@ -1,5 +1,8 @@
 from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper, get_random_subset_from_set_shuffle, CustomException
 import lib.gv as gv
+import queue
+import copy
+
 
 class Core(object):
     def __init__(self, action, rows):
@@ -8,6 +11,8 @@ class Core(object):
         self.cols = []
         self.candidates_all = [candidate_index for candidate_index in range(1, 10)]
         self.squares = []
+
+    gv.q = queue.Queue()
 
     def get_cell_candidates(self, row, row_index, col, col_index):
         candidates_left = get_random_subset_from_set(self.candidates_all, 9)
@@ -112,22 +117,28 @@ class Core(object):
         for row_index, row in enumerate(self.rows):
             for col_index, col in enumerate(self.cols):
                 if row[col_index] == 0:
-                    # cell = 0
+                    cell = 0
                     candidates_left = Core.get_cell_candidates(self, row, row_index, col, col_index)
-
-                    if len(candidates_left) > 1 and row_index >= gv.unknown_cell_index[0] and col_index > gv.unknown_cell_index[1]:
-                        gv.unknown_cell_index = [row_index, col_index]
-                        raise CustomException("TooManyCandidatesLeft")
-
-                    get_random_subset_from_set_shuffle(candidates_left)
-                    cell = int(candidates_left[0]) if len(candidates_left) > 0 else -1
-
-                    if cell == -1:
+                    if len(candidates_left) == 0:
                         raise CustomException("NoCandidatesLeft")
 
-                    else:
-                        row[col_index] = cell
-                        self.cols = list(map(list, zip(*self.rows)))
+                    if len(candidates_left) == 1:
+                        cell = int(candidates_left[0])
+
+                    #if 0 < len(candidates_left) < 3:
+                    #    get_random_subset_from_set_shuffle(candidates_left)
+                    #    cell = int(candidates_left[0])
+
+                    elif len(candidates_left) > 1 and row_index >= gv.unknown_cell_index[0] and col_index > gv.unknown_cell_index[1]:
+                        gv.unknown_cell_index = [row_index, col_index]
+                        for candidate in candidates_left:
+                            rows = copy.deepcopy(self.rows)
+                            row[col_index] = candidate
+                            queue.Queue.put(gv.q, rows)
+                        raise CustomException("TooManyCandidatesLeft")
+
+                    row[col_index] = cell
+                    self.cols = list(map(list, zip(*self.rows)))
 
         return self.rows
 

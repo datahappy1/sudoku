@@ -1,14 +1,14 @@
 import copy
-from lib import core as core, common as common
-# from settings import beautify as default_beautify
-import lib.gv as gv
+import queue
+from lib import core as core, common as common, gv as gv
 
 
 def solver(rows_in):
     attempts = 0
+    failed_attempts = 0
+    gv.q = queue.Queue()
     max_attempts = common.level_to_attempts_mapper(level='default')
     rows_ref = copy.deepcopy(rows_in)
-    failed_attempts = 0
     while attempts <= max_attempts:
         try:
             obj = core.Core(action='solve', rows=rows_ref)
@@ -20,30 +20,31 @@ def solver(rows_in):
             print(attempts)
             break
         except common.CustomException as e:
-            # print(e)
             if str(e) == "NoCandidatesLeft":
                 rows_ref = copy.deepcopy(rows_in)
-                failed_attempts = failed_attempts + 1
-
-                if gv.unknown_cell_index[0] < 4 and failed_attempts == 1000:
-                    gv.unknown_cell_index = [0, 0]
-                if 4 <= gv.unknown_cell_index[0] < 6 and failed_attempts == 10000:
-                    gv.unknown_cell_index = [0, 0]
-                if gv.unknown_cell_index[0] >= 6 and failed_attempts == 50000:
-                    gv.unknown_cell_index = [0, 0]
-                gv.unknown_cell_index = [gv.unknown_cell_index[0], 0]
+                failed_attempts += 1
 
             elif str(e) == "TooManyCandidatesLeft":
-                failed_attempts = 0
-                print(attempts, gv.unknown_cell_index, rows_ref)
-                pass
+                # print(attempts, rows_ref)
+                if failed_attempts == 5000:
+                    gv.unknown_cell_index = [0, 0]
+                gv.unknown_cell_index = [gv.unknown_cell_index[0], gv.unknown_cell_index[1]+1]
             attempts = attempts + 1
+            failed_attempts = failed_attempts + 1
             continue
         finally:
             if divmod(attempts, 10000)[1] == 1 and attempts > 1:
                 print(f'attempts to solve a game: {str(attempts - 1)}')
     else:
         print(f'game not solved before reaching max attempts {max_attempts}')
+
+
+def queue_processor():
+    if not gv.q.empty():
+        for _ in iter(gv.q.get, None):
+            rows_ref = copy.deepcopy(gv.q.get())
+            #print(rows_ref)
+            solver(rows_ref)
 
 
 def generator(level):
@@ -75,6 +76,7 @@ def main(action, level=None, rows_in=None):
         generator(level)
     elif action == 'solve':
         solver(rows_in=rows_in)
+        queue_processor()
 
 r= [[4,0,0,0,0,7,0,8,0],
     [0,8,0,0,0,0,2,0,1],
@@ -85,7 +87,6 @@ r= [[4,0,0,0,0,7,0,8,0],
     [5,0,2,0,7,3,0,0,0],
     [1,0,9,0,0,0,0,4,0],
     [0,6,0,4,0,0,0,0,7]]
-
 
 if __name__ == '__main__':
     #main(action='generate', level='easy')
