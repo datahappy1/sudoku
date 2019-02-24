@@ -135,7 +135,11 @@ class Core(object):
                             rows = copy.deepcopy(self.rows)
                             row[col_index] = candidate
                             queue.Queue.put(gv.q, rows)
+
                         raise CustomException("TooManyCandidatesLeft")
+
+                    for job in iter(gv.q.get, None):
+                        print('q', job)
 
                     row[col_index] = cell
                     self.cols = list(map(list, zip(*self.rows)))
