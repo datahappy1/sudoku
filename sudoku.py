@@ -1,52 +1,42 @@
 import copy
-import queue
 from lib import core as core, common as common, gv as gv
 import time
 import sys
 
-from multiprocessing import Process
-
-
-def consumer(rows_in):
-    obj = core.Core(action='solve', rows=rows_in)
-    try:
-        core.Core.grid_solver(obj)
-    except common.CustomException as ce:
-        if str(ce) == 'TooManyCandidatesLeft':
-            solver(rows_in)
-        if str(ce) == 'NoCandidatesLeft':
-            pass
-
 
 def solver(rows_in):
     attempts = 0
-    gv.q = queue.Queue()
+
     max_attempts = common.level_to_attempts_mapper(level='default')
     rows_ref = copy.deepcopy(rows_in)
     while attempts <= max_attempts:
         try:
             obj = core.Core(action='solve', rows=rows_ref)
             sudoku_grid = core.Core.grid_solver(obj)
+            print('^^^^^^^^^')
             for sudoku_row in sudoku_grid:
                 # print(*sudoku_row)
                 print(sudoku_row)
             attempts = attempts + 1
             print(attempts)
-            #break
+            print('^^^^^^^^^')
             sys.exit(0)
         except common.CustomException as e:
-            if str(e) == "NoCandidatesLeft":
-                gv.q.get()
+            if str(e) == "TooManyCandidatesLeft":
+                for ss in gv.s:
+                    print('ss', ss)
+                    obj = core.Core(action='solve', rows=ss)
+                    try:
+                        o = core.Core.grid_solver(obj)
+                        if 0 not in o:
+                            print(o)
+                            sys.exit(0)
+                    except common.CustomException:
+                        gv.s.remove(ss)
+                        print(len(gv.s))
+            elif str(e) == "NoCandidatesLeft":
+                break
 
-            elif str(e) == "TooManyCandidatesLeft":
-                for elem in list(gv.q.queue):
-                    time.sleep(0.5)
-                    print('getting from queue:', elem)
-                    #print(attempts, gv.q.get(elem))
-                    #break
-                    p = Process(target=consumer(gv.q.get(elem)))
-                p.start()
-                p.join()
             continue
         finally:
             if divmod(attempts, 10000)[1] == 1 and attempts > 1:
@@ -85,18 +75,15 @@ def main(action, level=None, rows_in=None):
     elif action == 'solve':
         solver(rows_in=rows_in)
 
-
-r= [[0,3,0,0,8,5,4,9,1],
-    [6,0,4,7,3,0,8,5,0],
-    [0,9,0,1,4,2,7,0,3],
-    [0,2,6,4,0,8,3,1,0],
-    [0,4,3,0,0,1,9,7,8],
-    [1,0,8,5,0,3,6,2,0],
-    [3,6,0,8,0,0,5,4,9],
-    [4,0,9,3,1,6,0,0,7],
-    [7,8,0,0,5,0,1,3,6]]
-
-
+r= [[8,0,0,0,0,0,0,0,0],
+   [0,0,3,6,0,0,0,0,0],
+   [0,7,0,0,9,0,2,0,0],
+   [0,5,0,0,0,7,0,0,0],
+   [0,0,0,0,4,5,7,0,0],
+   [0,0,0,1,0,0,0,3,0],
+   [0,0,1,0,0,0,0,6,8],
+   [0,0,8,5,0,0,0,1,0],
+   [0,9,0,0,0,0,4,0,0]]
 
 if __name__ == '__main__':
     #main(action='generate', level='easy')

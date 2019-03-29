@@ -131,9 +131,8 @@ class Core(object):
                         for candidate in candidates_left:
                             rows = copy.deepcopy(self.rows)
                             rows[row_index][col_index] = candidate
-                            queue.Queue.put(gv.q, rows)
-                            #print(len(candidates_left))
-                            print('putting to queue row:', len(candidates_left), rows)
+                            if rows not in gv.s:
+                                gv.s.append(rows)
                         raise CustomException("TooManyCandidatesLeft")
 
                     row[col_index] = cell
