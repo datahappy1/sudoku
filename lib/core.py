@@ -1,11 +1,21 @@
-from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper, get_random_subset_from_set_shuffle, CustomException
+"""
+core.py
+"""
+from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper, CustomException
 import lib.gv as gv
-import queue
 import copy
 
 
 class Core(object):
+    """
+
+    """
     def __init__(self, action, rows):
+        """
+
+        :param action:
+        :param rows:
+        """
         self.action = action
         self.rows = rows
         self.cols = []
@@ -13,6 +23,14 @@ class Core(object):
         self.squares = []
 
     def get_cell_candidates(self, row, row_index, col, col_index):
+        """
+
+        :param row:
+        :param row_index:
+        :param col:
+        :param col_index:
+        :return:
+        """
         candidates_left = get_random_subset_from_set(self.candidates_all, 9)
         mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
@@ -109,6 +127,10 @@ class Core(object):
             return candidates_left
 
     def grid_solver(self):
+        """
+
+        :return:
+        """
         self.squares = [[] for _ in range(9)]
         self.cols = list(map(list, zip(*self.rows)))
 
@@ -122,10 +144,6 @@ class Core(object):
 
                     if len(candidates_left) == 1:
                         cell = int(candidates_left[0])
-
-                    #if len(candidates_left) == 2:
-                    #    get_random_subset_from_set_shuffle(candidates_left)
-                    #    cell = int(candidates_left[0])
 
                     if len(candidates_left) > 1:
                         for candidate in candidates_left:
@@ -141,6 +159,10 @@ class Core(object):
         return self.rows
 
     def grid_generator(self):
+        """
+
+        :return:
+        """
         row_index = 1
         self.rows.append(get_random_subset_from_set(self.candidates_all, 9))
         self.squares = [[] for _ in range(9)]
@@ -159,6 +181,12 @@ class Core(object):
         return self.rows
 
     def row_mask(self, row, level):
+        """
+
+        :param row:
+        :param level:
+        :return:
+        """
         if level == 'easy':
             hidden_members = get_random_subset_from_set(self.candidates_all, 3)
             for members in hidden_members:

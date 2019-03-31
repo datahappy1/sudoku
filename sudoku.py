@@ -1,30 +1,48 @@
+"""
+sudoku.py
+"""
 import copy
-from lib import core as core, common as common, gv as gv
 import time
 import sys
+import argparse
+from lib import core as core, common as common, gv as gv
 
 
-def solver(rows_in):
-    attempts = 0
+def solver(sudoku_to_solve, prettify):
+    """
 
-    max_attempts = common.level_to_attempts_mapper(level='default')
+    :param sudoku_to_solve:
+    :param prettify:
+    :return:
+    """
+    rows_in = []
+    with open(sudoku_to_solve) as f:
+        for row in f:
+            row = row.split()
+            rows_in.append(row)
+    rows_in = str(rows_in).replace("'", "")
+
+    print(rows_in)
+    print(type(rows_in))
+
     rows_ref = copy.deepcopy(rows_in)
-    while attempts <= max_attempts:
+
+    while True:
         try:
             obj = core.Core(action='solve', rows=rows_ref)
             sudoku_grid = core.Core.grid_solver(obj)
-            print('^^^^^^^^^')
+
             for sudoku_row in sudoku_grid:
-                # print(*sudoku_row)
-                print(sudoku_row)
-            attempts = attempts + 1
-            print(attempts)
-            print('^^^^^^^^^')
+                if prettify is True:
+                    print(*sudoku_row)
+                else:
+                    print(sudoku_row)
+
             sys.exit(0)
         except common.CustomException as e:
             if str(e) == "TooManyCandidatesLeft":
                 for ss in gv.s:
-                    print('ss', ss)
+                    #print('ss', ss)
                     obj = core.Core(action='solve', rows=ss)
                     try:
                         o = core.Core.grid_solver(obj)
@@ -36,57 +54,65 @@ def solver(rows_in):
                         print(len(gv.s))
             elif str(e) == "NoCandidatesLeft":
                 break
-
             continue
-        finally:
-            if divmod(attempts, 10000)[1] == 1 and attempts > 1:
-                print(f'attempts to solve a game: {str(attempts - 1)}')
-    else:
-        print(f'game not solved before reaching max attempts {max_attempts}')
 
 
-def generator(level):
-    attempts = 0
-    max_attempts = common.level_to_attempts_mapper(level)
-    while attempts <= max_attempts:
+def generator(level, prettify):
+    """
+
+    :param level:
+    :param prettify:
+    :return:
+    """
+    while True:
         try:
             obj = core.Core(action='generate', rows=[])
             sudoku_grid = core.Core.grid_generator(obj)
             for sudoku_row in sudoku_grid:
-                #print(*sudoku_row)
-                #print(*core.Core.row_mask(obj, sudoku_row, level))
-                print(core.Core.row_mask(obj, sudoku_row, level))
-            attempts = attempts + 1
-            print(attempts)
+                if prettify is True:
+                    # print(*sudoku_row)
+                    print(*core.Core.row_mask(obj, sudoku_row, level))
+                else:
+                    print(core.Core.row_mask(obj, sudoku_row, level))
             break
         except ValueError:
-            attempts = attempts + 1
             continue
-        finally:
-            if divmod(attempts, 10000)[1] == 1 and attempts > 1:
-                print(f'attempts to generate a game: {str(attempts - 1)}')
+
+
+def main():
+    """
+
+    :return:
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-act', '--action', type=str, required=True,
+                        choices={'solve', 'generate'})
+    parser.add_argument('-glv', '--generate_level', type=str, required=False,
+                        choices={'easy', 'medium', 'hard'}, default=None)
+    parser.add_argument('-fws', '--file_with_sudoku_to_solve', type=str, required=False, default=None)
+    parser.add_argument('-pro', '--prettify_output', type=str, required=False, default=0)
+
+    parsed = parser.parse_args()
+
+    action = parsed.action
+    generate_level = parsed.generate_level
+    sudoku_to_solve = parsed.file_with_sudoku_to_solve
+    prettify = parsed.prettify_output
+
+    # arg parse bool data type known bug workaround
+    if prettify.lower() in ('no', 'false', 'f', 'n', 0):
+        prettify = False
     else:
-        print(f'no game generated before reaching max attempts {max_attempts}')
+        prettify = True
 
-
-def main(action, level=None, rows_in=None):
     if action == 'generate':
-        generator(level)
+        generator(generate_level, prettify)
     elif action == 'solve':
-        solver(rows_in=rows_in)
+        solver(sudoku_to_solve, prettify)
+    else:
+        print('unknown action, terminating')
+        sys.exit(1)
 
-r= [[8,0,0,0,0,0,0,0,0],
-   [0,0,3,6,0,0,0,0,0],
-   [0,7,0,0,9,0,2,0,0],
-   [0,5,0,0,0,7,0,0,0],
-   [0,0,0,0,4,5,7,0,0],
-   [0,0,0,1,0,0,0,3,0],
-   [0,0,1,0,0,0,0,6,8],
-   [0,0,8,5,0,0,0,1,0],
-   [0,9,0,0,0,0,4,0,0]]
 
 if __name__ == '__main__':
-    #main(action='generate', level='easy')
-    #main(action='generate', level='medium')
-    #main(action='generate', level='hard')
-    main(action='solve', rows_in=r)
+    main()

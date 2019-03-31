@@ -1,5 +1,0 @@
-solver without repetition storing row_index,col_index,used_value hash
-OCR
-multiprocessing
-tests
-return from solve/gen function
