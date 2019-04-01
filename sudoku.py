@@ -15,15 +15,21 @@ def solver(sudoku_to_solve, prettify):
     :param prettify:
     :return:
     """
+    def sudoku_printer(sudoku_grid):
+        for sudoku_row in sudoku_grid:
+            if prettify is True:
+                print(*sudoku_row)
+            else:
+                print(sudoku_row)
+        sys.exit(0)
+
     rows_in = []
     with open(sudoku_to_solve) as f:
         for row in f:
-            row = row.split()
-            rows_in.append(row)
-    rows_in = str(rows_in).replace("'", "")
-
-    print(rows_in)
-    print(type(rows_in))
+            _ = []
+            for elem in row.join(row.split()):
+                _.append(int(elem))
+            rows_in.append(_)
 
     rows_ref = copy.deepcopy(rows_in)
 
@@ -31,27 +37,17 @@ def solver(sudoku_to_solve, prettify):
         try:
             obj = core.Core(action='solve', rows=rows_ref)
             sudoku_grid = core.Core.grid_solver(obj)
-
-            for sudoku_row in sudoku_grid:
-                if prettify is True:
-                    print(*sudoku_row)
-                else:
-                    print(sudoku_row)
-
-            sys.exit(0)
+            sudoku_printer(sudoku_grid)
         except common.CustomException as e:
             if str(e) == "TooManyCandidatesLeft":
-                for ss in gv.s:
-                    #print('ss', ss)
-                    obj = core.Core(action='solve', rows=ss)
+                for variation in gv.sudoku_variations_list:
+                    obj = core.Core(action='solve', rows=variation)
                     try:
-                        o = core.Core.grid_solver(obj)
-                        if 0 not in o:
-                            print(o)
-                            sys.exit(0)
+                        sudoku_grid = core.Core.grid_solver(obj)
+                        if 0 not in sudoku_grid:
+                            sudoku_printer(sudoku_grid)
                     except common.CustomException:
-                        gv.s.remove(ss)
-                        print(len(gv.s))
+                        gv.sudoku_variations_list.remove(variation)
             elif str(e) == "NoCandidatesLeft":
                 break
             continue
@@ -85,12 +81,13 @@ def main():
     :return:
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-act', '--action', type=str, required=True,
+    parser.add_argument('-a', '--action', type=str, required=True,
                         choices={'solve', 'generate'})
-    parser.add_argument('-glv', '--generate_level', type=str, required=False,
+    parser.add_argument('-l', '--generate_level', type=str, required=False,
                         choices={'easy', 'medium', 'hard'}, default=None)
-    parser.add_argument('-fws', '--file_with_sudoku_to_solve', type=str, required=False, default=None)
-    parser.add_argument('-pro', '--prettify_output', type=str, required=False, default=0)
+    parser.add_argument('-f', '--file_with_sudoku_to_solve', type=str, required=False, default=None)
+    parser.add_argument('-p', '--prettify_output', type=str, required=False, default=0)
+    parser.add_argument('-v', '--verbose_printer', type=str, required=False, default=0)
 
     parsed = parser.parse_args()
 
@@ -110,7 +107,7 @@ def main():
     elif action == 'solve':
         solver(sudoku_to_solve, prettify)
     else:
-        print('unknown action, terminating')
+        print('unknown action %s, terminating', action)
         sys.exit(1)
 
 

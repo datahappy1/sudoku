@@ -149,8 +149,8 @@ class Core(object):
                         for candidate in candidates_left:
                             rows = copy.deepcopy(self.rows)
                             rows[row_index][col_index] = candidate
-                            if rows not in gv.s:
-                                gv.s.append(rows)
+                            if rows not in gv.sudoku_variations_list:
+                                gv.sudoku_variations_list.append(rows)
                         raise CustomException("TooManyCandidatesLeft")
 
                     row[col_index] = cell

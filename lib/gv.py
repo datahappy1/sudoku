@@ -1,2 +1,2 @@
-s = []
+sudoku_variations_list = []
 
