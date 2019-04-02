@@ -31,6 +31,8 @@ def solver(sudoku_to_solve, prettify, verbose):
         sys.exit(0)
 
     rows_in = []
+    gv.sudoku_variations_aux_set = set()
+
     with open(sudoku_to_solve) as f:
         for row in f:
             _ = []
@@ -54,10 +56,13 @@ def solver(sudoku_to_solve, prettify, verbose):
                         if 0 not in sudoku_grid:
                             sudoku_printer(sudoku_grid)
                     except common.CustomException:
+                        if divmod(len(gv.sudoku_variations_list), 10000)[1] == 1:
+                            print(len(gv.sudoku_variations_list))
                         gv.sudoku_variations_list.remove(variation)
             elif str(e) == "NoCandidatesLeft":
                 break
             continue
+
 
 #@verbose
 def generator(level, prettify, verbose):
