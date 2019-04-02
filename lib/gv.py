@@ -1,2 +1,5 @@
-sudoku_variations_list = []
-sudoku_variations_aux_set = {}
+"""
+global variables module
+"""
+SUDOKU_VARIATIONS_LIST = []
+SUDOKU_VARIATIONS_AUX_SET = {}

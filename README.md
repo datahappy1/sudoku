@@ -1,5 +1,10 @@
 # Sudoku game generator and solver
-## How to play
+## How to 
+### install
+
+### run sudoku generator
+
+### run sudoku solver
 
 ## Algorithm description
 

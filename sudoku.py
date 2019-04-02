@@ -10,18 +10,18 @@ from lib import core as core, common as common, gv as gv
 
 def solver(sudoku_to_solve, prettify, verbose):
     """
-
+    solver function
     :param sudoku_to_solve:
     :param prettify:
     :param verbose:
-    :return:
+    :return: solved sudoku
     """
 
-    def sudoku_printer(sudoku_grid):
+    def pretty_printer(sudoku_grid):
         """
-
+        sudoku solver pretty printer function
         :param sudoku_grid:
-        :return:
+        :return: solved (prettified) sudoku
         """
         for sudoku_row in sudoku_grid:
             if prettify is True:
@@ -31,7 +31,7 @@ def solver(sudoku_to_solve, prettify, verbose):
         sys.exit(0)
 
     rows_in = []
-    gv.sudoku_variations_aux_set = set()
+    gv.SUDOKU_VARIATIONS_AUX_SET = set()
 
     with open(sudoku_to_solve) as f:
         for row in f:
@@ -46,19 +46,21 @@ def solver(sudoku_to_solve, prettify, verbose):
         try:
             obj = core.Core(action='solve', rows=rows_ref)
             sudoku_grid = core.Core.grid_solver(obj)
-            sudoku_printer(sudoku_grid)
+            pretty_printer(sudoku_grid)
+
         except common.CustomException as e:
             if str(e) == "TooManyCandidatesLeft":
-                for variation in gv.sudoku_variations_list:
+                for variation in gv.SUDOKU_VARIATIONS_LIST:
                     obj = core.Core(action='solve', rows=variation)
                     try:
                         sudoku_grid = core.Core.grid_solver(obj)
                         if 0 not in sudoku_grid:
-                            sudoku_printer(sudoku_grid)
+                            pretty_printer(sudoku_grid)
+
                     except common.CustomException:
-                        if divmod(len(gv.sudoku_variations_list), 10000)[1] == 1:
-                            print(len(gv.sudoku_variations_list))
-                        gv.sudoku_variations_list.remove(variation)
+                        gv.SUDOKU_VARIATIONS_LIST.remove(variation)
+
+            # expected custom exception when no candidates are left, restart
             elif str(e) == "NoCandidatesLeft":
                 break
             continue
@@ -67,11 +69,11 @@ def solver(sudoku_to_solve, prettify, verbose):
 #@verbose
 def generator(level, prettify, verbose):
     """
-
+    generator function
     :param level:
     :param prettify:
     :param verbose:
-    :return:
+    :return: generated sudoku game
     """
     while True:
         try:
@@ -84,23 +86,31 @@ def generator(level, prettify, verbose):
                 else:
                     print(core.Core.row_mask(obj, sudoku_row, level))
             break
+
+        # expected value error, no candidates left for the current grid
+        # restart grid generator
         except ValueError:
             continue
 
 
 def args_handler():
     """
-
+    argparse arguments handler function
     :return:
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--action', type=str, required=True,
+    parser.add_argument('-a', '--action', type=str,
+                        required=True,
                         choices={'solve', 'generate'})
-    parser.add_argument('-l', '--generate_level', type=str, required=False,
-                        choices={'easy', 'medium', 'hard'}, default=None)
-    parser.add_argument('-f', '--file_with_sudoku_to_solve', type=str, required=False, default=None)
-    parser.add_argument('-p', '--prettify_output', type=str, required=False, default=0)
-    parser.add_argument('-v', '--verbose_printer_level', type=int, required=False, default=0)
+    parser.add_argument('-l', '--generate_level', type=str,
+                        required=False, default=None,
+                        choices={'easy', 'medium', 'hard'})
+    parser.add_argument('-f', '--file_with_sudoku_to_solve', type=str,
+                        required=False, default=None)
+    parser.add_argument('-p', '--prettify_output', type=str,
+                        required=False, default=0)
+    parser.add_argument('-v', '--verbose_printer_level', type=int,
+                        required=False, default=0)
 
     parsed = parser.parse_args()
 

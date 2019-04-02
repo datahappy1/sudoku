@@ -6,6 +6,7 @@ import random
 
 class CustomException(Exception):
     """
+    custom exceptions class
     """
     pass
 
@@ -18,10 +19,10 @@ sq_to_row_col_map = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9
 
 def sq_to_row_col_mapper(row_index, col_index):
     """
-
+    grid square to row and col mapping function
     :param row_index:
     :param col_index:
-    :return:
+    :return: key, value with mappings
     """
     k, v = None, None
     for key, value in sq_to_row_col_map.items():
@@ -33,19 +34,19 @@ def sq_to_row_col_mapper(row_index, col_index):
 
 def get_random_subset_from_set(members_in, count_of_members_out):
     """
-
+    get random subset of integers from a set of integers
     :param members_in:
     :param count_of_members_out:
-    :return:
+    :return: list or random integers
     """
     return random.sample(members_in, count_of_members_out)
 
 
 def get_randint(range_start, range_end):
     """
-
+    get random integer from a defined range
     :param range_start:
     :param range_end:
-    :return:
+    :return: random int
     """
     return random.randint(range_start, range_end)
