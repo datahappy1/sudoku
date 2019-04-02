@@ -1,6 +1,9 @@
-# sudoku
+#Sudoku game generator and solver
+##How to play
 
-Worlds hardest sudoku:
+##Algorithm description
+
+##Worlds hardest sudoku:
 https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424
 
 8 0 0 0 0 0 0 0 0<br>
