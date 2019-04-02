@@ -95,7 +95,7 @@ def args_handler():
                         choices={'easy', 'medium', 'hard'}, default=None)
     parser.add_argument('-f', '--file_with_sudoku_to_solve', type=str, required=False, default=None)
     parser.add_argument('-p', '--prettify_output', type=str, required=False, default=0)
-    parser.add_argument('-v', '--verbose_printer_level', type=str, required=False, default=0)
+    parser.add_argument('-v', '--verbose_printer_level', type=int, required=False, default=0)
 
     parsed = parser.parse_args()
 
