@@ -22,6 +22,9 @@ class Core(object):
         self.candidates_all = [candidate_index for candidate_index in range(1, 10)]
         self.squares = []
 
+    def get_cell_unique_candidates(self):
+        pass
+
     def get_cell_candidates(self, row, row_index, col, col_index):
         """
 

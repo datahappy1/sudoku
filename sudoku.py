@@ -8,14 +8,21 @@ import argparse
 from lib import core as core, common as common, gv as gv
 
 
-def solver(sudoku_to_solve, prettify):
+def solver(sudoku_to_solve, prettify, verbose):
     """
 
     :param sudoku_to_solve:
     :param prettify:
+    :param verbose:
     :return:
     """
+
     def sudoku_printer(sudoku_grid):
+        """
+
+        :param sudoku_grid:
+        :return:
+        """
         for sudoku_row in sudoku_grid:
             if prettify is True:
                 print(*sudoku_row)
@@ -52,12 +59,13 @@ def solver(sudoku_to_solve, prettify):
                 break
             continue
 
-
-def generator(level, prettify):
+@verbose
+def generator(level, prettify, verbose):
     """
 
     :param level:
     :param prettify:
+    :param verbose:
     :return:
     """
     while True:
@@ -75,7 +83,7 @@ def generator(level, prettify):
             continue
 
 
-def main():
+def args_handler():
     """
 
     :return:
@@ -87,7 +95,7 @@ def main():
                         choices={'easy', 'medium', 'hard'}, default=None)
     parser.add_argument('-f', '--file_with_sudoku_to_solve', type=str, required=False, default=None)
     parser.add_argument('-p', '--prettify_output', type=str, required=False, default=0)
-    parser.add_argument('-v', '--verbose_printer', type=str, required=False, default=0)
+    parser.add_argument('-v', '--verbose_printer_level', type=str, required=False, default=0)
 
     parsed = parser.parse_args()
 
@@ -95,6 +103,7 @@ def main():
     generate_level = parsed.generate_level
     sudoku_to_solve = parsed.file_with_sudoku_to_solve
     prettify = parsed.prettify_output
+    verbose = parsed.verbose_printer_level
 
     # arg parse bool data type known bug workaround
     if prettify.lower() in ('no', 'false', 'f', 'n', 0):
@@ -103,13 +112,13 @@ def main():
         prettify = True
 
     if action == 'generate':
-        generator(generate_level, prettify)
+        generator(generate_level, prettify, verbose)
     elif action == 'solve':
-        solver(sudoku_to_solve, prettify)
+        solver(sudoku_to_solve, prettify, verbose)
     else:
         print('unknown action %s, terminating', action)
         sys.exit(1)
 
 
 if __name__ == '__main__':
-    main()
+    args_handler()
