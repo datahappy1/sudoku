@@ -59,7 +59,7 @@ def solver(sudoku_to_solve, prettify, verbose):
                 break
             continue
 
-@verbose
+#@verbose
 def generator(level, prettify, verbose):
     """
 
@@ -115,9 +115,6 @@ def args_handler():
         generator(generate_level, prettify, verbose)
     elif action == 'solve':
         solver(sudoku_to_solve, prettify, verbose)
-    else:
-        print('unknown action %s, terminating', action)
-        sys.exit(1)
 
 
 if __name__ == '__main__':
