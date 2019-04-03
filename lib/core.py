@@ -76,7 +76,7 @@ class Core(object):
 #                # unique candidates in rows
                 for sole_candidate in candidates_left:
                     if sole_candidate in (self.rows[row_index + 1]) and sole_candidate in (self.rows[row_index + 2]):
-
+                        # unique candidates in cols
                         candidates_left = Core.get_cell_unique_candidates(self, col_index, sole_candidate, candidates_left)
 
             if row_index in (1, 4, 7):
@@ -89,7 +89,7 @@ class Core(object):
                 # unique candidates in rows
                 for sole_candidate in candidates_left:
                     if sole_candidate in (self.rows[row_index - 1]) and sole_candidate in (self.rows[row_index + 1]):
-
+                        # unique candidates in cols
                         candidates_left = Core.get_cell_unique_candidates(self, col_index, sole_candidate, candidates_left)
 
             if row_index in (2, 5, 8):
@@ -102,7 +102,7 @@ class Core(object):
                 # unique candidates in rows
                 for sole_candidate in candidates_left:
                     if sole_candidate in (self.rows[row_index - 1]) and sole_candidate in (self.rows[row_index - 2]):
-
+                        # unique candidates in cols
                         candidates_left = Core.get_cell_unique_candidates(self, col_index, sole_candidate, candidates_left)
 
             return candidates_left

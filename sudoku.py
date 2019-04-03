@@ -4,7 +4,7 @@ sudoku.py
 import copy
 import time
 import argparse
-from lib import core as core, common as common, gv as gv
+from lib import core as core, common as common, gv as gv, ocr as ocr
 
 
 def solver(sudoku_to_solve, prettify, verbose):
@@ -91,7 +91,7 @@ def args_handler():
 
     parser.add_argument('-a', '--action', type=str,
                         required=True,
-                        choices={'solve', 'generate'})
+                        choices={'solve', 'generate','ocr'})
     parser.add_argument('-l', '--generate_level', type=str,
                         required=False, default=None,
                         choices={'easy', 'medium', 'hard'})
@@ -120,6 +120,8 @@ def args_handler():
         generator(generate_level, prettify, verbose)
     elif action == 'solve':
         solver(sudoku_to_solve, prettify, verbose)
+    elif action == 'ocr':
+        ocr.ocr_core(sudoku_to_solve)
 
 
 if __name__ == '__main__':
