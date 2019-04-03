@@ -22,8 +22,22 @@ class Core(object):
         self.candidates_all = [candidate_index for candidate_index in range(1, 10)]
         self.squares = []
 
-    def get_cell_unique_candidates(self):
-        pass
+    def get_cell_unique_candidates(self, col_i, sole_cand, cands_left):
+        # unique candidates in cols
+        if col_i in (0, 3, 6):
+            if sole_cand in (self.cols[col_i + 1]) and sole_cand in (self.cols[col_i + 2]):
+                cands_left = [int(d) for d in str(sole_cand)]
+
+        # unique candidates in cols
+        if col_i in (1, 4, 7):
+            if sole_cand in (self.cols[col_i + 1]) and sole_cand in (self.cols[col_i - 1]):
+                cands_left = [int(d) for d in str(sole_cand)]
+
+        # unique candidates in cols
+        if col_i in (2, 5, 8):
+            if sole_cand in (self.cols[col_i - 1]) and sole_cand in (self.cols[col_i - 2]):
+                cands_left = [int(d) for d in str(sole_cand)]
+        return cands_left
 
     def get_cell_candidates(self, row, row_index, col, col_index):
         """
@@ -62,20 +76,8 @@ class Core(object):
 #                # unique candidates in rows
                 for sole_candidate in candidates_left:
                     if sole_candidate in (self.rows[row_index + 1]) and sole_candidate in (self.rows[row_index + 2]):
-                        # unique candidates in cols
-                        if col_index in (0, 3, 6):
-                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index + 2]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
 
-                        # unique candidates in cols
-                        if col_index in (1, 4, 7):
-                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index - 1]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
-
-                        # unique candidates in cols
-                        if col_index in (2, 5, 8):
-                            if sole_candidate in (self.cols[col_index - 1]) and sole_candidate in (self.cols[col_index - 2]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
+                        candidates_left = Core.get_cell_unique_candidates(self, col_index, sole_candidate, candidates_left)
 
             if row_index in (1, 4, 7):
                 self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
@@ -87,20 +89,8 @@ class Core(object):
                 # unique candidates in rows
                 for sole_candidate in candidates_left:
                     if sole_candidate in (self.rows[row_index - 1]) and sole_candidate in (self.rows[row_index + 1]):
-                        # unique candidates in cols
-                        if col_index in (0, 3, 6):
-                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index + 2]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
 
-                        # unique candidates in cols
-                        if col_index in (1, 4, 7):
-                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index - 1]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
-
-                        # unique candidates in cols
-                        if col_index in (2, 5, 8):
-                            if sole_candidate in (self.cols[col_index - 1]) and sole_candidate in (self.cols[col_index - 2]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
+                        candidates_left = Core.get_cell_unique_candidates(self, col_index, sole_candidate, candidates_left)
 
             if row_index in (2, 5, 8):
                 self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
@@ -112,20 +102,8 @@ class Core(object):
                 # unique candidates in rows
                 for sole_candidate in candidates_left:
                     if sole_candidate in (self.rows[row_index - 1]) and sole_candidate in (self.rows[row_index - 2]):
-                        # unique candidates in cols
-                        if col_index in (0, 3, 6):
-                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index + 2]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
 
-                        # unique candidates in cols
-                        if col_index in (1, 4, 7):
-                            if sole_candidate in (self.cols[col_index + 1]) and sole_candidate in (self.cols[col_index - 1]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
-
-                        # unique candidates in cols
-                        if col_index in (2, 5, 8):
-                            if sole_candidate in (self.cols[col_index - 1]) and sole_candidate in (self.cols[col_index - 2]):
-                                candidates_left = [int(d) for d in str(sole_candidate)]
+                        candidates_left = Core.get_cell_unique_candidates(self, col_index, sole_candidate, candidates_left)
 
             return candidates_left
 
