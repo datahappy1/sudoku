@@ -59,7 +59,7 @@ class Core(object):
                 # sole candidates
                 candidates_left = list(set(candidates_left) - set(row) - set(self.squares[square_index]) - set(col))
 
-                # unique candidates in rows
+#                # unique candidates in rows
                 for sole_candidate in candidates_left:
                     if sole_candidate in (self.rows[row_index + 1]) and sole_candidate in (self.rows[row_index + 2]):
                         # unique candidates in cols

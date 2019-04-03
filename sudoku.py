@@ -3,7 +3,6 @@ sudoku.py
 """
 import copy
 import time
-import sys
 import argparse
 from lib import core as core, common as common, gv as gv
 
@@ -16,23 +15,10 @@ def solver(sudoku_to_solve, prettify, verbose):
     :param verbose:
     :return: solved sudoku
     """
-
-    def pretty_printer(sudoku_grid):
-        """
-        sudoku solver pretty printer function
-        :param sudoku_grid:
-        :return: solved (prettified) sudoku
-        """
-        for sudoku_row in sudoku_grid:
-            if prettify is True:
-                print(*sudoku_row)
-            else:
-                print(sudoku_row)
-        sys.exit(0)
-
     rows_in = []
     gv.SUDOKU_VARIATIONS_AUX_SET = set()
 
+    # load the sudoku from the txt file to a list of lists
     with open(sudoku_to_solve) as f:
         for row in f:
             _ = []
@@ -46,16 +32,23 @@ def solver(sudoku_to_solve, prettify, verbose):
         try:
             obj = core.Core(action='solve', rows=rows_ref)
             sudoku_grid = core.Core.grid_solver(obj)
-            pretty_printer(sudoku_grid)
+            for sudoku_row in sudoku_grid:
+                common.pretty_printer(prettify, sudoku_row)
 
         except common.CustomException as e:
             if str(e) == "TooManyCandidatesLeft":
                 for variation in gv.SUDOKU_VARIATIONS_LIST:
+
+                    if divmod(len(gv.SUDOKU_VARIATIONS_LIST), 10000)[1] == 1:
+                        print(len(gv.SUDOKU_VARIATIONS_LIST))
+
                     obj = core.Core(action='solve', rows=variation)
                     try:
                         sudoku_grid = core.Core.grid_solver(obj)
                         if 0 not in sudoku_grid:
-                            pretty_printer(sudoku_grid)
+                            for sudoku_row in sudoku_grid:
+                                common.pretty_printer(prettify, sudoku_row)
+                            return 0
 
                     except common.CustomException:
                         gv.SUDOKU_VARIATIONS_LIST.remove(variation)
@@ -63,7 +56,6 @@ def solver(sudoku_to_solve, prettify, verbose):
             # expected custom exception when no candidates are left, restart
             elif str(e) == "NoCandidatesLeft":
                 break
-            continue
 
 
 #@verbose
@@ -80,12 +72,9 @@ def generator(level, prettify, verbose):
             obj = core.Core(action='generate', rows=[])
             sudoku_grid = core.Core.grid_generator(obj)
             for sudoku_row in sudoku_grid:
-                if prettify is True:
-                    # print(*sudoku_row)
-                    print(*core.Core.row_mask(obj, sudoku_row, level))
-                else:
-                    print(core.Core.row_mask(obj, sudoku_row, level))
-            break
+                masked_row = core.Core.row_mask(obj, sudoku_row, level)
+                common.pretty_printer(prettify, masked_row)
+            return 0
 
         # expected value error, no candidates left for the current grid
         # restart grid generator
@@ -99,6 +88,7 @@ def args_handler():
     :return:
     """
     parser = argparse.ArgumentParser()
+
     parser.add_argument('-a', '--action', type=str,
                         required=True,
                         choices={'solve', 'generate'})

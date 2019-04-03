@@ -50,3 +50,17 @@ def get_randint(range_start, range_end):
     :return: random int
     """
     return random.randint(range_start, range_end)
+
+
+def pretty_printer(prettify, sudoku_row):
+    """
+    final sudoku pretty printer function
+    :param prettify:
+    :param sudoku_row:
+    :return: solved (prettified) sudoku
+    """
+    if prettify is True:
+        print(*sudoku_row)
+    else:
+        print(sudoku_row)
+
