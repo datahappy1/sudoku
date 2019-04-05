@@ -6,6 +6,8 @@
 
 ### run sudoku solver
 
+### OCR module
+
 ## Algorithm description
 
 ## Worlds hardest sudoku:
