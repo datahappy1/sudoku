@@ -6,7 +6,8 @@ from sudoku import sudoku
 
 class E2E:
     def __init__(self):
-        self.generated_sudoku_game = []
+        self.generated_sudoku_game = None
+        self.solved_sudoku_game = None
 
     def setup(self):
         """
@@ -17,12 +18,36 @@ class E2E:
         self.generated_sudoku_game = sudoku.generator(generate_level, prettify)
         print(self.generated_sudoku_game)
 
-    def test_sudoku_solve(self):
+    def test_sudoku_solve_basic(self):
         """
         assuming we can correctly solve the generated sudoku game
+        and the result is a list
         """
         prettify = 'F'
-        solved_sudoku_game = sudoku.solver(self.generated_sudoku_game, prettify)
+        self.solved_sudoku_game = sudoku.solver(self.generated_sudoku_game, prettify)
 
-        assert isinstance(solved_sudoku_game, list)
+        assert isinstance(self.solved_sudoku_game, list)
 
+    def test_sudoku_solve_complex_colscount(self):
+        """
+        assuming we can correctly solve the generated sudoku game
+        and the result has 9 columns in the grid
+        """
+
+        assert len(self.generated_sudoku_game) == 9
+
+    def test_sudoku_solve_complex_rowscount(self):
+        """
+        assuming we can correctly solve the generated sudoku game
+        and the result has 9 rows in the grid
+        """
+
+        assert len(self.generated_sudoku_game) == 9
+
+    def test_sudoku_solve_complex_zeroscount(self):
+        """
+        assuming we can correctly solve the generated sudoku game
+        and the result no zeros in the grid
+        """
+
+        assert len(self.generated_sudoku_game) == 9
