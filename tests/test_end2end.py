@@ -9,6 +9,15 @@ class E2E:
         self.generated_sudoku_game = None
         self.solved_sudoku_game = None
 
+    def validate_sudoku_rows(self):
+        pass
+
+    def validate_sudoku_cols(self):
+        pass
+
+    def validate_sudoku_zeros(self):
+        pass
+
     def setup(self):
         """
         lets generate a sudoku game
@@ -17,6 +26,9 @@ class E2E:
         prettify = 'F'
         self.generated_sudoku_game = sudoku.generator(generate_level, prettify)
         print(self.generated_sudoku_game)
+
+    def test_sudoku_generate_rowscount(self):
+        E2E.validate_sudoku_rows()
 
     def test_sudoku_solve_basic(self):
         """
