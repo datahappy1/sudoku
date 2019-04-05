@@ -2,9 +2,8 @@
 sudoku.py
 """
 import copy
-import time
 import argparse
-from lib import core as core, common as common, gv as gv, ocr as ocr
+from lib import core, common, gv #, ocr as ocr
 
 
 def solver(sudoku_to_solve, prettify):
@@ -18,8 +17,8 @@ def solver(sudoku_to_solve, prettify):
     gv.SUDOKU_VARIATIONS_AUX_SET = set()
 
     # load the sudoku from the txt file to a list of lists
-    with open(sudoku_to_solve) as f:
-        for row in f:
+    with open(sudoku_to_solve) as file_handler:
+        for row in file_handler:
             _ = []
             for elem in row.join(row.split()):
                 _.append(int(elem))
@@ -34,8 +33,8 @@ def solver(sudoku_to_solve, prettify):
             for sudoku_row in sudoku_grid:
                 common.pretty_printer(prettify, sudoku_row)
 
-        except common.CustomException as e:
-            if str(e) == "TooManyCandidatesLeft":
+        except common.CustomException as exc:
+            if str(exc) == "TooManyCandidatesLeft":
                 for variation in gv.SUDOKU_VARIATIONS_LIST:
 
                     if divmod(len(gv.SUDOKU_VARIATIONS_LIST), 10000)[1] == 1:
@@ -47,13 +46,13 @@ def solver(sudoku_to_solve, prettify):
                         if 0 not in sudoku_grid:
                             for sudoku_row in sudoku_grid:
                                 common.pretty_printer(prettify, sudoku_row)
+                            #print(len(gv.SUDOKU_VARIATIONS_LIST))
                             return 0
 
                     except common.CustomException:
                         gv.SUDOKU_VARIATIONS_LIST.remove(variation)
-
             # expected custom exception when no candidates are left, restart
-            elif str(e) == "NoCandidatesLeft":
+            elif str(exc) == "NoCandidatesLeft":
                 break
 
 
@@ -88,7 +87,7 @@ def args_handler():
 
     parser.add_argument('-a', '--action', type=str,
                         required=True,
-                        choices={'solve', 'generate','ocr'})
+                        choices={'solve', 'generate', 'ocr'})
     parser.add_argument('-l', '--generate_level', type=str,
                         required=False, default=None,
                         choices={'easy', 'medium', 'hard'})

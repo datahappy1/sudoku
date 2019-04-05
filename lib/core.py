@@ -1,9 +1,10 @@
 """
 core.py
 """
-from lib.common import get_random_subset_from_set, get_randint, sq_to_row_col_mapper, CustomException
-import lib.gv as gv
 import copy
+import lib.gv as gv
+from lib.common import get_random_subset_from_set, get_randint, \
+    sq_to_row_col_mapper, CustomException
 
 
 class Core(object):
