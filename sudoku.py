@@ -12,7 +12,6 @@ def solver(sudoku_to_solve, prettify):
     solver function
     :param sudoku_to_solve:
     :param prettify:
-    :param verbose:
     :return: solved sudoku
     """
     rows_in = []
@@ -58,13 +57,11 @@ def solver(sudoku_to_solve, prettify):
                 break
 
 
-#@verbose
 def generator(level, prettify):
     """
     generator function
     :param level:
     :param prettify:
-    :param verbose:
     :return: generated sudoku game
     """
     while True:
