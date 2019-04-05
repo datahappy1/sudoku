@@ -7,7 +7,7 @@ import argparse
 from lib import core as core, common as common, gv as gv, ocr as ocr
 
 
-def solver(sudoku_to_solve, prettify, verbose):
+def solver(sudoku_to_solve, prettify):
     """
     solver function
     :param sudoku_to_solve:
@@ -59,7 +59,7 @@ def solver(sudoku_to_solve, prettify, verbose):
 
 
 #@verbose
-def generator(level, prettify, verbose):
+def generator(level, prettify):
     """
     generator function
     :param level:
@@ -76,9 +76,9 @@ def generator(level, prettify, verbose):
                 common.pretty_printer(prettify, masked_row)
             return 0
 
-        # expected value error, no candidates left for the current grid
+        # expected custom exception when no candidates left for the current grid
         # restart grid generator
-        except ValueError:
+        except common.CustomException:
             continue
 
 
@@ -99,8 +99,6 @@ def args_handler():
                         required=False, default=None)
     parser.add_argument('-p', '--prettify_output', type=str,
                         required=False, default=0)
-    parser.add_argument('-v', '--verbose_printer_level', type=int,
-                        required=False, default=0)
 
     parsed = parser.parse_args()
 
@@ -108,7 +106,6 @@ def args_handler():
     generate_level = parsed.generate_level
     sudoku_to_solve = parsed.file_with_sudoku_to_solve
     prettify = parsed.prettify_output
-    verbose = parsed.verbose_printer_level
 
     # arg parse bool data type known bug workaround
     if prettify.lower() in ('no', 'false', 'f', 'n', 0):
@@ -117,9 +114,9 @@ def args_handler():
         prettify = True
 
     if action == 'generate':
-        generator(generate_level, prettify, verbose)
+        generator(generate_level, prettify)
     elif action == 'solve':
-        solver(sudoku_to_solve, prettify, verbose)
+        solver(sudoku_to_solve, prettify)
     elif action == 'ocr':
         ocr.ocr_core(sudoku_to_solve)
 

@@ -156,7 +156,7 @@ class Core(object):
                 candidates_left = Core.get_cell_candidates(self, row, row_index, [], col_index)
                 cell = int(get_random_subset_from_set(candidates_left, 1)[0]) if len(candidates_left) > 0 else -1
                 if cell == -1:
-                    raise ValueError
+                    raise CustomException("NoCandidatesLeft")
                 row.append(cell)
                 col_index = col_index + 1
             self.rows.append(row)
