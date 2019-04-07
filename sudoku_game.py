@@ -1,5 +1,5 @@
 """
-sudoku.py
+sudoku_game.py
 """
 import copy
 import argparse
