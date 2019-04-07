@@ -1,5 +1,5 @@
 """
-system testing pytest module
+functional testing pytest module
 """
 from sudoku_game import generator, solver
 import os
