@@ -12,6 +12,12 @@ from sudoku_game import generator, solver
     ("hard", 0),
 ])
 def test_generate_eval(test_input, expected):
+    """
+    test we can generate all levels of a sudoku game
+    :param test_input:
+    :param expected:
+    :return:
+    """
     gen = str(generator(test_input, True))
     assert eval(gen) == expected
 
@@ -22,6 +28,12 @@ def test_generate_eval(test_input, expected):
     ("sudoku_hard.txt", 0),
 ])
 def test_solve_eval(test_input, expected):
+    """
+    test we can solve all levels of a sudoku game
+    :param test_input:
+    :param expected:
+    :return:
+    """
     target_file = os.path.join(os.getcwd(), 'tests', 'files', test_input)
     solve = str(solver(target_file, True))
     assert eval(solve) == expected
