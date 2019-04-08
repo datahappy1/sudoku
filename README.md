@@ -2,13 +2,26 @@
 ## How to 
 ### install
 
+
 ### run sudoku generator
+arguments needed:<br>
+-a: action (str, required, option:"generate")<br>
+-l: level (str, optional, options: {"easy", "medium", "hard"}, default: "easy")<br>
+-p: prettify (bool, optional, options: {"T","F","True","False",1,0}, default: 0)<br>
+<br>
+example:<br>
+`python3 sudoku_game.py -a "generate" -l "hard" -p 1`
+<br>
 
 ### run sudoku solver
-
-### OCR module
-
-## Algorithm description
+arguments needed:<br>
+-a: action (str, required, option: "solve")<br>
+-f: filepath (str, optional, options: {"easy", "medium", "hard"}, default: "files/sudoku_easy.txt")<br>
+-p: prettify (bool, optional, options: {"T","F","True","False",1,0}, default: 0)<br>
+<br>
+example:<br>
+`python3 sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p True`
+<br>
 
 ## Worlds hardest sudoku:
 https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424

@@ -3,7 +3,7 @@ sudoku_game.py
 """
 import copy
 import argparse
-from lib import core, common, gv #, ocr as ocr
+from lib import core, common, gv
 
 
 def solver(sudoku_to_solve, prettify):
@@ -89,10 +89,10 @@ def args_handler():
                         required=True,
                         choices={'solve', 'generate', 'ocr'})
     parser.add_argument('-l', '--generate_level', type=str,
-                        required=False, default=None,
+                        required=False, default='easy',
                         choices={'easy', 'medium', 'hard'})
     parser.add_argument('-f', '--file_with_sudoku_to_solve', type=str,
-                        required=False, default=None)
+                        required=False, default="files/sudoku_easy.txt")
     parser.add_argument('-p', '--prettify_output', type=str,
                         required=False, default=0)
 
@@ -113,8 +113,6 @@ def args_handler():
         generator(generate_level, prettify)
     elif action == 'solve':
         solver(sudoku_to_solve, prettify)
-    elif action == 'ocr':
-        ocr.ocr_core(sudoku_to_solve)
 
 
 if __name__ == '__main__':
