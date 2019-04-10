@@ -1,20 +1,28 @@
 # Sudoku game generator and solver
-## How to 
-### install and get started
-1) First, clone this repo locally. `git clone www.github.com/datahappy1/sudoku __your_local_sudoku_folder__`
+
+[installation and getting started](#installation-and-getting-started)
+[running sudoku generator](#running-sudoku-generator)
+[running sudoku solver](#running-sudoku-solver)
+[worlds hardest sudoku](#worlds-hardest-sudoku:)
+
+
+### installation and getting started
+
+1) First, clone this repo locally. `https://github.com/datahappy1/sudoku.git __your_local_sudoku_folder__`
 2) To install this game, you need to install all the packages
-from dependencies.txt using the command `pip install pytest, argparse`
+from dependencies.txt, so change directory to `cd __your_local_sudoku_folder__`
+and install using the command `pip install -r requirements.txt`
 
-3) change directory to `cd __your_local_sudoku_folder__`
-
+3) set your PYTHONPATH variable for example like:
+`set PYTHONPATH=%PYTHONPATH%;C:\__your_local_sudoku_folder__\`
 4) Pytest can be used to make sure you're working on a healthy codebase.
 To run the tests, `cd __your_sudoku_folder__` and run `pylint __your_local_sudoku_folder__`
 Currently there is 6 functional tests in the repo, all 3 levels of sudoku
-generator function calls and all 3 levels of sudoku solvers. 
+generator function calls and all 3 levels of sudoku solvers get evaluated. 
 
 *This is just a quick guide, however I strongly suggest to use a virtual environment like pipenv or poetry
 
-### run sudoku generator
+### running sudoku generator
 arguments needed:<br>
 -a: action (str, required, option:"generate")<br>
 -l: level (str, optional, options: {"easy", "medium", "hard"}, default: "easy")<br>
@@ -24,7 +32,7 @@ example:<br>
 `python3 sudoku_game.py -a "generate" -l "hard" -p 1`
 <br>
 
-### run sudoku solver
+### running sudoku solver
 arguments needed:<br>
 -a: action (str, required, option: "solve")<br>
 -f: filepath (str, optional, options: {"easy", "medium", "hard"}, default: "files/sudoku_easy.txt")<br>
