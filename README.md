@@ -14,7 +14,7 @@
 from dependencies.txt, so change directory to `cd __your_local_sudoku_folder__`
 and install using the command `pip install -r requirements.txt`
 
-3) set your PYTHONPATH variable for example like:
+3) Set your PYTHONPATH variable ( on Windows, for example like ) :
 `set PYTHONPATH=%PYTHONPATH%;C:\__your_local_sudoku_folder__\`
 4) Pytest can be used to make sure you're working on a healthy codebase.
 To run the tests, `cd __your_sudoku_folder__` and run `pylint __your_local_sudoku_folder__`
