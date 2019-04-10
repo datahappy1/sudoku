@@ -11,7 +11,7 @@ class CustomException(Exception):
     pass
 
 
-# {square_index : [row_index range low : row_index range high], [col_index range low : col_index range high],...}
+# {square_index : [row_index range low : row_index range high], [col_index low : col_index high]}
 SQ_TO_ROW_COL_MAP = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9]],
                      3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
                      6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
