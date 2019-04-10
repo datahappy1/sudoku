@@ -17,7 +17,7 @@ and install using the command `pip install -r requirements.txt`
 3) Set your PYTHONPATH variable ( on Windows, for example like ) :
 `set PYTHONPATH=%PYTHONPATH%;C:\__your_local_sudoku_folder__\`
 4) Pytest can be used to make sure you're working on a healthy codebase.
-To run the tests, `cd __your_sudoku_folder__` and run `pylint __your_local_sudoku_folder__`
+To run the tests, run the command `pytest`.
 Currently there is 6 functional tests in the repo, all 3 levels of sudoku
 generator function calls and all 3 levels of sudoku solvers get evaluated. 
 
