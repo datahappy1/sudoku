@@ -1,9 +1,10 @@
 # Sudoku game generator and solver
 
-[installation and getting started](#installation-and-getting-started)
-[running sudoku generator](#running-sudoku-generator)
-[running sudoku solver](#running-sudoku-solver)
-[worlds hardest sudoku](#worlds-hardest-sudoku:)
+
+[installation and getting started](#installation-and-getting-started)<br>
+[running sudoku generator](#running-sudoku-generator)<br>
+[running sudoku solver](#running-sudoku-solver)<br>
+[worlds hardest sudoku](#worlds-hardest-sudoku:)<br>
 
 
 ### installation and getting started
@@ -42,7 +43,7 @@ example:<br>
 `python3 sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p True`
 <br>
 
-## Worlds hardest sudoku:
+### worlds hardest sudoku:
 https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424
 
 8 0 0 0 0 0 0 0 0<br>
