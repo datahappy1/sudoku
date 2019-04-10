@@ -1,7 +1,18 @@
 # Sudoku game generator and solver
 ## How to 
-### install
+### install and get started
+1) First, clone this repo locally. `git clone www.github.com/datahappy1/sudoku __your_local_sudoku_folder__`
+2) To install this game, you need to install all the packages
+from dependencies.txt using the command `pip install pytest, argparse`
 
+3) change directory to `cd __your_local_sudoku_folder__`
+
+4) Pytest can be used to make sure you're working on a healthy codebase.
+To run the tests, `cd __your_sudoku_folder__` and run `pylint __your_local_sudoku_folder__`
+Currently there is 6 functional tests in the repo, all 3 levels of sudoku
+generator function calls and all 3 levels of sudoku solvers. 
+
+*This is just a quick guide, however I strongly suggest to use a virtual environment like pipenv or poetry
 
 ### run sudoku generator
 arguments needed:<br>
