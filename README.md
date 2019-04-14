@@ -27,7 +27,7 @@ generator function calls and all 3 levels of sudoku solvers get evaluated.
 ### running sudoku generator
 arguments needed:<br>
 -a: action (str, required, option:"generate")<br>
--l: level (str, required, options: {"easy", "medium", "hard"}, default: "easy")<br>
+-l: level (str, optional, options: {"easy", "medium", "hard"}, default: "easy")<br>
 -p: prettify (str, optional, options: {"T","F","True","False","1","0"}, default: 0)<br>
 <br>
 example:<br>
@@ -38,7 +38,7 @@ example:<br>
 arguments needed:<br>
 -a: action (str, required, option: "solve")<br>
 -f: filepath (str, optional, options: {"easy", "medium", "hard"}, default: "files/sudoku_easy.txt")<br>
--p: prettify (str, required, options: {"T","F","True","False","1","0"}, default: "0")<br>
+-p: prettify (str, optional, options: {"T","F","True","False","1","0"}, default: "0")<br>
 <br>
 The format of the text file with the sudoku to be solved has to be set like:<br>
 000500640<br>
@@ -50,11 +50,10 @@ The format of the text file with the sudoku to be solved has to be set like:<br>
 002806450<br>
 670054300<br>
 054003000<br>
-( The zeros are the grid members that need to be calculated ) :) 
- 
+( The zeros are the grid members that need to be calculated ) :) <br>
 <br>
 example:<br>
-`python3 sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p True`
+`python3 sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p 1`
 <br>
 
 ### solving the worlds hardest sudoku
