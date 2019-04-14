@@ -5,7 +5,7 @@
 [installation and getting started](#installation-and-getting-started)<br>
 [running sudoku generator](#running-sudoku-generator)<br>
 [running sudoku solver](#running-sudoku-solver)<br>
-[solving the "worlds hardest sudoku"](#solving-the-"worlds-hardest-sudoku")<br>
+[solving the worlds hardest sudoku](#solving-the-worlds-hardest-sudoku)<br>
 
 
 ### installation and getting started
@@ -57,7 +57,7 @@ example:<br>
 `python3 sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p True`
 <br>
 
-### solving the "worlds hardest sudoku"
+### solving the worlds hardest sudoku
 https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424
 
 800000000<br>
