@@ -59,7 +59,9 @@ example:<br>
 
 ### solving the worlds hardest sudoku
 The "worlds hardest sudoku" game is described here:<br>
-https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424
+https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424<br>
+
+this is how it looks like:<br>
 
 800000000<br>
 003600000<br>
@@ -71,7 +73,7 @@ https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424
 008500010<br>
 090000400<br>
 
-this tool calculated the solution:
+and my sudoku solver calculated the solution:
 
 812753649<br>
 943682175<br>
