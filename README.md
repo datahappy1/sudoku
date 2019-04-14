@@ -40,7 +40,7 @@ arguments needed:<br>
 -f: filepath (str, optional, options: {"easy", "medium", "hard"}, default: "files/sudoku_easy.txt")<br>
 -p: prettify (str, required, options: {"T","F","True","False","1","0"}, default: "0")<br>
 <br>
-The format of the text file with the sudoku to be solved has to be set like:
+The format of the text file with the sudoku to be solved has to be set like:<br>
 000500640<br>
 009630018<br>
 061409200<br>
