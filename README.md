@@ -58,6 +58,7 @@ example:<br>
 <br>
 
 ### solving the worlds hardest sudoku
+The "worlds hardest sudoku" game is described here:<br>
 https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424
 
 800000000<br>
