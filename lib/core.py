@@ -30,21 +30,20 @@ class Core:
         :param sole_cand:
         :return:
         """
-        # unique candidates in cols
         cands_left = []
+
         if col_i in (0, 3, 6):
             if sole_cand in (self.cols[col_i + 1], self.cols[col_i + 2]):
-                cands_left = [int(d) for d in str(sole_cand)]
+                cands_left = int(sole_cand)
 
-        # unique candidates in cols
         if col_i in (1, 4, 7):
             if sole_cand in (self.cols[col_i + 1], self.cols[col_i - 1]):
-                cands_left = [int(d) for d in str(sole_cand)]
+                cands_left = int(sole_cand)
 
-        # unique candidates in cols
         if col_i in (2, 5, 8):
             if sole_cand in (self.cols[col_i - 1], self.cols[col_i - 2]):
-                cands_left = [int(d) for d in str(sole_cand)]
+                cands_left = int(sole_cand)
+
         return cands_left
 
     def get_cell_candidates(self, row, row_index, col, col_index):
@@ -70,6 +69,7 @@ class Core:
                 candidates_left = list(set(candidates_left) - set(row) -
                                        set(self.squares[square_index]) -
                                        set(list(map(list, zip(*self.rows)))[col_index]))
+
             else:
                 candidates_left = list(set(candidates_left) - set(row) -
                                        set(list(map(list, zip(*self.rows)))[col_index]))
@@ -129,6 +129,26 @@ class Core:
 
             return candidates_left
 
+        else:
+
+            return None
+
+    def multiple_candidates_handler(self, row_index, col_index, candidate):
+        """
+        multiple candidates handler function
+        :param row_index:
+        :param col_index:
+        :param candidate:
+        :return:
+        """
+        rows = copy.deepcopy(self.rows)
+        rows[row_index][col_index] = candidate
+        if str(rows) not in gv.SUDOKU_VARIATIONS_AUX_SET:
+            gv.SUDOKU_VARIATIONS_AUX_SET.add(str(rows))  # pylint: disable=no-member
+            gv.SUDOKU_VARIATIONS_LIST.append(rows)
+
+        return 0
+
     def grid_solver(self):
         """
         grid solver function
@@ -152,11 +172,7 @@ class Core:
 
                     if len(candidates_left) > 1:
                         for candidate in candidates_left:
-                            rows = copy.deepcopy(self.rows)
-                            rows[row_index][col_index] = candidate
-                            if str(rows) not in gv.SUDOKU_VARIATIONS_AUX_SET:
-                                gv.SUDOKU_VARIATIONS_AUX_SET.add(str(rows))  # pylint: disable=no-member
-                                gv.SUDOKU_VARIATIONS_LIST.append(rows)
+                            Core.multiple_candidates_handler(self, row_index, col_index, candidate)
                         raise CustomException("TooManyCandidatesLeft")
 
                     row[col_index] = cell
@@ -182,6 +198,7 @@ class Core:
 
                 if cell == -1:
                     raise CustomException("NoCandidatesLeft")
+
                 row.append(cell)
                 col_index = col_index + 1
             self.rows.append(row)
@@ -200,6 +217,7 @@ class Core:
             hidden_members = get_random_subset_from_set(self.candidates_all, 3)
             for members in hidden_members:
                 row[row.index(members)] = 0
+
         elif level == 'medium':
             count_of_hidden_members = get_randint(4, 5)
             hidden_members = \
@@ -207,6 +225,7 @@ class Core:
 
             for members in hidden_members:
                 row[row.index(members)] = 0
+
         elif level == 'hard':
             count_of_hidden_members = get_randint(5, 7)
             hidden_members = \

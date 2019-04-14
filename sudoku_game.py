@@ -3,6 +3,7 @@ sudoku_game.py
 """
 import copy
 import argparse
+import datetime
 from lib import core, common, gv
 
 
@@ -37,16 +38,13 @@ def solver(sudoku_to_solve, prettify):
             if str(exc) == "TooManyCandidatesLeft":
                 for variation in gv.SUDOKU_VARIATIONS_LIST:
 
-                    if divmod(len(gv.SUDOKU_VARIATIONS_LIST), 10000)[1] == 1:
-                        print(len(gv.SUDOKU_VARIATIONS_LIST))
-
                     obj = core.Core(action='solve', rows=variation)
                     try:
                         sudoku_grid = core.Core.grid_solver(obj)
                         if 0 not in sudoku_grid:
                             for sudoku_row in sudoku_grid:
                                 common.pretty_printer(prettify, sudoku_row)
-                            #print(len(gv.SUDOKU_VARIATIONS_LIST))
+
                             return 0
 
                     except common.CustomException:
@@ -70,6 +68,7 @@ def generator(level, prettify):
             for sudoku_row in sudoku_grid:
                 masked_row = core.Core.row_mask(obj, sudoku_row, level)
                 common.pretty_printer(prettify, masked_row)
+
             return 0
 
         # expected custom exception when no candidates left for the current grid
@@ -94,7 +93,7 @@ def args_handler():
     parser.add_argument('-f', '--file_with_sudoku_to_solve', type=str,
                         required=False, default="files/sudoku_easy.txt")
     parser.add_argument('-p', '--prettify_output', type=str,
-                        required=False, default=0)
+                        required=False, default='false')
 
     parsed = parser.parse_args()
 
@@ -104,7 +103,7 @@ def args_handler():
     prettify = parsed.prettify_output
 
     # arg parse bool data type known bug workaround
-    if prettify.lower() in ('no', 'false', 'f', 'n', 0):
+    if prettify.lower() in ('no', 'false', 'f', 'n', '0'):
         prettify = False
     else:
         prettify = True
@@ -116,4 +115,7 @@ def args_handler():
 
 
 if __name__ == '__main__':
+    EXECUTION_START = datetime.datetime.now()
     args_handler()
+    EXECUTION_END = datetime.datetime.now()
+    print(f'Finished in {EXECUTION_END - EXECUTION_START}')
