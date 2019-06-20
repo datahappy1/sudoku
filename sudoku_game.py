@@ -36,7 +36,7 @@ def solver(sudoku_to_solve, prettify):
 
         except common.CustomException as exc:
             if str(exc) == "TooManyCandidatesLeft":
-                for variation in gv.SUDOKU_VARIATIONS_LIST:
+                for variation_index, variation in enumerate(gv.SUDOKU_VARIATIONS_LIST):
 
                     obj = core.Core(action='solve', rows=variation)
                     try:
@@ -48,7 +48,7 @@ def solver(sudoku_to_solve, prettify):
                             return 0
 
                     except common.CustomException:
-                        gv.SUDOKU_VARIATIONS_LIST.remove(variation)
+                        gv.SUDOKU_VARIATIONS_LIST.pop(variation_index)
             # expected custom exception when no candidates are left, restart
             elif str(exc) == "NoCandidatesLeft":
                 break
