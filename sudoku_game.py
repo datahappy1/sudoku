@@ -1,7 +1,6 @@
 """
 sudoku_game.py
 """
-import copy
 import argparse
 import datetime
 from lib import core, common, gv
@@ -25,7 +24,7 @@ def solver(sudoku_to_solve, prettify):
                 _.append(int(elem))
             rows_in.append(_)
 
-    rows_ref = copy.deepcopy(rows_in)
+    rows_ref = list((x for x in rows_in))
 
     while True:
         try:

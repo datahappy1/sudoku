@@ -1,7 +1,7 @@
 """
 core.py
 """
-import copy
+import pickle
 from lib.common import get_random_subset_from_set, get_randint, \
     sq_to_row_col_mapper, CustomException
 from lib import gv
@@ -136,12 +136,17 @@ class Core:
     def multiple_candidates_handler(self, row_index, col_index, candidate):
         """
         multiple candidates handler function
+
+        *2019/06/25 as a performance improvement, pickle was chosen over copy.deepcopy,
+        to revert this, you need to import copy in this module and inside this function change
+        rows = pickle.loads(pickle.dumps(self.rows, -1)) to rows = copy.deepcopy(self.rows)
+
         :param row_index:
         :param col_index:
         :param candidate:
         :return:
         """
-        rows = copy.deepcopy(self.rows)
+        rows = pickle.loads(pickle.dumps(self.rows, -1))
         rows[row_index][col_index] = candidate
         if str(rows) not in gv.SUDOKU_VARIATIONS_AUX_SET:
             gv.SUDOKU_VARIATIONS_AUX_SET.add(str(rows))  # pylint: disable=no-member
