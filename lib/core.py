@@ -55,11 +55,15 @@ class Core:
         :param col_index:
         :return:
         """
-        candidates_left = get_random_subset_from_set(self.candidates_all, 9)
+        if self.action == "generate":
+            candidates_left = get_random_subset_from_set(self.candidates_all, 9)
+        elif self.action == "solve":
+            candidates_left = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
         mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
 
-        if self.action == 'generate':
+        if self.action == "generate":
             if row_index not in (0, 3, 6):
                 mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
                 square_index = mapper_tuple[0]
@@ -76,7 +80,7 @@ class Core:
 
             return candidates_left
 
-        elif self.action == 'solve':
+        elif self.action == "solve":
             self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
             if row_index in (0, 3, 6):
                 self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
@@ -218,12 +222,12 @@ class Core:
         :param level:
         :return: row with hidden sudoku members
         """
-        if level == 'easy':
+        if level == "easy":
             hidden_members = get_random_subset_from_set(self.candidates_all, 3)
             for members in hidden_members:
                 row[row.index(members)] = 0
 
-        elif level == 'medium':
+        elif level == "medium":
             count_of_hidden_members = get_randint(4, 5)
             hidden_members = \
                 get_random_subset_from_set(self.candidates_all, count_of_hidden_members)
@@ -231,7 +235,7 @@ class Core:
             for members in hidden_members:
                 row[row.index(members)] = 0
 
-        elif level == 'hard':
+        elif level == "hard":
             count_of_hidden_members = get_randint(5, 7)
             hidden_members = \
                 get_random_subset_from_set(self.candidates_all, count_of_hidden_members)
