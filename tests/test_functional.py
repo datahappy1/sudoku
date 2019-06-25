@@ -34,6 +34,6 @@ def test_solve_eval(test_input, expected):
     :param expected:
     :return:
     """
-    target_file = os.path.join(os.getcwd(), 'tests', 'files', test_input)
+    target_file = os.path.join(os.getcwd(), 'files', test_input)
     solve = str(solver(target_file, True))
     assert eval(solve) == expected
