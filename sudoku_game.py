@@ -13,7 +13,7 @@ def solver(sudoku_to_solve, prettify):
     :param prettify:
     :return: solved sudoku
     """
-    rows_in = []
+    rows_ref = []
     gv.SUDOKU_VARIATIONS_AUX_SET = set()
 
     # load the sudoku from the txt file to a list of lists
@@ -22,9 +22,7 @@ def solver(sudoku_to_solve, prettify):
             _ = []
             for elem in row.join(row.split()):
                 _.append(int(elem))
-            rows_in.append(_)
-
-    rows_ref = list((x for x in rows_in))
+            rows_ref.append(_)
 
     while True:
         try:

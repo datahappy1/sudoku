@@ -55,15 +55,12 @@ class Core:
         :param col_index:
         :return:
         """
-        if self.action == "generate":
-            candidates_left = get_random_subset_from_set(self.candidates_all, 9)
-        elif self.action == "solve":
-            candidates_left = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
         mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
 
         if self.action == "generate":
+            candidates_left = get_random_subset_from_set(self.candidates_all, 9)
             if row_index not in (0, 3, 6):
                 mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
                 square_index = mapper_tuple[0]
@@ -81,6 +78,7 @@ class Core:
             return candidates_left
 
         elif self.action == "solve":
+            candidates_left = [1, 2, 3, 4, 5, 6, 7, 8, 9]
             self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
             if row_index in (0, 3, 6):
                 self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
