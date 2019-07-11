@@ -16,6 +16,10 @@ SQ_TO_ROW_COL_MAP = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9
                      3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
                      6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
 
+GENERIC_GRID_MAP = {0: [1, 2], 3: [4, 5], 6: [7, 8],
+                    1: [2, 0], 4: [5, 3], 7: [8, 6],
+                    2: [1, 0], 5: [4, 3], 8: [7, 6]}
+
 
 def sq_to_row_col_mapper(row_index, col_index):
     """
@@ -30,6 +34,21 @@ def sq_to_row_col_mapper(row_index, col_index):
             if col_index in range(SQ_TO_ROW_COL_MAP[key][1][0], SQ_TO_ROW_COL_MAP[key][1][1]):
                 k_out, v_out = key, value[1][0:2]
     return k_out, v_out
+
+
+def generic_grid_mapper(index):
+    """
+    grid offset mapping function
+    this function takes column index or row index and returns
+    the indexes affected in order to solve the grid
+    :param index:
+    :return: value with mappings
+    """
+    k_out, v_out = None, None
+    for key, value in GENERIC_GRID_MAP.items():
+        if key == index:
+            v_out = value[0], value[1]
+    return v_out
 
 
 def get_random_subset_from_set(members_in, count_of_members_out):

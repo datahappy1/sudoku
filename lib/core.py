@@ -2,9 +2,9 @@
 core.py
 """
 import pickle
-from lib.common import get_random_subset_from_set, get_randint, \
-    sq_to_row_col_mapper, CustomException
-from lib import gv
+from sudoku.lib.common import get_random_subset_from_set, get_randint, \
+    sq_to_row_col_mapper, generic_grid_mapper, CustomException
+from sudoku.lib import gv
 
 
 class Core:
@@ -31,18 +31,10 @@ class Core:
         :return:
         """
         cands_left = []
+        mapped_index = generic_grid_mapper(col_i)
 
-        if col_i in (0, 3, 6):
-            if sole_cand in (self.cols[col_i + 1], self.cols[col_i + 2]):
-                cands_left = int(sole_cand)
-
-        if col_i in (1, 4, 7):
-            if sole_cand in (self.cols[col_i + 1], self.cols[col_i - 1]):
-                cands_left = int(sole_cand)
-
-        if col_i in (2, 5, 8):
-            if sole_cand in (self.cols[col_i - 1], self.cols[col_i - 2]):
-                cands_left = int(sole_cand)
+        if sole_cand in (self.cols[mapped_index[0]], self.cols[mapped_index[1]]):
+            cands_left = int(sole_cand)
 
         return cands_left
 
@@ -80,54 +72,23 @@ class Core:
         elif self.action == "solve":
             candidates_left = [1, 2, 3, 4, 5, 6, 7, 8, 9]
             self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
-            if row_index in (0, 3, 6):
-                self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
-                self.squares[square_index].extend(self.rows[row_index + 2][slice(slice1, slice2)])
 
-                # sole candidates
-                candidates_left = list(set(candidates_left) - set(row) -
-                                       set(self.squares[square_index]) - set(col))
+            mapped_index = generic_grid_mapper(row_index)
 
-                # unique candidates in rows
-                for sole_candidate in candidates_left:
-                    if sole_candidate in (self.rows[row_index + 1], self.rows[row_index + 2]):
-                        # unique candidates in cols
-                        candidates_left = \
-                            Core.get_unique_candidates_in_cols(self, col_index, sole_candidate) \
-                            or candidates_left
+            self.squares[square_index].extend(self.rows[mapped_index[0]][slice(slice1, slice2)])
+            self.squares[square_index].extend(self.rows[mapped_index[1]][slice(slice1, slice2)])
 
-            if row_index in (1, 4, 7):
-                self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
-                self.squares[square_index].extend(self.rows[row_index + 1][slice(slice1, slice2)])
+            # sole candidates
+            candidates_left = list(set(candidates_left) - set(row) -
+                                   set(self.squares[square_index]) - set(col))
 
-                # sole candidates
-                candidates_left = list(set(candidates_left) - set(row) -
-                                       set(self.squares[square_index]) -
-                                       set(list(map(list, zip(*self.rows)))[col_index]))
-
-                # unique candidates in rows
-                for sole_candidate in candidates_left:
-                    if sole_candidate in (self.rows[row_index - 1], self.rows[row_index + 1]):
-                        # unique candidates in cols
-                        candidates_left = \
-                            Core.get_unique_candidates_in_cols(self, col_index, sole_candidate) \
-                            or candidates_left
-
-            if row_index in (2, 5, 8):
-                self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
-                self.squares[square_index].extend(self.rows[row_index - 2][slice(slice1, slice2)])
-
-                # sole candidates
-                candidates_left = list(set(candidates_left) - set(row) -
-                                       set(self.squares[square_index]) -
-                                       set(list(map(list, zip(*self.rows)))[col_index]))
-                # unique candidates in rows
-                for sole_candidate in candidates_left:
-                    if sole_candidate in (self.rows[row_index - 1], self.rows[row_index - 2]):
-                        # unique candidates in cols
-                        candidates_left = \
-                            Core.get_unique_candidates_in_cols(self, col_index, sole_candidate) \
-                            or candidates_left
+            # unique candidates in rows
+            for sole_candidate in candidates_left:
+                if sole_candidate in (self.rows[mapped_index[0]], self.rows[mapped_index[1]]):
+                    # unique candidates in cols
+                    candidates_left = \
+                        Core.get_unique_candidates_in_cols(self, col_index, sole_candidate) \
+                        or candidates_left
 
             return candidates_left
 
