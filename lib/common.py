@@ -44,11 +44,10 @@ def generic_grid_mapper(index):
     :param index:
     :return: value with mappings
     """
-    k_out, v_out = None, None
     for key, value in GENERIC_GRID_MAP.items():
         if key == index:
-            v_out = value[0], value[1]
-    return v_out
+            break
+    return value
 
 
 def get_random_subset_from_set(members_in, count_of_members_out):
