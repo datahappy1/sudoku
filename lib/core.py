@@ -2,9 +2,9 @@
 core.py
 """
 import pickle
-from sudoku.lib.common import get_random_subset_from_set, get_randint, \
+from lib.common import get_random_subset_from_set, get_randint, \
     sq_to_row_col_mapper, generic_grid_mapper, CustomException
-from sudoku.lib import gv
+from lib import gv
 
 
 class Core:
