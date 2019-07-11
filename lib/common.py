@@ -8,7 +8,6 @@ class CustomException(Exception):
     """
     custom exceptions class
     """
-    pass
 
 
 # {square_index : [row_index range low : row_index range high], [col_index low : col_index high]}

@@ -2,7 +2,7 @@
 functional testing generate sudoku pytest module
 """
 import pytest
-from sudoku_game import generator, solver
+from sudoku_game import generator
 
 
 @pytest.mark.parametrize("test_input,expected", [
