@@ -168,9 +168,9 @@ class Core:
                     raise CustomException("NoCandidatesLeft")
 
                 row.append(cell)
-                col_index = col_index + 1
+                col_index += 1
             self.rows.append(row)
-            row_index = row_index + 1
+            row_index += 1
 
         return self.rows
 
