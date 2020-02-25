@@ -28,7 +28,9 @@ def solver(sudoku_to_solve, prettify):
             obj = core.Core(action='solve', rows=variation)
             try:
                 sudoku_grid = core.Core.grid_solver(obj)
-                if 0 not in sudoku_grid:
+                if 0 in sudoku_grid:
+                    continue
+                else:
                     for sudoku_row in sudoku_grid:
                         common.pretty_printer(prettify, sudoku_row)
                     return False
