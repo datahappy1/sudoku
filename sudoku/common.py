@@ -21,7 +21,7 @@ GENERIC_GRID_MAP = {0: [1, 2], 3: [4, 5], 6: [7, 8],
                     2: [1, 0], 5: [4, 3], 8: [7, 6]}
 
 
-@functools.lru_cache()
+@functools.lru_cache(128)
 def sq_to_row_col_mapper(row_index, col_index):
     """
     grid square to row and col mapping function
@@ -37,7 +37,7 @@ def sq_to_row_col_mapper(row_index, col_index):
     return k_out, v_out
 
 
-@functools.lru_cache()
+@functools.lru_cache(128)
 def generic_grid_mapper(index):
     """
     grid offset mapping function
@@ -46,9 +46,7 @@ def generic_grid_mapper(index):
     :param index:
     :return: value with mappings
     """
-    for key, value in GENERIC_GRID_MAP.items():
-        if key == index:
-            return value
+    return [value for key, value in GENERIC_GRID_MAP.items() if key == index][0]
 
 
 def get_random_subset_from_set(members_in, count_of_members_out):

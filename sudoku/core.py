@@ -2,9 +2,9 @@
 worker.py
 """
 import pickle
-from sudoku.worker.common import get_random_subset_from_set, get_randint, \
+from sudoku.common import get_random_subset_from_set, get_randint, \
     sq_to_row_col_mapper, generic_grid_mapper, CustomException
-from sudoku.worker import gv
+from sudoku import gv
 
 
 class Core:

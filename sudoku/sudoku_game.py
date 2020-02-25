@@ -3,8 +3,7 @@ sudoku_game.py
 """
 import argparse
 import datetime
-from sudoku.worker import core, gv
-from sudoku.worker import common
+from sudoku import core, gv, common
 
 
 def solver(sudoku_to_solve, prettify):
