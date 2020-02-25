@@ -1,15 +1,15 @@
 """
-core.py
+worker.py
 """
 import pickle
-from lib.common import get_random_subset_from_set, get_randint, \
+from worker.common import get_random_subset_from_set, get_randint, \
     sq_to_row_col_mapper, generic_grid_mapper, CustomException
-from lib import gv
+from worker import gv
 
 
 class Core:
     """
-    sudoku generator and solver core class
+    sudoku generator and solver worker class
     """
     def __init__(self, action, rows):
         """

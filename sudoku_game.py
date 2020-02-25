@@ -3,7 +3,7 @@ sudoku_game.py
 """
 import argparse
 import datetime
-from lib import core, common, gv
+from worker import core, common, gv
 
 
 def solver(sudoku_to_solve, prettify):
@@ -55,9 +55,7 @@ def generator(level, prettify):
             for sudoku_row in sudoku_grid:
                 masked_row = core.Core.row_mask(obj, sudoku_row, level)
                 common.pretty_printer(prettify, masked_row)
-
             return 0
-
         # expected custom exception when no candidates left for the current grid
         # restart grid generator
         except common.CustomException:
