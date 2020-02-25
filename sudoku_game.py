@@ -19,36 +19,22 @@ def solver(sudoku_to_solve, prettify):
     # load the sudoku from the txt file to a list of lists
     with open(sudoku_to_solve) as file_handler:
         for row in file_handler:
-            _ = []
-            for elem in row.join(row.split()):
-                _.append(int(elem))
-            rows_ref.append(_)
+            rows_ref.append([int(elem) for elem in row.join(row.split())])
+
+    gv.SUDOKU_VARIATIONS_LIST.insert(0, rows_ref)
 
     while True:
-        try:
-            obj = core.Core(action='solve', rows=rows_ref)
-            sudoku_grid = core.Core.grid_solver(obj)
-            for sudoku_row in sudoku_grid:
-                common.pretty_printer(prettify, sudoku_row)
+        for variation_index, variation in enumerate(gv.SUDOKU_VARIATIONS_LIST):
+            obj = core.Core(action='solve', rows=variation)
+            try:
+                sudoku_grid = core.Core.grid_solver(obj)
+                if 0 not in sudoku_grid:
+                    for sudoku_row in sudoku_grid:
+                        common.pretty_printer(prettify, sudoku_row)
+                    return 0
 
-        except common.CustomException as exc:
-            if str(exc) == "TooManyCandidatesLeft":
-                for variation_index, variation in enumerate(gv.SUDOKU_VARIATIONS_LIST):
-
-                    obj = core.Core(action='solve', rows=variation)
-                    try:
-                        sudoku_grid = core.Core.grid_solver(obj)
-                        if 0 not in sudoku_grid:
-                            for sudoku_row in sudoku_grid:
-                                common.pretty_printer(prettify, sudoku_row)
-
-                            return 0
-
-                    except common.CustomException:
-                        gv.SUDOKU_VARIATIONS_LIST.pop(variation_index)
-            # expected custom exception when no candidates are left, restart
-            elif str(exc) == "NoCandidatesLeft":
-                break
+            except common.CustomException:
+                gv.SUDOKU_VARIATIONS_LIST.pop(variation_index)
 
 
 def generator(level, prettify):
