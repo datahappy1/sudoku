@@ -10,14 +10,14 @@
 
 ### installation and getting started
 
-1) First, clone this repo `git clone https://github.com/datahappy1/sudoku.git __your_local_sudoku_folder__`
-2) It is highly recommended to setup and activate `pipenv` or `virtualenv`
-3) Set PYTHONPATH , from Windows CMD for example `set PYTHONPATH=%PYTHONPATH%;C:\sudoku`
-4) Pytest can be used to make sure you're working on a healthy codebase.
+1) First, clone this repo `git clone https://github.com/datahappy1/sudoku.git c:\sudoku`
+2) Set PYTHONPATH , from Windows CMD for example `set PYTHONPATH=%PYTHONPATH%;C:\sudoku`
+3) Pytest can be used to make sure you're working on a healthy codebase.
 You can install the `Pytest` package from requirements.txt using the command `pip install -r requirements.txt`
 Currently there are 6 functional tests in the repo, all 3 levels of sudoku
 generator function calls and all 3 levels of sudoku solvers are getting evaluated.
 
+*It is highly recommended to setup and activate `pipenv` or `virtualenv`
 
 ### running sudoku generator
 arguments needed:<br>
