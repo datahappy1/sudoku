@@ -3,7 +3,7 @@ functional testing solve sudoku pytest module
 """
 import os
 import pytest
-from sudoku_game import solver
+from sudoku.sudoku_game import solver
 
 
 @pytest.mark.parametrize("test_input,expected", [

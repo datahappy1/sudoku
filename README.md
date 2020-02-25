@@ -10,19 +10,14 @@
 
 ### installation and getting started
 
-1) First, clone this repo locally. `https://github.com/datahappy1/sudoku.git __your_local_sudoku_folder__`
-2) To install this game, you need to install all the packages
-from dependencies.txt, so change directory to `cd __your_local_sudoku_folder__`
-and install using the command `pip install -r requirements.txt`
+1) First, clone this repo `git clone https://github.com/datahappy1/sudoku.git __your_local_sudoku_folder__`
+2) Setup and activate `pipenv` or `virtualenv` and install all the packages from requirements.txt using the command `pip install -r requirements.txt`
 
-3) Set your PYTHONPATH variable ( on Windows, for example like ) :
-`set PYTHONPATH=%PYTHONPATH%;C:\__your_local_sudoku_folder__\`
 4) Pytest can be used to make sure you're working on a healthy codebase.
 To run the tests, run the command `pytest`.
 Currently there is 6 functional tests in the repo, all 3 levels of sudoku
 generator function calls and all 3 levels of sudoku solvers get evaluated. 
 
-*This is just a quick guide, however I strongly suggest to use a virtual environment like pipenv or poetry
 
 ### running sudoku generator
 arguments needed:<br>
@@ -72,7 +67,7 @@ this is how it looks like:<br>
 008500010<br>
 090000400<br>
 
-and the sudoku solver calculated solution :
+and the sudoku solver calculated solution (in ~1 minute on a 8GB RAM VMWare virtual machine):
 
 812753649<br>
 943682175<br>
