@@ -11,9 +11,10 @@
 ### installation and getting started
 
 1) First, clone this repo `git clone https://github.com/datahappy1/sudoku.git __your_local_sudoku_folder__`
-2) Setup and activate `pipenv` or `virtualenv`
-3) Pytest can be used to make sure you're working on a healthy codebase.
-You can install the `Pytest` package from requirements.txt using the command `pip3 install -r requirements.txt`
+2) It is highly recommended to setup and activate `pipenv` or `virtualenv`
+3) Set PYTHONPATH , from Windows CMD for example `set PYTHONPATH=%PYTHONPATH%;C:\sudoku`
+4) Pytest can be used to make sure you're working on a healthy codebase.
+You can install the `Pytest` package from requirements.txt using the command `pip install -r requirements.txt`
 Currently there are 6 functional tests in the repo, all 3 levels of sudoku
 generator function calls and all 3 levels of sudoku solvers are getting evaluated.
 
@@ -24,8 +25,9 @@ arguments needed:<br>
 -l: level (str, optional, options: {"easy", "medium", "hard"}, default: "easy")<br>
 -p: prettify (str, optional, options: {"T","F","True","False","1","0"}, default: 0)<br>
 <br>
-example: (run from the working directory context of the root sudoku folder, for example `C:\sudoku`)<br>
-`python3 sudoku_game.py -a "generate" -l "hard" -p 1`
+example:<br>
+`CD c:\sudoku`
+`python sudoku\sudoku_game.py -a "generate" -l "hard" -p 1`
 <br>
 
 ### running sudoku solver
@@ -46,8 +48,9 @@ The format of the text file with the sudoku to be solved has to be set like:<br>
 054003000<br>
 ( The zeros are the grid members that need to be calculated ) :) <br>
 <br>
-example: (run from the working directory context of the root sudoku folder, for example `C:\sudoku`)<br>
-`python3 sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p 1`
+example:<br>
+`CD c:\sudoku`
+`python sudoku\sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p 1`
 <br>
 
 ### solving the worlds hardest sudoku
