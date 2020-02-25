@@ -34,7 +34,9 @@ def solver(sudoku_to_solve, prettify):
                     for sudoku_row in sudoku_grid:
                         common.pretty_printer(prettify, sudoku_row)
                     return False
-
+            # expected custom exception when no candidates left or
+            # too many candidates left for the current state of the grid
+            # restart grid generator
             except common.CustomException:
                 continue
 
