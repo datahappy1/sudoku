@@ -72,7 +72,7 @@ this is how it looks like:<br>
 008500010<br>
 090000400<br>
 
-and my sudoku solver calculates the solution in ~1 minute (running on a VMWare Ubuntu with 8GB RAM and 2 vCPU cores ):
+and the sudoku solver calculated solution :
 
 812753649<br>
 943682175<br>
