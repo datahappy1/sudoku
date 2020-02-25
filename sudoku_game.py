@@ -24,17 +24,17 @@ def solver(sudoku_to_solve, prettify):
     gv.SUDOKU_VARIATIONS_LIST.insert(0, rows_ref)
 
     while True:
-        for variation_index, variation in enumerate(gv.SUDOKU_VARIATIONS_LIST):
+        for variation in gv.SUDOKU_VARIATIONS_LIST:
             obj = core.Core(action='solve', rows=variation)
             try:
                 sudoku_grid = core.Core.grid_solver(obj)
                 if 0 not in sudoku_grid:
                     for sudoku_row in sudoku_grid:
                         common.pretty_printer(prettify, sudoku_row)
-                    return 0
+                    return False
 
             except common.CustomException:
-                gv.SUDOKU_VARIATIONS_LIST.pop(variation_index)
+                continue
 
 
 def generator(level, prettify):
