@@ -26,7 +26,7 @@ arguments needed:<br>
 -p: prettify (str, optional, options: {"T","F","True","False","1","0"}, default: 0)<br>
 <br>
 example:<br>
-`CD c:\sudoku`
+`CD c:\sudoku`<br>
 `python sudoku\sudoku_game.py -a "generate" -l "hard" -p 1`
 <br>
 
@@ -49,7 +49,7 @@ The format of the text file with the sudoku to be solved has to be set like:<br>
 ( The zeros are the grid members that need to be calculated ) :) <br>
 <br>
 example:<br>
-`CD c:\sudoku`
+`CD c:\sudoku`<br>
 `python sudoku\sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p 1`
 <br>
 
