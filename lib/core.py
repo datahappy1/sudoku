@@ -93,7 +93,6 @@ class Core:
             return candidates_left
 
         else:
-
             return None
 
     def multiple_candidates_handler(self, row_index, col_index, candidate):
