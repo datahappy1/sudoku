@@ -36,7 +36,7 @@ def solver(sudoku_to_solve, prettify):
                     return False
             # expected custom exception when no candidates left or
             # too many candidates left for the current state of the grid
-            # restart grid generator
+            # restart grid solver
             except common.CustomException:
                 continue
 
