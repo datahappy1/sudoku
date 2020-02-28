@@ -14,7 +14,7 @@ def solver(sudoku_to_solve, prettify):
     :return: solved sudoku
     """
     rows_ref = []
-    gv.SUDOKU_VARIATIONS_AUX_SET = set()
+    counter = 0
 
     # load the sudoku from the txt file to a list of lists
     with open(sudoku_to_solve) as file_handler:
@@ -25,6 +25,10 @@ def solver(sudoku_to_solve, prettify):
 
     while True:
         for variation in gv.SUDOKU_VARIATIONS_LIST:
+            counter += 1
+            if counter > 10000000:
+                raise common.CustomException("TooManyTries")
+
             obj = core.Core(action='solve', rows=variation)
             try:
                 sudoku_grid = core.Core.grid_solver(obj)
@@ -33,7 +37,7 @@ def solver(sudoku_to_solve, prettify):
                 else:
                     for sudoku_row in sudoku_grid:
                         common.pretty_printer(prettify, sudoku_row)
-                    return False
+                    return counter
             # expected custom exception when no candidates left or
             # too many candidates left for the current state of the grid
             # restart grid solver
@@ -48,14 +52,20 @@ def generator(level, prettify):
     :param prettify:
     :return: generated sudoku game
     """
+    counter = 0
+
     while True:
+        counter += 1
+        if counter > 10000000:
+            raise common.CustomException("TooManyTries")
+
         try:
             obj = core.Core(action='generate', rows=[])
             sudoku_grid = core.Core.grid_generator(obj)
             for sudoku_row in sudoku_grid:
                 masked_row = core.Core.row_mask(obj, sudoku_row, level)
                 common.pretty_printer(prettify, masked_row)
-            return 0
+            return counter
         # expected custom exception when no candidates left for the current grid
         # restart grid generator
         except common.CustomException:
@@ -65,13 +75,14 @@ def generator(level, prettify):
 def args_handler():
     """
     argparse arguments handler function
-    :return:
+    :return: prepared_args
     """
+    prepared_args = {}
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-a', '--action', type=str,
                         required=True,
-                        choices={'solve', 'generate', 'ocr'})
+                        choices={'solve', 'generate'})
     parser.add_argument('-l', '--generate_level', type=str,
                         required=False, default='easy',
                         choices={'easy', 'medium', 'hard'})
@@ -82,25 +93,33 @@ def args_handler():
 
     parsed = parser.parse_args()
 
-    action = parsed.action
-    generate_level = parsed.generate_level
-    sudoku_to_solve = parsed.file_with_sudoku_to_solve
-    prettify = parsed.prettify_output
+    prepared_args['action'] = parsed.action
+    prepared_args['generate_level'] = parsed.generate_level
+    prepared_args['sudoku_to_solve'] = parsed.file_with_sudoku_to_solve
 
+    prettify = parsed.prettify_output
     # arg parse bool data type known bug workaround
     if prettify.lower() in ('no', 'false', 'f', 'n', '0'):
-        prettify = False
+        prepared_args['prettify'] = False
     else:
-        prettify = True
+        prepared_args['prettify'] = True
 
-    if action == 'generate':
-        generator(generate_level, prettify)
-    elif action == 'solve':
-        solver(sudoku_to_solve, prettify)
+    return prepared_args
 
 
 if __name__ == '__main__':
     EXECUTION_START = datetime.datetime.now()
-    args_handler()
+
+    PREPARED_ARGS = args_handler()
+    ACTION = PREPARED_ARGS.get('action', None)
+    GENERATE_LEVEL = PREPARED_ARGS.get('generate_level', None)
+    SUDOKU_TO_SOLVE = PREPARED_ARGS.get('sudoku_to_solve', None)
+    PRETTY = PREPARED_ARGS.get('prettify', None)
+
+    if ACTION == 'generate':
+        RUNS_COUNT = generator(GENERATE_LEVEL, PRETTY)
+    elif ACTION == 'solve':
+        RUNS_COUNT = solver(SUDOKU_TO_SOLVE, PRETTY)
+
     EXECUTION_END = datetime.datetime.now()
-    print(f'Finished in {EXECUTION_END - EXECUTION_START}')
+    print(f'Finished in {EXECUTION_END - EXECUTION_START} using {RUNS_COUNT} tries')

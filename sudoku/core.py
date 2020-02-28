@@ -110,9 +110,7 @@ class Core:
         """
         rows = pickle.loads(pickle.dumps(self.rows, -1))
         rows[row_index][col_index] = candidate
-        if str(rows) not in gv.SUDOKU_VARIATIONS_AUX_SET:
-            gv.SUDOKU_VARIATIONS_AUX_SET.add(str(rows))  # pylint: disable=no-member
-            gv.SUDOKU_VARIATIONS_LIST.append(rows)
+        gv.SUDOKU_VARIATIONS_LIST.append(rows)
 
         return 0
 

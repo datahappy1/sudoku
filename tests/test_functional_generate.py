@@ -5,17 +5,16 @@ import pytest
 from sudoku.sudoku_game import generator
 
 
-@pytest.mark.parametrize("test_input,expected", [
-    ("easy", 0),
-    ("medium", 0),
-    ("hard", 0),
+@pytest.mark.parametrize("test_input", [
+    ("easy"),
+    ("medium"),
+    ("hard"),
 ])
-def test_generate_eval(test_input, expected):
+def test_generate_eval(test_input):
     """
     test we can generate all levels of a sudoku game
     :param test_input:
-    :param expected:
     :return:
     """
     gen = str(generator(test_input, True))
-    assert eval(gen) == expected
+    assert isinstance(eval(gen), int)
