@@ -1,5 +1,5 @@
 """
-worker.py
+core.py
 """
 import pickle
 
