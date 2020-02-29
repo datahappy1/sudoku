@@ -2,6 +2,7 @@
 worker.py
 """
 import pickle
+
 from sudoku.common import get_random_subset_from_set, get_randint, \
     sq_to_row_col_mapper, generic_grid_mapper, CustomException
 from sudoku import gv

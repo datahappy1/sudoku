@@ -37,16 +37,16 @@ arguments needed:<br>
 -p: prettify (str, optional, options: {"T","F","True","False","1","0"}, default: "0")<br>
 <br>
 The format of the text file with the sudoku to be solved has to be set like:<br>
-000500640<br>
-009630018<br>
-061409200<br>
-000001803<br>
-700305001<br>
-203900000<br>
-002806450<br>
-670054300<br>
-054003000<br>
-( The zeros are the grid members that need to be calculated ) :) <br>
+`000500640`<br>
+`009630018`<br>
+`061409200`<br>
+`000001803`<br>
+`700305001`<br>
+`203900000`<br>
+`002806450`<br>
+`670054300`<br>
+`054003000`<br>
+( The zeros are the grid members that need to be calculated )<br>
 <br>
 example:<br>
 `CD c:\sudoku`<br>
@@ -59,24 +59,24 @@ https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424<br>
 
 this is how it looks like:<br>
 
-800000000<br>
-003600000<br>
-070090200<br>
-050007000<br>
-000045700<br>
-000100030<br>
-001000068<br>
-008500010<br>
-090000400<br>
+`800000000`<br>
+`003600000`<br>
+`070090200`<br>
+`050007000`<br>
+`000045700`<br>
+`000100030`<br>
+`001000068`<br>
+`008500010`<br>
+`090000400`<br>
 
-and the sudoku solver calculated solution (in ~1 minute on a 8GB RAM VMWare virtual machine):
+and the sudoku solver calculated solution (in ~40 seconds on a 8GB RAM VMWare virtual machine):
 
-812753649<br>
-943682175<br>
-675491283<br>
-154237896<br>
-369845721<br>
-287169534<br>
-521974368<br>
-438526917<br>
-796318452<br>
+`812753649`<br>
+`943682175`<br>
+`675491283`<br>
+`154237896`<br>
+`369845721`<br>
+`287169534`<br>
+`521974368`<br>
+`438526917`<br>
+`796318452`<br>

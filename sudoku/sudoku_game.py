@@ -21,6 +21,7 @@ def solver(sudoku_to_solve, prettify):
         for row in file_handler:
             rows_ref.append([int(elem) for elem in row.join(row.split())])
 
+    gv.SUDOKU_VARIATIONS_LIST = []
     gv.SUDOKU_VARIATIONS_LIST.insert(0, rows_ref)
 
     while True:
@@ -122,4 +123,4 @@ if __name__ == '__main__':
         RUNS_COUNT = solver(SUDOKU_TO_SOLVE, PRETTY)
 
     EXECUTION_END = datetime.datetime.now()
-    print(f'Finished in {EXECUTION_END - EXECUTION_START} using {RUNS_COUNT} tries')
+    print(f'Finished in {EXECUTION_END - EXECUTION_START} in {RUNS_COUNT} tries')

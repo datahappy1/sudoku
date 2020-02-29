@@ -16,5 +16,5 @@ def test_generate_eval(test_input):
     :param test_input:
     :return:
     """
-    gen = str(generator(test_input, True))
-    assert isinstance(eval(gen), int)
+    gen = generator(test_input, True)
+    assert isinstance(gen, int)
