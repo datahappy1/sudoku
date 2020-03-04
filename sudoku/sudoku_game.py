@@ -24,26 +24,25 @@ def solver(sudoku_to_solve, prettify):
     gv.SUDOKU_VARIATIONS_LIST = []
     gv.SUDOKU_VARIATIONS_LIST.insert(0, rows_ref)
 
-    while True:
-        for variation in gv.SUDOKU_VARIATIONS_LIST:
-            counter += 1
-            if counter > 10000000:
-                raise common.CustomException("TooManyTries")
+    for variation in gv.SUDOKU_VARIATIONS_LIST:
+        counter += 1
+        if counter > 10000000:
+            raise common.CustomException("TooManyTries")
 
-            obj = core.Core(action='solve', rows=variation)
-            try:
-                sudoku_grid = core.Core.grid_solver(obj)
-                if 0 in sudoku_grid:
-                    continue
-                else:
-                    for sudoku_row in sudoku_grid:
-                        common.pretty_printer(prettify, sudoku_row)
-                    return counter
-            # expected custom exception when no candidates left or
-            # too many candidates left for the current state of the grid
-            # restart grid solver
-            except common.CustomException:
+        obj = core.Core(action='solve', rows=variation)
+        try:
+            sudoku_grid = core.Core.grid_solver(obj)
+            if 0 in sudoku_grid:
                 continue
+            else:
+                for sudoku_row in sudoku_grid:
+                    common.pretty_printer(prettify, sudoku_row)
+                return counter
+        # expected custom exception when no candidates left or
+        # too many candidates left for the current state of the grid
+        # restart grid solver
+        except common.CustomException:
+            continue
 
 
 def generator(level, prettify):
