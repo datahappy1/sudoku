@@ -111,8 +111,8 @@ class Core:
         """
         rows = pickle.loads(pickle.dumps(self.rows, -1))
         rows[row_index][col_index] = candidate
-        gv.SUDOKU_VARIATIONS_LIST.append(rows)
-
+        #gv.SUDOKU_VARIATIONS_LIST.append(rows)
+        gv.SUDOKU_VARIATIONS_LIST.put_nowait(rows)
         return 0
 
     def grid_solver(self):
