@@ -20,11 +20,14 @@ def solver(sudoku_to_solve, prettify):
     # load the initial sudoku from the txt file to a list of lists
     with open(sudoku_to_solve) as file_handler:
         for row in file_handler:
-            rows_ref.append([int(elem) for elem in row.join(row.split())])
+            try:
+                rows_ref.append([int(elem) for elem in row.join(row.split())])
+            except ValueError as ve:
+                raise common.CustomException("InvalidGridItem {}".format(ve))
 
-    # validate the initial sudoku grid
+    # validate the initial sudoku grid shape is 9x9
     if len(rows_ref) != 9 or any([len([x for x in y]) != 9 for y in rows_ref]):
-        raise common.CustomException("InvalidGrid")
+        raise common.CustomException("InvalidGridShape")
 
     gv.SUDOKU_VARIATIONS_QUEUE = Queue()
     gv.SUDOKU_VARIATIONS_QUEUE.put_nowait(rows_ref)
