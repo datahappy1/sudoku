@@ -3,8 +3,9 @@ sudoku_game.py
 """
 import argparse
 import datetime
+from queue import Queue
 from sudoku import core, gv, common
-from queue import SimpleQueue
+
 
 def solver(sudoku_to_solve, prettify):
     """
@@ -21,12 +22,10 @@ def solver(sudoku_to_solve, prettify):
         for row in file_handler:
             rows_ref.append([int(elem) for elem in row.join(row.split())])
 
-    #gv.SUDOKU_VARIATIONS_LIST = []
-    gv.SUDOKU_VARIATIONS_LIST = SimpleQueue()
-    #gv.SUDOKU_VARIATIONS_LIST.insert(0, rows_ref)
+    gv.SUDOKU_VARIATIONS_LIST = Queue()
     gv.SUDOKU_VARIATIONS_LIST.put_nowait(rows_ref)
+
     while not gv.SUDOKU_VARIATIONS_LIST.empty():
-    # for variation in list(gv.SUDOKU_VARIATIONS_LIST):
         variation = gv.SUDOKU_VARIATIONS_LIST.get_nowait()
         counter += 1
         if counter > 10000000:
