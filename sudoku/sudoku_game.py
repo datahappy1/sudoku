@@ -22,11 +22,11 @@ def solver(sudoku_to_solve, prettify):
         for row in file_handler:
             rows_ref.append([int(elem) for elem in row.join(row.split())])
 
-    gv.SUDOKU_VARIATIONS_LIST = Queue()
-    gv.SUDOKU_VARIATIONS_LIST.put_nowait(rows_ref)
+    gv.SUDOKU_VARIATIONS_QUEUE = Queue()
+    gv.SUDOKU_VARIATIONS_QUEUE.put_nowait(rows_ref)
 
-    while not gv.SUDOKU_VARIATIONS_LIST.empty():
-        variation = gv.SUDOKU_VARIATIONS_LIST.get_nowait()
+    while not gv.SUDOKU_VARIATIONS_QUEUE.empty():
+        variation = gv.SUDOKU_VARIATIONS_QUEUE.get_nowait()
         counter += 1
         if counter > 10000000:
             raise common.CustomException("TooManyTries")
@@ -117,6 +117,7 @@ if __name__ == '__main__':
     GENERATE_LEVEL = PREPARED_ARGS.get('generate_level', None)
     SUDOKU_TO_SOLVE = PREPARED_ARGS.get('sudoku_to_solve', None)
     PRETTY = PREPARED_ARGS.get('prettify', None)
+    RUNS_COUNT = 0
 
     if ACTION == 'generate':
         RUNS_COUNT = generator(GENERATE_LEVEL, PRETTY)

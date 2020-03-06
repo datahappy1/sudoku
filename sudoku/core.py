@@ -8,7 +8,7 @@ from sudoku.common import get_random_subset_from_set, get_randint, \
 from sudoku import gv
 
 
-class Core:
+class Core(object):
     """
     sudoku generator and solver worker class
     """
@@ -111,8 +111,7 @@ class Core:
         """
         rows = pickle.loads(pickle.dumps(self.rows, -1))
         rows[row_index][col_index] = candidate
-        #gv.SUDOKU_VARIATIONS_LIST.append(rows)
-        gv.SUDOKU_VARIATIONS_LIST.put_nowait(rows)
+        gv.SUDOKU_VARIATIONS_QUEUE.put_nowait(rows)
         return 0
 
     def grid_solver(self):
