@@ -22,8 +22,8 @@ def solver(sudoku_to_solve, prettify):
         for row in file_handler:
             try:
                 rows_ref.append([int(elem) for elem in row.join(row.split())])
-            except ValueError as ve:
-                raise common.CustomException("InvalidGridItem {}".format(ve))
+            except ValueError as val_err:
+                raise common.CustomException("InvalidGridItem {}".format(val_err)) from ValueError
 
     # validate the initial sudoku grid shape is 9x9
     if len(rows_ref) != 9 or any([len([x for x in y]) != 9 for y in rows_ref]):

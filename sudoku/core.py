@@ -8,7 +8,7 @@ from sudoku.common import get_random_subset_from_set, get_randint, \
 from sudoku import gv
 
 
-class Core(object):
+class Core:
     """
     sudoku generator and solver worker class
     """
