@@ -48,8 +48,8 @@ def solver(sudoku_to_solve, prettify):
                     common.pretty_printer(prettify, sudoku_row)
                 return counter
         # expected custom exception when no candidates left or
-        # too many candidates left for the current state of the grid
-        # restart grid solver
+        # too many candidates left for the current state of the grid ->
+        # continue processing queue items with the grid solver
         except common.CustomException:
             continue
 
