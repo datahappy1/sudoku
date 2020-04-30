@@ -21,7 +21,7 @@ class Core:
         self.action = action
         self.rows = rows
         self.cols = []
-        self.candidates_all = [candidate_index for candidate_index in range(1, 10)]
+        self.candidates_all = list(range(1, 10))
         self.squares = []
 
     def get_unique_candidates_in_cols(self, col_i, sole_cand):
@@ -48,7 +48,7 @@ class Core:
         :param col_index:
         :return:
         """
-
+        candidates_left = None
         mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
 
@@ -67,8 +67,6 @@ class Core:
             else:
                 candidates_left = list(set(candidates_left) - set(row) -
                                        set(list(map(list, zip(*self.rows)))[col_index]))
-
-            return candidates_left
 
         elif self.action == "solve":
             candidates_left = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -91,10 +89,7 @@ class Core:
                         Core.get_unique_candidates_in_cols(self, col_index, sole_candidate) \
                         or candidates_left
 
-            return candidates_left
-
-        else:
-            return None
+        return candidates_left
 
     def multiple_candidates_handler(self, row_index, col_index, candidate):
         """

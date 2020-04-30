@@ -26,7 +26,7 @@ def solver(sudoku_to_solve, prettify):
                 raise common.CustomException("InvalidGridItem {}".format(val_err)) from ValueError
 
     # validate the initial sudoku grid shape is 9x9
-    if len(rows_ref) != 9 or any([len([x for x in y]) != 9 for y in rows_ref]):
+    if len(rows_ref) != 9 or any([len(y) != 9 for y in rows_ref]):
         raise common.CustomException("InvalidGridShape")
 
     gv.SUDOKU_VARIATIONS_QUEUE = LifoQueue()
@@ -42,7 +42,7 @@ def solver(sudoku_to_solve, prettify):
         try:
             sudoku_grid = core.Core.grid_solver(obj)
             if 0 in sudoku_grid:
-                continue
+                pass
             else:
                 for sudoku_row in sudoku_grid:
                     common.pretty_printer(prettify, sudoku_row)
