@@ -3,7 +3,7 @@ sudoku_game.py
 """
 import argparse
 import datetime
-from queue import Queue
+from queue import LifoQueue
 from sudoku import core, gv, common
 
 
@@ -29,7 +29,7 @@ def solver(sudoku_to_solve, prettify):
     if len(rows_ref) != 9 or any([len([x for x in y]) != 9 for y in rows_ref]):
         raise common.CustomException("InvalidGridShape")
 
-    gv.SUDOKU_VARIATIONS_QUEUE = Queue()
+    gv.SUDOKU_VARIATIONS_QUEUE = LifoQueue()
     gv.SUDOKU_VARIATIONS_QUEUE.put_nowait(rows_ref)
 
     while not gv.SUDOKU_VARIATIONS_QUEUE.empty():

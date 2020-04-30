@@ -14,8 +14,8 @@
 2) Set PYTHONPATH , from Windows CMD for example `set PYTHONPATH=%PYTHONPATH%;C:\sudoku`
 3) Pytest can be used to make sure you're working on a healthy codebase.
 You can install the `Pytest` package from requirements.txt using the command `pip install -r requirements.txt`
-Currently there are 6 functional tests in the repo, all 3 levels of sudoku
-generator function calls and all 3 levels of sudoku solvers are getting evaluated.
+There are functional tests in the `/tests` folder, that can be used for running sudoku solver on 10 sudoku puzzles of all complexity levels and a 
+sudoku generator generating easy, medium and hard level puzzles.
 
 *It is highly recommended to setup and activate `pipenv` or `virtualenv`
 
@@ -57,7 +57,7 @@ example:<br>
 The "worlds hardest sudoku" game is described here:<br>
 https://www.conceptispuzzles.com/index.aspx?uri=info%2Farticle%2F424<br>
 
-this is how it looks like:<br>
+this is how the sudoku puzzle looks like:<br>
 
 `800000000`<br>
 `003600000`<br>
@@ -69,7 +69,7 @@ this is how it looks like:<br>
 `008500010`<br>
 `090000400`<br>
 
-and the sudoku solver calculated solution (in ~40 seconds on a 8GB RAM VMWare virtual machine):
+and the sudoku solver calculated solution:
 
 `812753649`<br>
 `943682175`<br>

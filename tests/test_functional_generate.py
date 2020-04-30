@@ -6,9 +6,9 @@ from sudoku.sudoku_game import generator
 
 
 @pytest.mark.parametrize("test_input", [
-    ("easy"),
-    ("medium"),
-    ("hard"),
+    "easy",
+    "medium",
+    "hard",
 ])
 def test_generate_eval(test_input):
     """

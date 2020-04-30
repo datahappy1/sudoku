@@ -133,7 +133,7 @@ class Core:
                         raise CustomException("NoCandidatesLeft")
 
                     if len(candidates_left) == 1:
-                        cell = int(candidates_left[0])
+                        cell = candidates_left[0]
 
                     if len(candidates_left) > 1:
                         for candidate in candidates_left:
