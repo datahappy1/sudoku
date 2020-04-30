@@ -41,12 +41,9 @@ def solver(sudoku_to_solve, prettify):
         obj = core.Core(action='solve', rows=variation)
         try:
             sudoku_grid = core.Core.grid_solver(obj)
-            if 0 in sudoku_grid:
-                pass
-            else:
-                for sudoku_row in sudoku_grid:
-                    common.pretty_printer(prettify, sudoku_row)
-                return counter
+            for sudoku_row in sudoku_grid:
+                common.pretty_printer(prettify, sudoku_row)
+            return counter
         # expected custom exception when no candidates left or
         # too many candidates left for the current state of the grid ->
         # continue processing queue items with the grid solver
