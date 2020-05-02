@@ -12,14 +12,14 @@ class Core:
     """
     sudoku generator and solver worker class
     """
-    def __init__(self, action, rows):
+    def __init__(self, action):
         """
         init function
         :param action:
         :param rows:
         """
         self.action = action
-        self.rows = rows
+        self.rows = []
         self.cols = []
         self.candidates_all = list(range(1, 10))
         self.squares = []
@@ -107,20 +107,19 @@ class Core:
         rows = pickle.loads(pickle.dumps(self.rows, -1))
         rows[row_index][col_index] = candidate
         gv.SUDOKU_VARIATIONS_QUEUE.put_nowait(rows)
-        return 0
 
-    def grid_solver(self):
+    def grid_solver(self, rows):
         """
         grid solver function
         :return: all solved rows for sudoku grid
         """
+        self.rows = rows
         self.squares = [[] for _ in range(9)]
         self.cols = list(map(list, zip(*self.rows)))
 
         for row_index, row in enumerate(self.rows):
             for col_index, col in enumerate(self.cols):
                 if row[col_index] == 0:
-                    cell = 0
                     candidates_left = \
                         Core.get_cell_candidates(self, row, row_index, col, col_index)
 
@@ -130,7 +129,7 @@ class Core:
                     if len(candidates_left) == 1:
                         cell = candidates_left[0]
 
-                    if len(candidates_left) > 1:
+                    else:
                         for candidate in candidates_left:
                             Core.multiple_candidates_handler(self, row_index, col_index, candidate)
                         raise CustomException("TooManyCandidatesLeft")
@@ -140,23 +139,26 @@ class Core:
 
         return self.rows
 
-    def grid_generator(self):
+    def grid_generator(self, rows):
         """
         grid generator function
         :return: all rows for sudoku grid
         """
-        row_index = 1
+        self.rows = rows
         self.rows.append(get_random_subset_from_set(self.candidates_all, 9))
         self.squares = [[] for _ in range(9)]
+
+        row_index = 1
+
         while row_index < 9:
             row = []
             col_index = 0
             while col_index < 9:
                 candidates_left = Core.get_cell_candidates(self, row, row_index, [], col_index)
-                cell = int(get_random_subset_from_set(candidates_left, 1)[0]) \
-                    if candidates_left else -1
+                cell = get_random_subset_from_set(candidates_left, 1)[0] if candidates_left \
+                    else None
 
-                if cell == -1:
+                if not cell:
                     raise CustomException("NoCandidatesLeft")
 
                 row.append(cell)

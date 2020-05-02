@@ -32,15 +32,16 @@ def solver(sudoku_to_solve, prettify):
     gv.SUDOKU_VARIATIONS_QUEUE = LifoQueue()
     gv.SUDOKU_VARIATIONS_QUEUE.put_nowait(rows_ref)
 
+    obj = core.Core(action='solve')
+
     while not gv.SUDOKU_VARIATIONS_QUEUE.empty():
         variation = gv.SUDOKU_VARIATIONS_QUEUE.get_nowait()
         counter += 1
         if counter > 10000000:
             raise common.CustomException("TooManyTries")
 
-        obj = core.Core(action='solve', rows=variation)
         try:
-            sudoku_grid = core.Core.grid_solver(obj)
+            sudoku_grid = core.Core.grid_solver(obj, rows=variation)
             for sudoku_row in sudoku_grid:
                 common.pretty_printer(prettify, sudoku_row)
             return counter
@@ -59,6 +60,7 @@ def generator(level, prettify):
     :return: generated sudoku game
     """
     counter = 0
+    obj = core.Core(action='generate')
 
     while True:
         counter += 1
@@ -66,8 +68,7 @@ def generator(level, prettify):
             raise common.CustomException("TooManyTries")
 
         try:
-            obj = core.Core(action='generate', rows=[])
-            sudoku_grid = core.Core.grid_generator(obj)
+            sudoku_grid = core.Core.grid_generator(obj, rows=[])
             for sudoku_row in sudoku_grid:
                 masked_row = core.Core.row_mask(obj, sudoku_row, level)
                 common.pretty_printer(prettify, masked_row)
@@ -122,6 +123,7 @@ if __name__ == '__main__':
     SUDOKU_TO_SOLVE = PREPARED_ARGS.get('sudoku_to_solve', None)
     PRETTY = PREPARED_ARGS.get('prettify', None)
     RUNS_COUNT = 0
+
 
     if ACTION == 'generate':
         RUNS_COUNT = generator(GENERATE_LEVEL, PRETTY)
