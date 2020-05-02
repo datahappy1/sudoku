@@ -24,20 +24,18 @@ class Core:
         self.candidates_all = list(range(1, 10))
         self.squares = []
 
-    def get_unique_candidates_in_cols(self, col_i, sole_cand):
+    def get_unique_candidate_in_cols(self, col_index, sole_candidate):
         """
-        get all unique candidates in columns for a cell
-        :param col_i:
-        :param sole_cand:
+        get the unique candidate in columns
+        :param col_index:
+        :param sole_candidate:
         :return:
         """
-        cands_left = []
-        mapped_index = generic_grid_mapper(col_i)
-
-        if sole_cand in (self.cols[mapped_index[0]], self.cols[mapped_index[1]]):
-            cands_left = int(sole_cand)
-
-        return cands_left
+        mapped_index = generic_grid_mapper(col_index)
+        if sole_candidate in self.cols[mapped_index[0]] \
+                and sole_candidate in self.cols[mapped_index[1]]:
+            return [sole_candidate]
+        return None
 
     def get_cell_candidates(self, row, row_index, col, col_index):
         """
@@ -53,23 +51,19 @@ class Core:
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
 
         if self.action == "generate":
-            candidates_left = get_random_subset_from_set(self.candidates_all, 9)
+            candidates_left = set(get_random_subset_from_set(self.candidates_all, 9))
             if row_index not in (0, 3, 6):
-                mapper_tuple = sq_to_row_col_mapper(row_index, col_index)
-                square_index = mapper_tuple[0]
-                slice1 = mapper_tuple[1][0]
-                slice2 = mapper_tuple[1][1]
                 self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
-                candidates_left = list(set(candidates_left) - set(row) -
+                candidates_left = list(candidates_left - set(row) -
                                        set(self.squares[square_index]) -
                                        set(list(map(list, zip(*self.rows)))[col_index]))
 
             else:
-                candidates_left = list(set(candidates_left) - set(row) -
+                candidates_left = list(candidates_left - set(row) -
                                        set(list(map(list, zip(*self.rows)))[col_index]))
 
         elif self.action == "solve":
-            candidates_left = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+            candidates_left = {1, 2, 3, 4, 5, 6, 7, 8, 9}
             self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
 
             mapped_index = generic_grid_mapper(row_index)
@@ -78,15 +72,16 @@ class Core:
             self.squares[square_index].extend(self.rows[mapped_index[1]][slice(slice1, slice2)])
 
             # sole candidates
-            candidates_left = list(set(candidates_left) - set(row) -
+            candidates_left = list(candidates_left - set(row) -
                                    set(self.squares[square_index]) - set(col))
 
             # unique candidates in rows
             for sole_candidate in candidates_left:
-                if sole_candidate in (self.rows[mapped_index[0]], self.rows[mapped_index[1]]):
+                if sole_candidate in self.rows[mapped_index[0]] and \
+                        sole_candidate in self.rows[mapped_index[1]]:
                     # unique candidates in cols
                     candidates_left = \
-                        Core.get_unique_candidates_in_cols(self, col_index, sole_candidate) \
+                        Core.get_unique_candidate_in_cols(self, col_index, sole_candidate) \
                         or candidates_left
 
         return candidates_left
