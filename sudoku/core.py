@@ -123,14 +123,13 @@ class Core:
 
                     if len(candidates_left) == 1:
                         cell = candidates_left[0]
+                        row[col_index] = cell
+                        self.cols = list(map(list, zip(*self.rows)))
 
                     else:
                         for candidate in candidates_left:
                             Core.multiple_candidates_handler(self, row_index, col_index, candidate)
                         raise CustomException("TooManyCandidatesLeft")
-
-                    row[col_index] = cell
-                    self.cols = list(map(list, zip(*self.rows)))
 
         return self.rows
 
