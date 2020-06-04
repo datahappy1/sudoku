@@ -14,8 +14,8 @@
    - from Linux CMD for example `export PYTHONPATH=${PYTHONPATH}:${HOME}/sudoku`
 - Pytest can be used to make sure you're working on a healthy codebase.
 You can install the `Pytest` package from requirements.txt using the command `pip install -r requirements.txt` . There are functional tests in the `/tests` folder, that can be used for running sudoku solver on 10 sudoku puzzles of all complexity levels and a sudoku generator generating easy, medium and hard level puzzles. 
-> It is highly recommended to setup and activate `pipenv` or 
-> `virtualenv`  
+> It is highly recommended to setup and activate `virtualenv` or use
+> `pipenv`
 
   ### running sudoku generator arguments needed:
 - `-a` action (str, required, option:"generate")
@@ -23,8 +23,10 @@ You can install the `Pytest` package from requirements.txt using the command `pi
 - `-p:` prettify (str, optional, options: {"T","F","True","False","1","0"}, default: 0)
 
 example:
->  `CD c:\sudoku` `python sudoku\sudoku_game.py -a "generate" -l
-> "hard" -p 1`
+```
+CD c:\sudoku
+python sudoku\sudoku_game.py -a "generate" -l "hard" -p 1
+```
 
   ### running sudoku solver arguments needed:
 - `-a` action (str, required, option: "solve")
@@ -47,8 +49,10 @@ The format of the text file with the sudoku to be solved has to be set like:
 > The zeros are the grid members that need to be calculated  
 
 example:
->  `CD c:\sudoku` `python sudoku\sudoku_game.py -a "solve"
-> -f "files/sudoku_hard.txt" -p 1`
+```
+CD c:\sudoku
+python sudoku\sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p 1
+```
 
 ### solving the worlds hardest sudoku The "worlds hardest sudoku" game is described [here](https://www.conceptispuzzles.com/index.aspx?uri=info/article/424)
 this is how the puzzle looks like:
