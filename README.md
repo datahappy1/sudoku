@@ -17,7 +17,8 @@ You can install the `Pytest` package from requirements.txt using the command `pi
 > It is highly recommended to setup and activate `virtualenv` or use
 > `pipenv`
 
-  ### running sudoku generator arguments needed:
+  ### running sudoku generator 
+arguments needed:
 - `-a` action (str, required, option:"generate")
 - `-l:` level (str, optional, options: {"easy", "medium", "hard"}, default: "easy")
 - `-p:` prettify (str, optional, options: {"T","F","True","False","1","0"}, default: 0)
@@ -28,7 +29,8 @@ CD c:\sudoku
 python sudoku\sudoku_game.py -a "generate" -l "hard" -p 1
 ```
 
-  ### running sudoku solver arguments needed:
+  ### running sudoku solver 
+arguments needed:
 - `-a` action (str, required, option: "solve")
 - `-f` filepath (str, optional, options: {"easy", "medium", "hard"}, default: "files/sudoku_easy.txt")
 - `-p` prettify (str, optional, options: {"T","F","True","False","1","0"}, default: "0")
