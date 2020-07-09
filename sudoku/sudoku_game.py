@@ -3,80 +3,73 @@ sudoku_game.py
 """
 import argparse
 import datetime
-from queue import LifoQueue
-from sudoku import core, gv, common
+from sudoku import core, common
 
 
-def solver(sudoku_to_solve, prettify):
+def run_sudoku_solver(sudoku_to_solve, prettify):
     """
     solver function
     :param sudoku_to_solve:
     :param prettify:
     :return: solved sudoku
     """
-    rows_ref = []
-    counter = 0
+    def open_file(sudoku):
+        """
+        open the initial sudoku
+        from the txt file and return a list of lists
+        with the grid items
+        :param sudoku:
+        :return:
+        """
+        sudoku_grid = []
+        with open(sudoku) as file_handler:
+            for row in file_handler:
+                sudoku_grid.append(validate_row(row))
+        return sudoku_grid
 
-    # load the initial sudoku from the txt file to a list of lists
-    with open(sudoku_to_solve) as file_handler:
-        for row in file_handler:
-            try:
-                rows_ref.append([int(elem) for elem in row.join(row.split())])
-            except ValueError as val_err:
-                raise common.CustomException("InvalidGridItem {}".format(val_err)) from ValueError
+    def validate_row(row):
+        """
+        validate row is a list of integers
+        :param row:
+        :return:
+        """
+        try:
+            row = [int(elem) for elem in row.join(row.split())]
+        except ValueError as val_err:
+            raise common.CustomException("InvalidGridItem {}".format(val_err)) \
+                from ValueError
+        return row
 
-    # validate the initial sudoku grid shape is 9x9
-    if len(rows_ref) != 9 or any([len(y) != 9 for y in rows_ref]):
-        raise common.CustomException("InvalidGridShape")
+    def validate_grid_shape(sudoku_grid):
+        """
+        validate the initial sudoku grid shape is 9x9
+        :param sudoku_grid:
+        :return:
+        """
+        if len(sudoku_grid) != 9 or \
+                any([len(y) != 9 for y in sudoku_grid]):
+            raise common.CustomException("InvalidGridShape")
 
-    gv.SUDOKU_VARIATIONS_QUEUE = LifoQueue()
-    gv.SUDOKU_VARIATIONS_QUEUE.put_nowait(rows_ref)
+        return sudoku_grid
+
+    loaded_sudoku_grid = open_file(sudoku_to_solve)
+    validated_sudoku_grid = validate_grid_shape(loaded_sudoku_grid)
 
     obj = core.Core(action='solve')
-
-    while not gv.SUDOKU_VARIATIONS_QUEUE.empty():
-        variation = gv.SUDOKU_VARIATIONS_QUEUE.get_nowait()
-        counter += 1
-        if counter > 10000000:
-            raise common.CustomException("TooManyTries")
-
-        try:
-            sudoku_grid = core.Core.grid_solver(obj, rows=variation)
-            for sudoku_row in sudoku_grid:
-                common.pretty_printer(prettify, sudoku_row)
-            return counter
-        # expected custom exception when no candidates left or
-        # too many candidates left for the current state of the grid ->
-        # continue processing queue items with the grid solver
-        except common.CustomException:
-            continue
+    counter = obj.sudoku_solver(prettify=prettify, initial_grid=validated_sudoku_grid)
+    return counter
 
 
-def generator(level, prettify):
+def run_sudoku_generator(level, prettify):
     """
     generator function
     :param level:
     :param prettify:
     :return: generated sudoku game
     """
-    counter = 0
     obj = core.Core(action='generate')
-
-    while True:
-        counter += 1
-        if counter > 10000000:
-            raise common.CustomException("TooManyTries")
-
-        try:
-            sudoku_grid = core.Core.grid_generator(obj, rows=[])
-            for sudoku_row in sudoku_grid:
-                masked_row = core.Core.row_mask(obj, sudoku_row, level)
-                common.pretty_printer(prettify, masked_row)
-            return counter
-        # expected custom exception when no candidates left for the current grid
-        # restart grid generator
-        except common.CustomException:
-            continue
+    counter = obj.sudoku_generator(prettify=prettify, level=level)
+    return counter
 
 
 def args_handler():
@@ -124,11 +117,10 @@ if __name__ == '__main__':
     PRETTY = PREPARED_ARGS.get('prettify', None)
     RUNS_COUNT = 0
 
-
     if ACTION == 'generate':
-        RUNS_COUNT = generator(GENERATE_LEVEL, PRETTY)
+        RUNS_COUNT = run_sudoku_generator(GENERATE_LEVEL, PRETTY)
     elif ACTION == 'solve':
-        RUNS_COUNT = solver(SUDOKU_TO_SOLVE, PRETTY)
+        RUNS_COUNT = run_sudoku_solver(SUDOKU_TO_SOLVE, PRETTY)
 
     EXECUTION_END = datetime.datetime.now()
     print(f'Finished in {EXECUTION_END - EXECUTION_START} in {RUNS_COUNT} tries')

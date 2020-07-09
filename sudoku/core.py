@@ -2,10 +2,9 @@
 core.py
 """
 import pickle
-
+from queue import LifoQueue
 from sudoku.common import get_random_subset_from_set, get_randint, \
-    sq_to_row_col_mapper, generic_grid_mapper, CustomException
-from sudoku import gv
+    sq_to_row_col_mapper, generic_grid_mapper, CustomException, pretty_printer
 
 
 class Core:
@@ -14,7 +13,7 @@ class Core:
     """
     def __init__(self, action):
         """
-        init function
+        init method
         :param action:
         :param rows:
         """
@@ -23,10 +22,11 @@ class Core:
         self.cols = []
         self.candidates_all = list(range(1, 10))
         self.squares = []
+        self.sudoku_variations_queue = LifoQueue()
 
-    def get_unique_candidate_in_cols(self, col_index, sole_candidate):
+    def _get_unique_candidate_in_cols(self, col_index, sole_candidate):
         """
-        get the unique candidate in columns
+        get the unique candidate in columns method
         :param col_index:
         :param sole_candidate:
         :return:
@@ -37,9 +37,9 @@ class Core:
             return [sole_candidate]
         return None
 
-    def get_cell_candidates(self, row, row_index, col, col_index):
+    def _get_cell_candidates(self, row, row_index, col, col_index):
         """
-        get all possible cell candidates function
+        get all possible cell candidates method
         :param row:
         :param row_index:
         :param col:
@@ -81,14 +81,14 @@ class Core:
                         sole_candidate in self.rows[mapped_index[1]]:
                     # unique candidates in cols
                     candidates_left = \
-                        Core.get_unique_candidate_in_cols(self, col_index, sole_candidate) \
+                        Core._get_unique_candidate_in_cols(self, col_index, sole_candidate) \
                         or candidates_left
 
         return candidates_left
 
-    def multiple_candidates_handler(self, row_index, col_index, candidate):
+    def _multiple_candidates_handler(self, row_index, col_index, candidate):
         """
-        multiple candidates handler function
+        multiple candidates handler method
 
         *2019/06/25 as a performance improvement, pickle was chosen over copy.deepcopy,
         to revert this, you need to import copy in this module and inside this function change
@@ -101,11 +101,11 @@ class Core:
         """
         rows = pickle.loads(pickle.dumps(self.rows, -1))
         rows[row_index][col_index] = candidate
-        gv.SUDOKU_VARIATIONS_QUEUE.put_nowait(rows)
+        self.sudoku_variations_queue.put_nowait(rows)
 
-    def grid_solver(self, rows):
+    def _grid_solver(self, rows):
         """
-        grid solver function
+        grid solver method
         :return: all solved rows for sudoku grid
         """
         self.rows = rows
@@ -116,7 +116,7 @@ class Core:
             for col_index, col in enumerate(self.cols):
                 if row[col_index] == 0:
                     candidates_left = \
-                        Core.get_cell_candidates(self, row, row_index, col, col_index)
+                        Core._get_cell_candidates(self, row, row_index, col, col_index)
 
                     if not candidates_left:
                         raise CustomException("NoCandidatesLeft")
@@ -128,43 +128,14 @@ class Core:
 
                     else:
                         for candidate in candidates_left:
-                            Core.multiple_candidates_handler(self, row_index, col_index, candidate)
+                            Core._multiple_candidates_handler(self, row_index, col_index, candidate)
                         raise CustomException("TooManyCandidatesLeft")
 
         return self.rows
 
-    def grid_generator(self, rows):
+    def _add_row_mask(self, row, level):
         """
-        grid generator function
-        :return: all rows for sudoku grid
-        """
-        self.rows = rows
-        self.rows.append(get_random_subset_from_set(self.candidates_all, 9))
-        self.squares = [[] for _ in range(9)]
-
-        row_index = 1
-
-        while row_index < 9:
-            row = []
-            col_index = 0
-            while col_index < 9:
-                candidates_left = Core.get_cell_candidates(self, row, row_index, [], col_index)
-                cell = get_random_subset_from_set(candidates_left, 1)[0] if candidates_left \
-                    else None
-
-                if not cell:
-                    raise CustomException("NoCandidatesLeft")
-
-                row.append(cell)
-                col_index += 1
-            self.rows.append(row)
-            row_index += 1
-
-        return self.rows
-
-    def row_mask(self, row, level):
-        """
-        row masking function
+        row masking method
         :param row:
         :param level:
         :return: row with hidden sudoku members
@@ -194,3 +165,82 @@ class Core:
                 row[row.index(salt)] = 0
 
         return row
+
+    def _grid_generator(self, rows):
+        """
+        grid generator method
+        :return: all rows for sudoku grid
+        """
+        self.rows = rows
+        self.rows.append(get_random_subset_from_set(self.candidates_all, 9))
+        self.squares = [[] for _ in range(9)]
+
+        row_index = 1
+
+        while row_index < 9:
+            row = []
+            col_index = 0
+            while col_index < 9:
+                candidates_left = Core._get_cell_candidates(self, row, row_index, [], col_index)
+                cell = get_random_subset_from_set(candidates_left, 1)[0] if candidates_left \
+                    else None
+
+                if not cell:
+                    raise CustomException("NoCandidatesLeft")
+
+                row.append(cell)
+                col_index += 1
+            self.rows.append(row)
+            row_index += 1
+
+        return self.rows
+
+    def sudoku_solver(self, prettify, initial_grid):
+        """
+        sudoku solver main method
+        :param prettify:
+        :param initial_grid:
+        :return:
+        """
+        counter = 0
+        self.sudoku_variations_queue.put_nowait(initial_grid)
+        while not self.sudoku_variations_queue.empty():
+            variation = self.sudoku_variations_queue.get_nowait()
+            counter += 1
+            if counter > 10000000:
+                raise CustomException("TooManyTries")
+
+            try:
+                sudoku_grid = self._grid_solver(rows=variation)
+                for sudoku_row in sudoku_grid:
+                    pretty_printer(prettify, sudoku_row)
+                return counter
+            # expected custom exception when no candidates left or
+            # too many candidates left for the current state of the grid ->
+            # continue processing queue items with the grid solver
+            except CustomException:
+                continue
+
+    def sudoku_generator(self, prettify, level):
+        """
+        sudoku generator main method
+        :param prettify:
+        :param level:
+        :return:
+        """
+        counter = 0
+        while True:
+            counter += 1
+            if counter > 10000000:
+                raise CustomException("TooManyTries")
+
+            try:
+                sudoku_grid = self._grid_generator(rows=[])
+                for sudoku_row in sudoku_grid:
+                    masked_row = self._add_row_mask(sudoku_row, level)
+                    pretty_printer(prettify, masked_row)
+                return counter
+            # expected custom exception when no candidates left for the current grid
+            # restart grid generator
+            except CustomException:
+                continue

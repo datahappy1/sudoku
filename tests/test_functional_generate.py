@@ -2,7 +2,7 @@
 functional testing generate sudoku pytest module
 """
 import pytest
-from sudoku.sudoku_game import generator
+from sudoku.sudoku_game import run_sudoku_generator
 
 
 @pytest.mark.parametrize("test_input", [
@@ -16,5 +16,5 @@ def test_generate_eval(test_input):
     :param test_input:
     :return:
     """
-    gen = generator(test_input, True)
+    gen = run_sudoku_generator(test_input, True)
     assert isinstance(gen, int)
