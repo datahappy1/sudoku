@@ -3,7 +3,9 @@ sudoku_game.py
 """
 import argparse
 import datetime
-from sudoku import core, common
+
+from sudoku import core
+from sudoku.exceptions import CustomException
 
 
 def run_sudoku_solver(sudoku_to_solve, prettify):
@@ -36,7 +38,7 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
         try:
             row = [int(elem) for elem in row.join(row.split())]
         except ValueError as val_err:
-            raise common.CustomException("InvalidGridItem {}".format(val_err)) \
+            raise CustomException("InvalidGridItem {}".format(val_err)) \
                 from ValueError
         return row
 
@@ -48,15 +50,15 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
         """
         if len(sudoku_grid) != 9 or \
                 any([len(y) != 9 for y in sudoku_grid]):
-            raise common.CustomException("InvalidGridShape")
+            raise CustomException("InvalidGridShape")
 
         return sudoku_grid
 
     loaded_sudoku_grid = open_file(sudoku_to_solve)
     validated_sudoku_grid = validate_grid_shape(loaded_sudoku_grid)
 
-    obj = core.Core(action='solve')
-    counter = obj.sudoku_solver(prettify=prettify, initial_grid=validated_sudoku_grid)
+    sudoku_obj = core.Core(action='solve')
+    counter = sudoku_obj.sudoku_solver(prettify=prettify, initial_grid=validated_sudoku_grid)
     return counter
 
 
@@ -67,8 +69,8 @@ def run_sudoku_generator(level, prettify):
     :param prettify:
     :return: generated sudoku game
     """
-    obj = core.Core(action='generate')
-    counter = obj.sudoku_generator(prettify=prettify, level=level)
+    sudoku_obj = core.Core(action='generate')
+    counter = sudoku_obj.sudoku_generator(prettify=prettify, level=level)
     return counter
 
 
