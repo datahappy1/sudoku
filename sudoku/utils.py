@@ -72,4 +72,3 @@ def pretty_printer(prettify, sudoku_row):
         print(*sudoku_row)
     else:
         print(sudoku_row)
-
