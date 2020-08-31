@@ -23,10 +23,13 @@ class Core:
         self.rows = []
         self.cols = []
         self.squares = []
+        # {col_index:[related_col_index1, related_col_index2],}
+        # or
+        # {row_index:[related_row_index1, related_row_index2],}
         self.generic_grid_map = {0: [1, 2], 1: [2, 0], 2: [1, 0],
                                  3: [4, 5], 4: [5, 3], 5: [4, 3],
                                  6: [7, 8], 7: [8, 6], 8: [7, 6]}
-        # {square_index:[row_index range low:row_index range high],[col_index low:col_index high]}
+        # {square_index:[row_index range low:row_index range high],[col_index low:col_index high],}
         self.sq_to_row_col_map = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9]],
                                   3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
                                   6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
