@@ -64,6 +64,19 @@ class Core:
         """
         return [value for key, value in self.generic_grid_map.items() if key == index][0]
 
+    def _get_unique_candidate_in_rows(self, row_index, sole_candidate):
+        """
+        get the unique candidate in rows method
+        :param row_index:
+        :param sole_candidate:
+        :return:
+        """
+        mapped_index = self._generic_grid_mapper(row_index)
+        if sole_candidate in self.rows[mapped_index[0]] \
+                and sole_candidate in self.rows[mapped_index[1]]:
+            return [sole_candidate]
+        return None
+
     def _get_unique_candidate_in_cols(self, col_index, sole_candidate):
         """
         get the unique candidate in columns method
@@ -115,15 +128,17 @@ class Core:
             candidates_left = list(candidates_left - set(row) -
                                    set(self.squares[square_index]) - set(col))
 
-            # unique candidates in rows
             for sole_candidate in candidates_left:
-                if sole_candidate in self.rows[mapped_index[0]] and \
-                        sole_candidate in self.rows[mapped_index[1]]:
-                    # unique candidates in cols
+                # get unique candidates in rows
+                _unique_candidate_in_rows = \
+                    self._get_unique_candidate_in_rows(row_index, sole_candidate)
+                # get unique candidates in cols
+                if _unique_candidate_in_rows:
                     candidates_left = \
                         self._get_unique_candidate_in_cols(col_index, sole_candidate) \
                         or candidates_left
                     break
+
         return candidates_left
 
     def _multiple_candidates_handler(self, row_index, col_index, candidate):
