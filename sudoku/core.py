@@ -23,16 +23,18 @@ class Core:
         self.rows = []
         self.cols = []
         self.squares = []
-        # {col_index:[related_col_index1, related_col_index2],}
-        # or
+
+        # {col_index:[related_col_index1, related_col_index2],} or
         # {row_index:[related_row_index1, related_row_index2],}
         self.generic_grid_map = {0: [1, 2], 1: [2, 0], 2: [1, 0],
                                  3: [4, 5], 4: [5, 3], 5: [4, 3],
                                  6: [7, 8], 7: [8, 6], 8: [7, 6]}
+
         # {square_index:[row_index range low:row_index range high],[col_index low:col_index high],}
         self.sq_to_row_col_map = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9]],
                                   3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
                                   6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
+
         self.sudoku_solver_variations_queue = LifoQueue()
 
     @functools.lru_cache(128)
@@ -92,31 +94,35 @@ class Core:
 
     def _get_cell_candidates(self, row, row_index, col, col_index):
         """
-        get all possible cell candidates method
+        get possible cell candidates method
         :param row:
         :param row_index:
         :param col:
         :param col_index:
         :return:
         """
-        candidates_left = None
+        sole_candidates = None
         mapper_tuple = self._sq_to_row_col_mapper(row_index, col_index)
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
 
         if self.action == "generate":
-            candidates_left = set(get_random_subset_from_set(ALL_CANDIDATES_LIST, 9))
+            sole_candidates = set(get_random_subset_from_set(ALL_CANDIDATES_LIST, 9))
             if row_index not in (0, 3, 6):
                 self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
-                candidates_left = list(candidates_left - set(row) -
-                                       set(self.squares[square_index]) -
-                                       set(list(map(list, zip(*self.rows)))[col_index]))
+                sole_candidates = list(
+                    sole_candidates - set(row) -
+                    set(self.squares[square_index]) -
+                    set(list(map(list, zip(*self.rows)))[col_index])
+                )
 
             else:
-                candidates_left = list(candidates_left - set(row) -
-                                       set(list(map(list, zip(*self.rows)))[col_index]))
+                sole_candidates = list(
+                    sole_candidates - set(row) -
+                    set(list(map(list, zip(*self.rows)))[col_index])
+                )
 
         elif self.action == "solve":
-            candidates_left = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+            sole_candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9}
             self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
 
             mapped_index = self._generic_grid_mapper(row_index)
@@ -124,22 +130,20 @@ class Core:
             self.squares[square_index].extend(self.rows[mapped_index[0]][slice(slice1, slice2)])
             self.squares[square_index].extend(self.rows[mapped_index[1]][slice(slice1, slice2)])
 
-            # sole candidates
-            candidates_left = list(candidates_left - set(row) -
-                                   set(self.squares[square_index]) - set(col))
+            sole_candidates = list(
+                sole_candidates - set(row) - set(self.squares[square_index]) - set(col)
+            )
 
-            for sole_candidate in candidates_left:
-                # get unique candidates in rows
+            for sole_candidate in sole_candidates:
                 _unique_candidate_in_rows = \
                     self._get_unique_candidate_in_rows(row_index, sole_candidate)
-                # get unique candidates in cols
                 if _unique_candidate_in_rows:
-                    candidates_left = \
+                    sole_candidates = \
                         self._get_unique_candidate_in_cols(col_index, sole_candidate) \
-                        or candidates_left
+                        or sole_candidates
                     break
 
-        return candidates_left
+        return sole_candidates
 
     def _multiple_candidates_handler(self, row_index, col_index, candidate):
         """
