@@ -1,8 +1,7 @@
 """
 strategy.py module
 """
-from queue import Queue
-from queue import LifoQueue
+from queue import Queue, LifoQueue
 
 
 class Strategy:
