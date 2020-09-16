@@ -9,7 +9,8 @@ from sudoku.utils import get_random_subset_from_set, pretty_printer, add_row_mas
     ALL_CANDIDATES_LIST
 
 
-DefaultSolverStrategy = [DepthFirstSearchStrategy, BreadthFirstSearchStrategy][0]
+SOLVER_STRATEGIES_AVAILABLE = [DepthFirstSearchStrategy, BreadthFirstSearchStrategy]
+DefaultSolverStrategy = SOLVER_STRATEGIES_AVAILABLE[0]
 
 
 class Core:
