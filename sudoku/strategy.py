@@ -14,7 +14,7 @@ class Strategy:
         self.strategy_type = strategy_type
 
     def __repr__(self):
-        return "Base Strategy"
+        return self.__class__.__name__
 
     def get_strategy(self):
         """

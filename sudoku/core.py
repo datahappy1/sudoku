@@ -9,10 +9,7 @@ from sudoku.utils import get_random_subset_from_set, pretty_printer, add_row_mas
     ALL_CANDIDATES_LIST
 
 
-ACTION_TO_STRATEGY_MAP = {
-    "generate": BreadthFirstSearchStrategy,
-    "solve": DepthFirstSearchStrategy
-}
+DefaultSolverStrategy = [DepthFirstSearchStrategy, BreadthFirstSearchStrategy][0]
 
 
 class Core:
@@ -41,7 +38,7 @@ class Core:
                                   3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
                                   6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
 
-        self.sudoku_solver_variations_queue = Strategy(ACTION_TO_STRATEGY_MAP[self.action]).get_strategy()
+        self.sudoku_solver_variations_queue = Strategy(DefaultSolverStrategy).get_strategy()
 
     @functools.lru_cache(128)
     def _sq_to_row_col_mapper(self, row_index, col_index):
