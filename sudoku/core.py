@@ -4,7 +4,8 @@ core.py
 import pickle
 import functools
 from sudoku.exceptions import CustomException
-from sudoku.strategy import Strategy, BreadthFirstSearchStrategy, DepthFirstSearchStrategy
+from sudoku.solver_strategy import SearchStrategyFactory, \
+    BreadthFirstSearchStrategy, DepthFirstSearchStrategy
 from sudoku.utils import get_random_sample, pretty_printer, add_row_mask, \
     ALL_CANDIDATES_LIST
 
@@ -39,7 +40,8 @@ class Core:
                                   3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
                                   6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
 
-        self.sudoku_solver_variations_queue = Strategy(DefaultSolverStrategy).get_strategy()
+        self.sudoku_solver_variations_queue = \
+            SearchStrategyFactory(DefaultSolverStrategy).get_strategy()
 
     @functools.lru_cache(128)
     def _sq_to_row_col_mapper(self, row_index, col_index):
@@ -152,11 +154,6 @@ class Core:
     def _multiple_candidates_handler(self, row_index, col_index, candidate):
         """
         multiple candidates handler method
-
-        *2019/06/25 as a performance improvement, pickle was chosen over copy.deepcopy,
-        to revert this, you need to import copy in this module and inside this method change
-        rows = pickle.loads(pickle.dumps(self.rows, -1)) to rows = copy.deepcopy(self.rows)
-
         :param row_index:
         :param col_index:
         :param candidate:
