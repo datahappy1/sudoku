@@ -7,19 +7,19 @@ import random
 ALL_CANDIDATES_LIST = list(range(1, 10))
 
 
-def get_random_subset_from_set(members_in, count_of_members_out):
+def get_random_sample(list_of_input_members, count_of_output_members):
     """
-    get random subset of integers from a set of integers
-    :param members_in:
-    :param count_of_members_out:
-    :return: list or random integers
+    get random sample from a list of integers function
+    :param list_of_input_members:
+    :param count_of_output_members:
+    :return: list of random integers
     """
-    return random.sample(members_in, count_of_members_out)
+    return random.sample(list_of_input_members, count_of_output_members)
 
 
 def get_randint(range_start, range_end):
     """
-    get random integer from a defined range
+    get random integer from a defined range function
     :param range_start:
     :param range_end:
     :return: random int
@@ -35,14 +35,14 @@ def add_row_mask(row, level):
     :return: row with hidden sudoku members
     """
     if level == "easy":
-        hidden_members = get_random_subset_from_set(ALL_CANDIDATES_LIST, 3)
+        hidden_members = get_random_sample(ALL_CANDIDATES_LIST, 3)
         for members in hidden_members:
             row[row.index(members)] = 0
 
     elif level == "medium":
         count_of_hidden_members = get_randint(4, 5)
         hidden_members = \
-            get_random_subset_from_set(ALL_CANDIDATES_LIST, count_of_hidden_members)
+            get_random_sample(ALL_CANDIDATES_LIST, count_of_hidden_members)
 
         for members in hidden_members:
             row[row.index(members)] = 0
@@ -50,9 +50,9 @@ def add_row_mask(row, level):
     elif level == "hard":
         count_of_hidden_members = get_randint(5, 7)
         hidden_members = \
-            get_random_subset_from_set(ALL_CANDIDATES_LIST, count_of_hidden_members)
+            get_random_sample(ALL_CANDIDATES_LIST, count_of_hidden_members)
 
-        extra_hidden_member = get_random_subset_from_set(ALL_CANDIDATES_LIST, 1)[0]
+        extra_hidden_member = get_random_sample(ALL_CANDIDATES_LIST, 1)[0]
 
         for members in hidden_members:
             row[row.index(members)] = 0
@@ -64,10 +64,10 @@ def add_row_mask(row, level):
 
 def pretty_printer(prettify, sudoku_row):
     """
-    final sudoku pretty printer function
+    sudoku pretty printer function
     :param prettify:
     :param sudoku_row:
-    :return: solved (prettified) sudoku
+    :return: solved sudoku
     """
     if prettify is True:
         print(*sudoku_row)

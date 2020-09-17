@@ -5,7 +5,7 @@ import pickle
 import functools
 from sudoku.exceptions import CustomException
 from sudoku.strategy import Strategy, BreadthFirstSearchStrategy, DepthFirstSearchStrategy
-from sudoku.utils import get_random_subset_from_set, pretty_printer, add_row_mask, \
+from sudoku.utils import get_random_sample, pretty_printer, add_row_mask, \
     ALL_CANDIDATES_LIST
 
 
@@ -110,7 +110,7 @@ class Core:
         square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
 
         if self.action == "generate":
-            sole_candidates = set(get_random_subset_from_set(ALL_CANDIDATES_LIST, 9))
+            sole_candidates = set(get_random_sample(ALL_CANDIDATES_LIST, 9))
             if row_index not in (0, 3, 6):
                 self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
                 sole_candidates = list(
@@ -201,7 +201,7 @@ class Core:
         :return: all rows for sudoku grid
         """
         self.rows = rows
-        self.rows.append(get_random_subset_from_set(ALL_CANDIDATES_LIST, 9))
+        self.rows.append(get_random_sample(ALL_CANDIDATES_LIST, 9))
         self.squares = [[] for _ in range(9)]
 
         row_index = 1
@@ -211,7 +211,7 @@ class Core:
             col_index = 0
             while col_index < 9:
                 candidates_left = self._get_cell_candidates(row, row_index, [], col_index)
-                cell = get_random_subset_from_set(candidates_left, 1)[0] if candidates_left \
+                cell = get_random_sample(candidates_left, 1)[0] if candidates_left \
                     else None
 
                 if not cell:
