@@ -52,11 +52,12 @@ def add_row_mask(row, level):
         hidden_members = \
             get_random_subset_from_set(ALL_CANDIDATES_LIST, count_of_hidden_members)
 
-        salt = int(str(get_random_subset_from_set(ALL_CANDIDATES_LIST, 1)).strip('[]'))
+        extra_hidden_member = get_random_subset_from_set(ALL_CANDIDATES_LIST, 1)[0]
+
         for members in hidden_members:
             row[row.index(members)] = 0
-        if salt in row:
-            row[row.index(salt)] = 0
+        if extra_hidden_member in row:
+            row[row.index(extra_hidden_member)] = 0
 
     return row
 

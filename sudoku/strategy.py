@@ -6,7 +6,7 @@ from queue import Queue, LifoQueue
 
 class Strategy:
     """
-    factory strategy class
+    abstract strategy class
     """
 
     def __init__(self, strategy_type):
@@ -17,7 +17,7 @@ class Strategy:
 
     def get_strategy(self):
         """
-        get strategy factory method
+        get concrete strategy method
         :return:
         """
         return self.strategy_type.get_strategy()
