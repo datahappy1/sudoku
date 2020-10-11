@@ -117,18 +117,20 @@ class Core:
                 sole_candidates = list(
                     sole_candidates - set(row) -
                     set(self.squares[square_index]) -
-                    set(list(map(list, zip(*self.rows)))[col_index])
+                    set([x[col_index] for x in self.rows])
                 )
             elif row_index in (0, 3, 6):
                 sole_candidates = list(
                     sole_candidates - set(row) -
-                    set(list(map(list, zip(*self.rows)))[col_index])
+                    set([x[col_index] for x in self.rows])
                 )
 
         elif self.action == "solve":
             sole_candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-            self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
-
+            #self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
+            #print(self.cols)
+            #print([x[col_index] for x in self.rows])
+            self.cols[col_index] = [x[col_index] for x in self.rows]
             mapped_index = self._generic_grid_mapper(row_index)
 
             self.squares[square_index].extend(self.rows[mapped_index[0]][slice(slice1, slice2)])
@@ -168,7 +170,9 @@ class Core:
         """
         self.rows = rows
         self.squares = [[] for _ in range(9)]
-        self.cols = list(map(list, zip(*self.rows)))
+        #self.cols = list(map(list, zip(*self.rows)))
+        #print(self.cols)
+        self.cols = [[_[x] for _ in self.rows] for x in range(9)]
 
         for row_index, row in enumerate(self.rows):
             for col_index, col in enumerate(self.cols):
@@ -181,7 +185,7 @@ class Core:
 
                     if len(candidates_left) == 1:
                         row[col_index] = candidates_left[0]
-                        self.cols = list(map(list, zip(*self.rows)))
+                        self.cols = [[_[x] for _ in self.rows] for x in range(9)]
 
                     else:
                         for candidate in candidates_left:
