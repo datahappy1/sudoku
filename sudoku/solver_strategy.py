@@ -64,7 +64,7 @@ class SearchStrategyFactory:
     def __init__(self, strategy_type):
         self.strategy_type = strategy_type
 
-    def __repr__(self):
+    def __str__(self):
         return self.__class__.__name__
 
     def get_strategy(self):

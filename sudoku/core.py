@@ -13,7 +13,6 @@ from sudoku.utils import get_random_sample, pretty_printer, add_row_mask, \
 SOLVER_STRATEGIES_AVAILABLE = [DepthFirstSearchStrategy, BreadthFirstSearchStrategy]
 DefaultSolverStrategy = SOLVER_STRATEGIES_AVAILABLE[0]
 
-
 class Core:
     """
     sudoku generator and solver worker class
@@ -113,15 +112,14 @@ class Core:
 
         if self.action == "generate":
             sole_candidates = set(get_random_sample(ALL_CANDIDATES_LIST, 9))
-            if row_index not in (0, 3, 6):
+            if row_index in (1, 2, 4, 5, 7, 8):
                 self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
                 sole_candidates = list(
                     sole_candidates - set(row) -
                     set(self.squares[square_index]) -
                     set(list(map(list, zip(*self.rows)))[col_index])
                 )
-
-            else:
+            elif row_index in (0, 3, 6):
                 sole_candidates = list(
                     sole_candidates - set(row) -
                     set(list(map(list, zip(*self.rows)))[col_index])
