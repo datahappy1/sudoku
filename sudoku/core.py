@@ -9,9 +9,9 @@ from sudoku.solver_strategy import SearchStrategyFactory, \
 from sudoku.utils import get_random_sample, pretty_printer, add_row_mask, \
     ALL_CANDIDATES_LIST
 
-
 SOLVER_STRATEGIES_AVAILABLE = [DepthFirstSearchStrategy, BreadthFirstSearchStrategy]
 DefaultSolverStrategy = SOLVER_STRATEGIES_AVAILABLE[0]
+
 
 class Core:
     """
@@ -107,13 +107,17 @@ class Core:
         :return:
         """
         sole_candidates = None
-        mapper_tuple = self._sq_to_row_col_mapper(row_index, col_index)
-        square_index, slice1, slice2 = mapper_tuple[0], mapper_tuple[1][0], mapper_tuple[1][1]
+        mapped_sq_to_row_col = self._sq_to_row_col_mapper(row_index, col_index)
+        square_index, row_sliced_from, row_sliced_to = mapped_sq_to_row_col[0], \
+                                                       mapped_sq_to_row_col[1][0], \
+                                                       mapped_sq_to_row_col[1][1]
 
         if self.action == "generate":
             sole_candidates = set(get_random_sample(ALL_CANDIDATES_LIST, 9))
             if row_index in (1, 2, 4, 5, 7, 8):
-                self.squares[square_index].extend(self.rows[row_index - 1][slice(slice1, slice2)])
+                self.squares[square_index].extend(
+                    self.rows[row_index - 1][slice(row_sliced_from, row_sliced_to)]
+                )
                 sole_candidates = list(
                     sole_candidates - set(row) -
                     set(self.squares[square_index]) -
@@ -131,8 +135,12 @@ class Core:
 
             mapped_index = self._generic_grid_mapper(row_index)
 
-            self.squares[square_index].extend(self.rows[mapped_index[0]][slice(slice1, slice2)])
-            self.squares[square_index].extend(self.rows[mapped_index[1]][slice(slice1, slice2)])
+            self.squares[square_index].extend(
+                self.rows[mapped_index[0]][slice(row_sliced_from, row_sliced_to)]
+            )
+            self.squares[square_index].extend(
+                self.rows[mapped_index[1]][slice(row_sliced_from, row_sliced_to)]
+            )
 
             sole_candidates = list(
                 sole_candidates - set(row) - set(self.squares[square_index]) - set(col)
