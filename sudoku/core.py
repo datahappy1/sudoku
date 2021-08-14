@@ -11,8 +11,7 @@ from sudoku.solver_strategy import SearchStrategyFactory, \
 from sudoku.utils import get_random_sample, pretty_printer, add_row_mask, \
     ALL_CANDIDATES_LIST
 
-SOLVER_STRATEGIES_AVAILABLE = [DepthFirstSearchStrategy, BreadthFirstSearchStrategy]
-DefaultSolverStrategy = SOLVER_STRATEGIES_AVAILABLE[0]
+DefaultSolverStrategy = [DepthFirstSearchStrategy, BreadthFirstSearchStrategy][0]
 
 
 class ActionType(Enum):
@@ -23,16 +22,19 @@ class ActionType(Enum):
     generate = "generate"
 
 
-# {col_index:[related_col_index1, related_col_index2],} or
-# {row_index:[related_row_index1, related_row_index2],}
-GENERIC_GRID_MAP = {0: [1, 2], 1: [2, 0], 2: [1, 0],
-                    3: [4, 5], 4: [5, 3], 5: [4, 3],
-                    6: [7, 8], 7: [8, 6], 8: [7, 6]}
+# {col_index:(related_col_index1, related_col_index2),} or
+# {row_index:(related_row_index1, related_row_index2),}
+GENERIC_GRID_MAP = {0: (1, 2), 1: (2, 0), 2: (1, 0),
+                    3: (4, 5), 4: (5, 3), 5: (4, 3),
+                    6: (7, 8), 7: (8, 6), 8: (7, 6)}
 
-# {square_index:[row_index range low:row_index range high],[col_index low:col_index high],}
-SQUARE_TO_ROW_AND_COLUMN_MAP = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9]],
-                                3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
-                                6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
+SQUARE_TO_ROW_MAP = {0: (0, 3), 1: (0, 3), 2: (0, 3),
+                     3: (3, 6), 4: (3, 6), 5: (3, 6),
+                     6: (6, 9), 7: (6, 9), 8: (6, 9)}
+
+SQUARE_TO_COL_MAP = {0: (0, 3), 1: (3, 6), 2: (6, 9),
+                     3: (0, 3), 4: (3, 6), 5: (6, 9),
+                     6: (0, 3), 7: (3, 6), 8: (6, 9)}
 
 
 @functools.lru_cache(128)
@@ -55,13 +57,10 @@ def _sq_to_row_col_mapper(row_index, col_index):
     :param col_index:
     :return: key, value with mappings
     """
-    for key, value in SQUARE_TO_ROW_AND_COLUMN_MAP.items():
-        if row_index in range(SQUARE_TO_ROW_AND_COLUMN_MAP[key][0][0],
-                              SQUARE_TO_ROW_AND_COLUMN_MAP[key][0][1]):
-            if col_index in range(SQUARE_TO_ROW_AND_COLUMN_MAP[key][1][0],
-                                  SQUARE_TO_ROW_AND_COLUMN_MAP[key][1][1]):
-                k_out, v_out = key, value[1][0:2]
-                return k_out, v_out
+    for key, value in SQUARE_TO_COL_MAP.items():
+        if SQUARE_TO_ROW_MAP[key][0] <= row_index < SQUARE_TO_ROW_MAP[key][1] and \
+                SQUARE_TO_COL_MAP[key][0] <= col_index < SQUARE_TO_COL_MAP[key][1]:
+            return key, value
     return None, None
 
 
@@ -159,9 +158,7 @@ class Core:
             )
 
             for sole_candidate in sole_candidates:
-                _unique_candidate_in_rows = \
-                    self._get_unique_candidate_in_rows(row_index, sole_candidate)
-                if _unique_candidate_in_rows:
+                if self._get_unique_candidate_in_rows(row_index, sole_candidate):
                     sole_candidates = \
                         self._get_unique_candidate_in_cols(col_index, sole_candidate) \
                         or sole_candidates
