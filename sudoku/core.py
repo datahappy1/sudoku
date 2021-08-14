@@ -1,8 +1,10 @@
 """
 core.py
 """
-import pickle
 import functools
+import pickle
+from enum import Enum
+
 from sudoku.exceptions import CustomException
 from sudoku.solver_strategy import SearchStrategyFactory, \
     BreadthFirstSearchStrategy, DepthFirstSearchStrategy
@@ -11,6 +13,56 @@ from sudoku.utils import get_random_sample, pretty_printer, add_row_mask, \
 
 SOLVER_STRATEGIES_AVAILABLE = [DepthFirstSearchStrategy, BreadthFirstSearchStrategy]
 DefaultSolverStrategy = SOLVER_STRATEGIES_AVAILABLE[0]
+
+
+class ActionType(Enum):
+    """
+    ActionType enum class
+    """
+    solve = "solve"
+    generate = "generate"
+
+
+# {col_index:[related_col_index1, related_col_index2],} or
+# {row_index:[related_row_index1, related_row_index2],}
+GENERIC_GRID_MAP = {0: [1, 2], 1: [2, 0], 2: [1, 0],
+                    3: [4, 5], 4: [5, 3], 5: [4, 3],
+                    6: [7, 8], 7: [8, 6], 8: [7, 6]}
+
+# {square_index:[row_index range low:row_index range high],[col_index low:col_index high],}
+SQUARE_TO_ROW_AND_COLUMN_MAP = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9]],
+                                3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
+                                6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
+
+
+@functools.lru_cache(128)
+def _generic_grid_mapper(index):
+    """
+    grid offset mapping function
+    this function takes column index or row index and returns
+    the indexes affected in order to solve the grid
+    :param index:
+    :return: value with mappings
+    """
+    return [value for key, value in GENERIC_GRID_MAP.items() if key == index][0]
+
+
+@functools.lru_cache(128)
+def _sq_to_row_col_mapper(row_index, col_index):
+    """
+    grid square to row and col mapping function
+    :param row_index:
+    :param col_index:
+    :return: key, value with mappings
+    """
+    for key, value in SQUARE_TO_ROW_AND_COLUMN_MAP.items():
+        if row_index in range(SQUARE_TO_ROW_AND_COLUMN_MAP[key][0][0],
+                              SQUARE_TO_ROW_AND_COLUMN_MAP[key][0][1]):
+            if col_index in range(SQUARE_TO_ROW_AND_COLUMN_MAP[key][1][0],
+                                  SQUARE_TO_ROW_AND_COLUMN_MAP[key][1][1]):
+                k_out, v_out = key, value[1][0:2]
+                return k_out, v_out
+    return None, None
 
 
 class Core:
@@ -23,53 +75,13 @@ class Core:
         init method
         :param action:
         """
-        self.action = action
+        self.action = ActionType[action]
         self.rows = []
         self.cols = []
         self.squares = []
 
-        # {col_index:[related_col_index1, related_col_index2],} or
-        # {row_index:[related_row_index1, related_row_index2],}
-        self.generic_grid_map = {0: [1, 2], 1: [2, 0], 2: [1, 0],
-                                 3: [4, 5], 4: [5, 3], 5: [4, 3],
-                                 6: [7, 8], 7: [8, 6], 8: [7, 6]}
-
-        # {square_index:[row_index range low:row_index range high],[col_index low:col_index high],}
-        self.sq_to_row_col_map = {0: [[0, 3], [0, 3]], 1: [[0, 3], [3, 6]], 2: [[0, 3], [6, 9]],
-                                  3: [[3, 6], [0, 3]], 4: [[3, 6], [3, 6]], 5: [[3, 6], [6, 9]],
-                                  6: [[6, 9], [0, 3]], 7: [[6, 9], [3, 6]], 8: [[6, 9], [6, 9]]}
-
         self.sudoku_solver_variations_queue = \
             SearchStrategyFactory(DefaultSolverStrategy).get_strategy()
-
-    @functools.lru_cache(128)
-    def _sq_to_row_col_mapper(self, row_index, col_index):
-        """
-        grid square to row and col mapping function
-        :param row_index:
-        :param col_index:
-        :return: key, value with mappings
-        """
-        k_out, v_out = None, None
-        for key, value in self.sq_to_row_col_map.items():
-            if row_index in range(self.sq_to_row_col_map[key][0][0],
-                                  self.sq_to_row_col_map[key][0][1]):
-                if col_index in range(self.sq_to_row_col_map[key][1][0],
-                                      self.sq_to_row_col_map[key][1][1]):
-                    k_out, v_out = key, value[1][0:2]
-                    break
-        return k_out, v_out
-
-    @functools.lru_cache(128)
-    def _generic_grid_mapper(self, index):
-        """
-        grid offset mapping function
-        this function takes column index or row index and returns
-        the indexes affected in order to solve the grid
-        :param index:
-        :return: value with mappings
-        """
-        return [value for key, value in self.generic_grid_map.items() if key == index][0]
 
     def _get_unique_candidate_in_rows(self, row_index, sole_candidate):
         """
@@ -78,7 +90,7 @@ class Core:
         :param sole_candidate:
         :return:
         """
-        mapped_index = self._generic_grid_mapper(row_index)
+        mapped_index = _generic_grid_mapper(row_index)
         if sole_candidate in self.rows[mapped_index[0]] \
                 and sole_candidate in self.rows[mapped_index[1]]:
             return [sole_candidate]
@@ -91,7 +103,7 @@ class Core:
         :param sole_candidate:
         :return:
         """
-        mapped_index = self._generic_grid_mapper(col_index)
+        mapped_index = _generic_grid_mapper(col_index)
         if sole_candidate in self.cols[mapped_index[0]] \
                 and sole_candidate in self.cols[mapped_index[1]]:
             return [sole_candidate]
@@ -107,12 +119,12 @@ class Core:
         :return:
         """
         sole_candidates = None
-        mapped_sq_to_row_col = self._sq_to_row_col_mapper(row_index, col_index)
+        mapped_sq_to_row_col = _sq_to_row_col_mapper(row_index, col_index)
         square_index, row_sliced_from, row_sliced_to = mapped_sq_to_row_col[0], \
                                                        mapped_sq_to_row_col[1][0], \
                                                        mapped_sq_to_row_col[1][1]
 
-        if self.action == "generate":
+        if self.action == ActionType.generate:
             sole_candidates = set(get_random_sample(ALL_CANDIDATES_LIST, 9))
             if row_index in (1, 2, 4, 5, 7, 8):
                 self.squares[square_index].extend(
@@ -129,11 +141,11 @@ class Core:
                     set(list(map(list, zip(*self.rows)))[col_index])
                 )
 
-        elif self.action == "solve":
+        elif self.action == ActionType.solve:
             sole_candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9}
             self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
 
-            mapped_index = self._generic_grid_mapper(row_index)
+            mapped_index = _generic_grid_mapper(row_index)
 
             self.squares[square_index].extend(
                 self.rows[mapped_index[0]][slice(row_sliced_from, row_sliced_to)]
