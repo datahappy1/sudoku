@@ -22,23 +22,8 @@ class ActionType(Enum):
     generate = "generate"
 
 
-# {col_index:(related_col_index1, related_col_index2),} or
-# {row_index:(related_row_index1, related_row_index2),}
-GENERIC_GRID_MAP = {0: (1, 2), 1: (2, 0), 2: (1, 0),
-                    3: (4, 5), 4: (5, 3), 5: (4, 3),
-                    6: (7, 8), 7: (8, 6), 8: (7, 6)}
-
-SQUARE_TO_ROW_MAP = {0: (0, 3), 1: (0, 3), 2: (0, 3),
-                     3: (3, 6), 4: (3, 6), 5: (3, 6),
-                     6: (6, 9), 7: (6, 9), 8: (6, 9)}
-
-SQUARE_TO_COL_MAP = {0: (0, 3), 1: (3, 6), 2: (6, 9),
-                     3: (0, 3), 4: (3, 6), 5: (6, 9),
-                     6: (0, 3), 7: (3, 6), 8: (6, 9)}
-
-
 @functools.lru_cache(128)
-def _generic_grid_mapper(index):
+def _get_related_columns(index):
     """
     grid offset mapping function
     this function takes column index or row index and returns
@@ -46,20 +31,35 @@ def _generic_grid_mapper(index):
     :param index:
     :return: value with mappings
     """
-    return [value for key, value in GENERIC_GRID_MAP.items() if key == index][0]
+    # {col_index:(related_col_index1, related_col_index2),} or
+    # {row_index:(related_row_index1, related_row_index2),}
+    generic_grid_map = {0: (1, 2), 1: (2, 0), 2: (1, 0),
+                        3: (4, 5), 4: (5, 3), 5: (4, 3),
+                        6: (7, 8), 7: (8, 6), 8: (7, 6)}
+
+    return [value for key, value in generic_grid_map.items() if key == index][0]
 
 
 @functools.lru_cache(128)
-def _sq_to_row_col_mapper(row_index, col_index):
+def _get_square_with_related_columns(row_index, col_index):
     """
     grid square to row and col mapping function
     :param row_index:
     :param col_index:
     :return: key, value with mappings
     """
-    for key, value in SQUARE_TO_COL_MAP.items():
-        if SQUARE_TO_ROW_MAP[key][0] <= row_index < SQUARE_TO_ROW_MAP[key][1] and \
-                SQUARE_TO_COL_MAP[key][0] <= col_index < SQUARE_TO_COL_MAP[key][1]:
+
+    square_to_row_map = {0: (0, 3), 1: (0, 3), 2: (0, 3),
+                         3: (3, 6), 4: (3, 6), 5: (3, 6),
+                         6: (6, 9), 7: (6, 9), 8: (6, 9)}
+
+    square_to_col_map = {0: (0, 3), 1: (3, 6), 2: (6, 9),
+                         3: (0, 3), 4: (3, 6), 5: (6, 9),
+                         6: (0, 3), 7: (3, 6), 8: (6, 9)}
+
+    for key, value in square_to_col_map.items():
+        if square_to_row_map[key][0] <= row_index < square_to_row_map[key][1] and \
+                square_to_col_map[key][0] <= col_index < square_to_col_map[key][1]:
             return key, value
     return None, None
 
@@ -89,7 +89,7 @@ class Core:
         :param sole_candidate:
         :return:
         """
-        mapped_index = _generic_grid_mapper(row_index)
+        mapped_index = _get_related_columns(row_index)
         if sole_candidate in self.rows[mapped_index[0]] \
                 and sole_candidate in self.rows[mapped_index[1]]:
             return [sole_candidate]
@@ -102,7 +102,7 @@ class Core:
         :param sole_candidate:
         :return:
         """
-        mapped_index = _generic_grid_mapper(col_index)
+        mapped_index = _get_related_columns(col_index)
         if sole_candidate in self.cols[mapped_index[0]] \
                 and sole_candidate in self.cols[mapped_index[1]]:
             return [sole_candidate]
@@ -118,10 +118,10 @@ class Core:
         :return:
         """
         sole_candidates = None
-        mapped_sq_to_row_col = _sq_to_row_col_mapper(row_index, col_index)
-        square_index, row_sliced_from, row_sliced_to = mapped_sq_to_row_col[0], \
-                                                       mapped_sq_to_row_col[1][0], \
-                                                       mapped_sq_to_row_col[1][1]
+        mapped_square_to_colums = _get_square_with_related_columns(row_index, col_index)
+        square_index, row_sliced_from, row_sliced_to = mapped_square_to_colums[0], \
+                                                       mapped_square_to_colums[1][0], \
+                                                       mapped_square_to_colums[1][1]
 
         if self.action == ActionType.generate:
             sole_candidates = set(get_random_sample(ALL_CANDIDATES_LIST, 9))
@@ -144,7 +144,7 @@ class Core:
             sole_candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9}
             self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
 
-            mapped_index = _generic_grid_mapper(row_index)
+            mapped_index = _get_related_columns(row_index)
 
             self.squares[square_index].extend(
                 self.rows[mapped_index[0]][slice(row_sliced_from, row_sliced_to)]
@@ -166,16 +166,31 @@ class Core:
 
         return sole_candidates
 
-    def _multiple_candidates_handler(self, row_index, col_index, candidate):
+    def _deepcopy_rows(self):
         """
-        multiple candidates handler method
+        deepcopy rows with pickle loads dumps method
+        :return:
+        """
+        return pickle.loads(pickle.dumps(self.rows))
+
+    @staticmethod
+    def _update_rows_with_candidate(rows, row_index, col_index, candidate):
+        """
+        update rows with candidate
         :param row_index:
         :param col_index:
         :param candidate:
         :return:
         """
-        rows = pickle.loads(pickle.dumps(self.rows, -1))
         rows[row_index][col_index] = candidate
+        return rows
+
+    def _put_rows_to_queue(self, rows):
+        """
+        put rows to queue
+        :param rows:
+        :return:
+        """
         self.sudoku_solver_variations_queue.put_nowait(rows)
 
     def _grid_solver(self, rows):
@@ -202,7 +217,10 @@ class Core:
 
                     else:
                         for candidate in candidates_left:
-                            self._multiple_candidates_handler(row_index, col_index, candidate)
+                            updated_rows = self._update_rows_with_candidate(
+                                self._deepcopy_rows(), row_index, col_index, candidate)
+                            self._put_rows_to_queue(updated_rows)
+
                         raise CustomException("TooManyCandidatesLeft")
 
         return self.rows

@@ -2,7 +2,9 @@
 functional testing solve sudoku pytest module
 """
 import os
+
 import pytest
+
 from sudoku.sudoku_game import run_sudoku_solver
 
 
