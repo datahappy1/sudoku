@@ -22,7 +22,7 @@ class ActionType(Enum):
     generate = "generate"
 
 
-@functools.lru_cache(128)
+@functools.lru_cache()
 def _get_related_columns(index):
     """
     grid offset mapping function
@@ -40,7 +40,7 @@ def _get_related_columns(index):
     return [value for key, value in generic_grid_map.items() if key == index][0]
 
 
-@functools.lru_cache(128)
+@functools.lru_cache()
 def _get_square_with_related_columns(row_index, col_index):
     """
     grid square to row and col mapping function
@@ -48,7 +48,6 @@ def _get_square_with_related_columns(row_index, col_index):
     :param col_index:
     :return: key, value with mappings
     """
-
     square_to_row_map = {0: (0, 3), 1: (0, 3), 2: (0, 3),
                          3: (3, 6), 4: (3, 6), 5: (3, 6),
                          6: (6, 9), 7: (6, 9), 8: (6, 9)}
@@ -76,11 +75,13 @@ class Core:
         """
         self.action = ActionType[action]
         self.rows = []
-        self.cols = []
         self.squares = []
 
         self.sudoku_solver_variations_queue = \
             SearchStrategyFactory(DefaultSolverStrategy).get_strategy()
+
+    def _get_cols_from_rows(self):
+        return list(map(list, zip(*self.rows)))
 
     def _get_unique_candidate_in_rows(self, row_index, sole_candidate):
         """
@@ -90,8 +91,8 @@ class Core:
         :return:
         """
         mapped_index = _get_related_columns(row_index)
-        if sole_candidate in self.rows[mapped_index[0]] \
-                and sole_candidate in self.rows[mapped_index[1]]:
+        if sole_candidate in (self.rows[mapped_index[0]],
+                              self.rows[mapped_index[1]]):
             return [sole_candidate]
         return None
 
@@ -103,8 +104,8 @@ class Core:
         :return:
         """
         mapped_index = _get_related_columns(col_index)
-        if sole_candidate in self.cols[mapped_index[0]] \
-                and sole_candidate in self.cols[mapped_index[1]]:
+        if sole_candidate in (self._get_cols_from_rows()[mapped_index[0]],
+                              self._get_cols_from_rows()[mapped_index[1]]):
             return [sole_candidate]
         return None
 
@@ -117,11 +118,11 @@ class Core:
         :param col_index:
         :return:
         """
-        sole_candidates = None
-        mapped_square_to_colums = _get_square_with_related_columns(row_index, col_index)
-        square_index, row_sliced_from, row_sliced_to = mapped_square_to_colums[0], \
-                                                       mapped_square_to_colums[1][0], \
-                                                       mapped_square_to_colums[1][1]
+        sole_candidates = []
+        mapped_square_to_columns = _get_square_with_related_columns(row_index, col_index)
+        square_index, row_sliced_from, row_sliced_to = mapped_square_to_columns[0], \
+                                                       mapped_square_to_columns[1][0], \
+                                                       mapped_square_to_columns[1][1]
 
         if self.action == ActionType.generate:
             sole_candidates = set(get_random_sample(ALL_CANDIDATES_LIST, 9))
@@ -129,32 +130,22 @@ class Core:
                 self.squares[square_index].extend(
                     self.rows[row_index - 1][slice(row_sliced_from, row_sliced_to)]
                 )
-                sole_candidates = list(
-                    sole_candidates - set(row) -
-                    set(self.squares[square_index]) -
-                    set(list(map(list, zip(*self.rows)))[col_index])
-                )
+                sole_candidates = sole_candidates - set(row) \
+                                  - set(self.squares[square_index]) \
+                                  - set(self._get_cols_from_rows()[col_index])
+
             elif row_index in (0, 3, 6):
-                sole_candidates = list(
-                    sole_candidates - set(row) -
-                    set(list(map(list, zip(*self.rows)))[col_index])
-                )
+                sole_candidates = sole_candidates - set(row) \
+                                  - set(self._get_cols_from_rows()[col_index])
 
         elif self.action == ActionType.solve:
-            sole_candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-            self.cols[col_index] = list(map(list, zip(*self.rows)))[col_index]
-
-            mapped_index = _get_related_columns(row_index)
-
             self.squares[square_index].extend(
-                self.rows[mapped_index[0]][slice(row_sliced_from, row_sliced_to)]
-            )
-            self.squares[square_index].extend(
-                self.rows[mapped_index[1]][slice(row_sliced_from, row_sliced_to)]
+                self.rows[_get_related_columns(row_index)[0]][slice(row_sliced_from, row_sliced_to)] +
+                self.rows[_get_related_columns(row_index)[1]][slice(row_sliced_from, row_sliced_to)]
             )
 
             sole_candidates = list(
-                sole_candidates - set(row) - set(self.squares[square_index]) - set(col)
+                {1, 2, 3, 4, 5, 6, 7, 8, 9} - set(row) - set(self.squares[square_index]) - set(col)
             )
 
             for sole_candidate in sole_candidates:
@@ -200,10 +191,9 @@ class Core:
         """
         self.rows = rows
         self.squares = [[] for _ in range(9)]
-        self.cols = list(map(list, zip(*self.rows)))
 
         for row_index, row in enumerate(self.rows):
-            for col_index, col in enumerate(self.cols):
+            for col_index, col in enumerate(self._get_cols_from_rows()):
                 if row[col_index] == 0:
                     candidates_left = \
                         self._get_cell_candidates(row, row_index, col, col_index)
@@ -213,7 +203,6 @@ class Core:
 
                     if len(candidates_left) == 1:
                         row[col_index] = candidates_left[0]
-                        self.cols = list(map(list, zip(*self.rows)))
 
                     else:
                         for candidate in candidates_left:
