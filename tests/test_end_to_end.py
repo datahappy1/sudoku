@@ -21,7 +21,7 @@ def test_generate_solve_eval(test_input):
     :param test_input:
     :return:
     """
-    target_file = f'/tmp/{test_input}'
+    target_file = os.pathsep.join((os.getcwd(),"tmp",test_input))
 
     with open(target_file, 'w') as f:
         with redirect_stdout(f):
