@@ -122,7 +122,11 @@ def args_handler():
         default="files/sudoku_easy.txt",
     )
     parser.add_argument(
-        "-p", "--prettify_output", type=str, required=False, default="false"
+        "-p",
+        "--prettify_output",
+        type=str,
+        required=False,
+        default="false"
     )
 
     parsed = parser.parse_args()

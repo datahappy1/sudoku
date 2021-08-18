@@ -32,7 +32,7 @@ python sudoku\sudoku_game.py -a "generate" -l "hard" -p 1
   ### running sudoku solver 
 arguments needed:
 - `-a` action (str, required, option: "solve")
-- `-f` filepath (str, optional, options: {"easy", "medium", "hard"}, default: "files/sudoku_easy.txt")
+- `-f` filepath (str, optional, default: "files/sudoku_easy.txt")
 - `-p` prettify (str, optional, options: {"T","F","True","False","1","0"}, default: "0")
 
 The format of the text file with the sudoku to be solved has to be set like:
