@@ -2,6 +2,7 @@
 functional testing generate sudoku pytest module
 """
 import pytest
+
 from sudoku.sudoku_game import run_sudoku_generator
 
 

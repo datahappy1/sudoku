@@ -4,8 +4,13 @@ sudoku_game.py
 import argparse
 import datetime
 
-from sudoku import core
+from sudoku import solver
+from sudoku.action_type import ActionType
 from sudoku.exceptions import CustomException
+from sudoku.generator import sudoku_generator
+from sudoku.level import Level
+from sudoku.solver_strategy import SearchStrategyFactory, \
+    BreadthFirstSearchStrategy, DepthFirstSearchStrategy
 
 
 def run_sudoku_solver(sudoku_to_solve, prettify):
@@ -15,6 +20,7 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
     :param prettify:
     :return: solved sudoku
     """
+
     def open_file(sudoku):
         """
         open the initial sudoku
@@ -54,11 +60,20 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
 
         return sudoku_grid
 
+    def choose_default_solver_strategy():
+        """
+        choose default solver strategy function - depth first
+        :return:
+        """
+        return [DepthFirstSearchStrategy, BreadthFirstSearchStrategy][0]
+
     loaded_sudoku_grid = open_file(sudoku_to_solve)
     validated_sudoku_grid = validate_grid_shape(loaded_sudoku_grid)
 
-    sudoku_obj = core.Core(action='solve')
-    counter = sudoku_obj.sudoku_solver(prettify=prettify, initial_grid=validated_sudoku_grid)
+    solver_obj = solver.Solver(
+        SearchStrategyFactory(choose_default_solver_strategy()).get_strategy()
+    )
+    counter = solver_obj.sudoku_solver(prettify=prettify, initial_grid=validated_sudoku_grid)
     return counter
 
 
@@ -69,8 +84,7 @@ def run_sudoku_generator(level, prettify):
     :param prettify:
     :return: generated sudoku game
     """
-    sudoku_obj = core.Core(action='generate')
-    counter = sudoku_obj.sudoku_generator(prettify=prettify, level=level)
+    counter = sudoku_generator(prettify=prettify, level=level)
     return counter
 
 
@@ -109,20 +123,28 @@ def args_handler():
     return prepared_args
 
 
+def main():
+    """
+    main sudoku function
+    :return:
+    """
+    execution_start = datetime.datetime.now()
+
+    prepared_args = args_handler()
+    action = ActionType[prepared_args['action']]
+    generate_level = Level[prepared_args['generate_level']]
+    sudoku_to_solve = prepared_args['sudoku_to_solve']
+    pretty = prepared_args['prettify']
+    runs_count = 0
+
+    if action == ActionType.generate:
+        runs_count = run_sudoku_generator(generate_level, pretty)
+    elif action == ActionType.solve:
+        runs_count = run_sudoku_solver(sudoku_to_solve, pretty)
+
+    execution_end = datetime.datetime.now()
+    print(f'Finished in {execution_end - execution_start} in {runs_count} tries')
+
+
 if __name__ == '__main__':
-    EXECUTION_START = datetime.datetime.now()
-
-    PREPARED_ARGS = args_handler()
-    ACTION = PREPARED_ARGS.get('action', None)
-    GENERATE_LEVEL = PREPARED_ARGS.get('generate_level', None)
-    SUDOKU_TO_SOLVE = PREPARED_ARGS.get('sudoku_to_solve', None)
-    PRETTY = PREPARED_ARGS.get('prettify', None)
-    RUNS_COUNT = 0
-
-    if ACTION == 'generate':
-        RUNS_COUNT = run_sudoku_generator(GENERATE_LEVEL, PRETTY)
-    elif ACTION == 'solve':
-        RUNS_COUNT = run_sudoku_solver(SUDOKU_TO_SOLVE, PRETTY)
-
-    EXECUTION_END = datetime.datetime.now()
-    print(f'Finished in {EXECUTION_END - EXECUTION_START} in {RUNS_COUNT} tries')
+    main()
