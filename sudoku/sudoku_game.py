@@ -100,7 +100,11 @@ def args_handler():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-a", "--action", type=str, required=True, choices={"solve", "generate"}
+        "-a",
+        "--action",
+        type=str,
+        required=True,
+        choices={choice.value for choice in ActionType}
     )
     parser.add_argument(
         "-l",
@@ -108,7 +112,7 @@ def args_handler():
         type=str,
         required=False,
         default="easy",
-        choices={"easy", "medium", "hard"},
+        choices={level.value for level in Level},
     )
     parser.add_argument(
         "-f",
