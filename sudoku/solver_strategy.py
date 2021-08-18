@@ -9,6 +9,7 @@ class SearchStrategy(ABC):
     """
     abstract search strategy class
     """
+
     @abstractmethod
     def __str__(self):
         pass

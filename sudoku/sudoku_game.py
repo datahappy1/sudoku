@@ -9,8 +9,11 @@ from sudoku.action_type import ActionType
 from sudoku.exceptions import CustomException
 from sudoku.generator import sudoku_generator
 from sudoku.level import Level
-from sudoku.solver_strategy import SearchStrategyFactory, \
-    BreadthFirstSearchStrategy, DepthFirstSearchStrategy
+from sudoku.solver_strategy import (
+    SearchStrategyFactory,
+    BreadthFirstSearchStrategy,
+    DepthFirstSearchStrategy,
+)
 
 
 def run_sudoku_solver(sudoku_to_solve, prettify):
@@ -44,8 +47,7 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
         try:
             row = [int(elem) for elem in row.join(row.split())]
         except ValueError as val_err:
-            raise CustomException("InvalidGridItem {}".format(val_err)) \
-                from ValueError
+            raise CustomException("InvalidGridItem {}".format(val_err)) from ValueError
         return row
 
     def validate_grid_shape(sudoku_grid):
@@ -54,8 +56,7 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
         :param sudoku_grid:
         :return:
         """
-        if len(sudoku_grid) != 9 or \
-                any([len(y) != 9 for y in sudoku_grid]):
+        if len(sudoku_grid) != 9 or any([len(y) != 9 for y in sudoku_grid]):
             raise CustomException("InvalidGridShape")
 
         return sudoku_grid
@@ -73,7 +74,9 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
     solver_obj = solver.Solver(
         SearchStrategyFactory(choose_default_solver_strategy()).get_strategy()
     )
-    counter = solver_obj.sudoku_solver(prettify=prettify, initial_grid=validated_sudoku_grid)
+    counter = solver_obj.sudoku_solver(
+        prettify=prettify, initial_grid=validated_sudoku_grid
+    )
     return counter
 
 
@@ -96,29 +99,40 @@ def args_handler():
     prepared_args = {}
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-a', '--action', type=str,
-                        required=True,
-                        choices={'solve', 'generate'})
-    parser.add_argument('-l', '--generate_level', type=str,
-                        required=False, default='easy',
-                        choices={'easy', 'medium', 'hard'})
-    parser.add_argument('-f', '--file_with_sudoku_to_solve', type=str,
-                        required=False, default="files/sudoku_easy.txt")
-    parser.add_argument('-p', '--prettify_output', type=str,
-                        required=False, default='false')
+    parser.add_argument(
+        "-a", "--action", type=str, required=True, choices={"solve", "generate"}
+    )
+    parser.add_argument(
+        "-l",
+        "--generate_level",
+        type=str,
+        required=False,
+        default="easy",
+        choices={"easy", "medium", "hard"},
+    )
+    parser.add_argument(
+        "-f",
+        "--file_with_sudoku_to_solve",
+        type=str,
+        required=False,
+        default="files/sudoku_easy.txt",
+    )
+    parser.add_argument(
+        "-p", "--prettify_output", type=str, required=False, default="false"
+    )
 
     parsed = parser.parse_args()
 
-    prepared_args['action'] = parsed.action
-    prepared_args['generate_level'] = parsed.generate_level
-    prepared_args['sudoku_to_solve'] = parsed.file_with_sudoku_to_solve
+    prepared_args["action"] = parsed.action
+    prepared_args["generate_level"] = parsed.generate_level
+    prepared_args["sudoku_to_solve"] = parsed.file_with_sudoku_to_solve
 
     prettify = parsed.prettify_output
     # arg parse bool data type known bug workaround
-    if prettify.lower() in ('no', 'false', 'f', 'n', '0'):
-        prepared_args['prettify'] = False
+    if prettify.lower() in ("no", "false", "f", "n", "0"):
+        prepared_args["prettify"] = False
     else:
-        prepared_args['prettify'] = True
+        prepared_args["prettify"] = True
 
     return prepared_args
 
@@ -131,10 +145,10 @@ def main():
     execution_start = datetime.datetime.now()
 
     prepared_args = args_handler()
-    action = ActionType[prepared_args['action']]
-    generate_level = Level[prepared_args['generate_level']]
-    sudoku_to_solve = prepared_args['sudoku_to_solve']
-    pretty = prepared_args['prettify']
+    action = ActionType[prepared_args["action"]]
+    generate_level = Level[prepared_args["generate_level"]]
+    sudoku_to_solve = prepared_args["sudoku_to_solve"]
+    pretty = prepared_args["prettify"]
     runs_count = 0
 
     if action == ActionType.generate:
@@ -143,8 +157,8 @@ def main():
         runs_count = run_sudoku_solver(sudoku_to_solve, pretty)
 
     execution_end = datetime.datetime.now()
-    print(f'Finished in {execution_end - execution_start} in {runs_count} tries')
+    print(f"Finished in {execution_end - execution_start} in {runs_count} tries")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

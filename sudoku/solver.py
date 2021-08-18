@@ -5,8 +5,11 @@ solver
 import pickle
 
 from sudoku.exceptions import CustomException
-from sudoku.grid import get_cols_from_grid_rows, get_related_columns_for_index, \
-    get_square_from_position
+from sudoku.grid import (
+    get_cols_from_grid_rows,
+    get_related_columns_for_index,
+    get_square_from_position,
+)
 from sudoku.printer import pretty_printer
 
 
@@ -18,8 +21,7 @@ def _get_unique_candidate_in_grid_rows(grid_rows, row_index, sole_candidate):
     :return:
     """
     mapped_index = get_related_columns_for_index(row_index)
-    if sole_candidate in (grid_rows[mapped_index[0]],
-                          grid_rows[mapped_index[1]]):
+    if sole_candidate in (grid_rows[mapped_index[0]], grid_rows[mapped_index[1]]):
         return [sole_candidate]
     return None
 
@@ -32,8 +34,10 @@ def _get_unique_candidate_in_cols(grid_rows, col_index, sole_candidate):
     :return:
     """
     mapped_index = get_related_columns_for_index(col_index)
-    if sole_candidate in (get_cols_from_grid_rows(grid_rows)[mapped_index[0]],
-                          get_cols_from_grid_rows(grid_rows)[mapped_index[1]]):
+    if sole_candidate in (
+        get_cols_from_grid_rows(grid_rows)[mapped_index[0]],
+        get_cols_from_grid_rows(grid_rows)[mapped_index[1]],
+    ):
         return [sole_candidate]
     return None
 
@@ -55,9 +59,10 @@ def _get_solver_cell_candidates(grid_rows, row_index, col_index):
     )
     for sole_candidate in sole_candidates:
         if _get_unique_candidate_in_grid_rows(grid_rows, row_index, sole_candidate):
-            sole_candidates = \
-                _get_unique_candidate_in_cols(grid_rows, col_index, sole_candidate) \
+            sole_candidates = (
+                _get_unique_candidate_in_cols(grid_rows, col_index, sole_candidate)
                 or sole_candidates
+            )
             break
     return sole_candidates
 
@@ -110,9 +115,9 @@ class Solver:
         for row_index, row in enumerate(grid_rows):
             for col_index in range(0, 9):
                 if row[col_index] == 0:
-                    candidates_left = _get_solver_cell_candidates(grid_rows=grid_rows,
-                                                                  row_index=row_index,
-                                                                  col_index=col_index)
+                    candidates_left = _get_solver_cell_candidates(
+                        grid_rows=grid_rows, row_index=row_index, col_index=col_index
+                    )
 
                     if not candidates_left:
                         raise CustomException("NoCandidatesLeft")
@@ -124,7 +129,9 @@ class Solver:
                         for candidate in candidates_left:
                             updated_rows = _update_grid_rows_with_candidate(
                                 grid_rows=_deepcopy_grid_rows(grid_rows),
-                                row_index=row_index, col_index=col_index, candidate=candidate
+                                row_index=row_index,
+                                col_index=col_index,
+                                candidate=candidate,
                             )
                             self._put_rows_to_queue(updated_rows)
 
@@ -148,7 +155,9 @@ class Solver:
                 raise CustomException("TooManyTries")
 
             try:
-                sudoku_grid = self._grid_solver(grid_rows=_deepcopy_grid_rows(variation))
+                sudoku_grid = self._grid_solver(
+                    grid_rows=_deepcopy_grid_rows(variation)
+                )
                 for sudoku_row in sudoku_grid:
                     pretty_printer(prettify, sudoku_row)
                 return counter
