@@ -153,8 +153,8 @@ def main():
     execution_start = datetime.datetime.now()
 
     prepared_args = args_handler()
-    action = ActionType[prepared_args["action"]]
-    generate_level = Level[prepared_args["generate_level"]]
+    action = ActionType[prepared_args["action"].upper()]
+    generate_level = Level[prepared_args["generate_level"].upper()]
     sudoku_to_solve = prepared_args["sudoku_to_solve"]
     pretty = prepared_args["prettify"]
     runs_count = 0
