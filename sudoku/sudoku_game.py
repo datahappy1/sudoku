@@ -24,7 +24,7 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
     :return: solved sudoku
     """
 
-    def open_file(sudoku):
+    def _open_file(sudoku):
         """
         open the initial sudoku
         from the txt file and return a list of lists
@@ -35,10 +35,10 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
         sudoku_grid = []
         with open(sudoku) as file_handler:
             for row in file_handler:
-                sudoku_grid.append(validate_row(row))
+                sudoku_grid.append(_validate_row(row))
         return sudoku_grid
 
-    def validate_row(row):
+    def _validate_row(row):
         """
         validate row is a list of integers
         :param row:
@@ -50,7 +50,7 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
             raise CustomException("InvalidGridItem {}".format(val_err)) from ValueError
         return row
 
-    def validate_grid_shape(sudoku_grid):
+    def _validate_grid_shape(sudoku_grid):
         """
         validate the initial sudoku grid shape is 9x9
         :param sudoku_grid:
@@ -61,18 +61,18 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
 
         return sudoku_grid
 
-    def choose_default_solver_strategy():
+    def _choose_default_solver_strategy():
         """
         choose default solver strategy function - depth first
         :return:
         """
         return [DepthFirstSearchStrategy, BreadthFirstSearchStrategy][0]
 
-    loaded_sudoku_grid = open_file(sudoku_to_solve)
-    validated_sudoku_grid = validate_grid_shape(loaded_sudoku_grid)
+    loaded_sudoku_grid = _open_file(sudoku_to_solve)
+    validated_sudoku_grid = _validate_grid_shape(loaded_sudoku_grid)
 
     solver_obj = solver.Solver(
-        SearchStrategyFactory(choose_default_solver_strategy()).get_strategy()
+        SearchStrategyFactory(_choose_default_solver_strategy()).get_strategy()
     )
     counter = solver_obj.sudoku_solver(
         prettify=prettify, initial_grid=validated_sudoku_grid
