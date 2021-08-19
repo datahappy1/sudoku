@@ -9,6 +9,6 @@ class Level(Enum):
     Level enum class
     """
 
-    easy = "easy"
-    medium = "medium"
-    hard = "hard"
+    EASY = "easy"
+    MEDIUM = "medium"
+    HARD = "hard"

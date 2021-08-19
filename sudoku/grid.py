@@ -15,7 +15,7 @@ def get_cols_from_grid_rows(grid_rows):
     return list(map(list, zip(*grid_rows)))
 
 
-@functools.lru_cache(128)
+@functools.lru_cache(16)
 def get_related_columns_for_index(index):
     """
     grid offset mapping function
@@ -31,37 +31,7 @@ def get_related_columns_for_index(index):
         3: (4, 5), 4: (5, 3), 5: (4, 3),
         6: (7, 8), 7: (8, 6), 8: (7, 6),
     }
-
-    return [value for key, value in generic_grid_map.items() if key == index][0]
-
-
-@functools.lru_cache(128)
-def _get_related_columns_from_square_for_position(row_index, col_index):
-    """
-    grid square to row and col mapping function
-    :param row_index:
-    :param col_index:
-    :return: key, value with mappings
-    """
-    square_to_row_map = {
-        0: (0, 3), 1: (0, 3), 2: (0, 3),
-        3: (3, 6), 4: (3, 6), 5: (3, 6),
-        6: (6, 9), 7: (6, 9), 8: (6, 9),
-    }
-
-    square_to_col_map = {
-        0: (0, 3), 1: (3, 6), 2: (6, 9),
-        3: (0, 3), 4: (3, 6), 5: (6, 9),
-        6: (0, 3), 7: (3, 6), 8: (6, 9),
-    }
-
-    for key, value in square_to_col_map.items():
-        if (
-                square_to_row_map[key][0] <= row_index < square_to_row_map[key][1]
-                and square_to_col_map[key][0] <= col_index < square_to_col_map[key][1]
-        ):
-            return value
-    return None
+    return generic_grid_map[index]
 
 
 def get_square_from_position(grid_rows, row_index, col_index):
@@ -72,20 +42,28 @@ def get_square_from_position(grid_rows, row_index, col_index):
     :param col_index:
     :return:
     """
+
+    def _get_related_columns_from_square_for_column_index():
+        """
+        get related columns from square for column index
+        :return: lower and upper bound column indexes
+        """
+        if 0 <= col_index < 3:
+            return 0, 3
+        if 3 <= col_index < 6:
+            return 3, 6
+        if 6 <= col_index < 9:
+            return 6, 9
+        return None
+
     square = []
 
-    mapped_square_to_columns = _get_related_columns_from_square_for_position(
-        row_index, col_index
-    )
-    row_sliced_from, row_sliced_to = (
-        mapped_square_to_columns[0],
-        mapped_square_to_columns[1],
-    )
+    mapped_square_to_columns = _get_related_columns_from_square_for_column_index()
 
     try:
         square.extend(
             grid_rows[get_related_columns_for_index(row_index)[0]][
-                slice(row_sliced_from, row_sliced_to)
+                slice(mapped_square_to_columns[0], mapped_square_to_columns[1])
             ]
         )
     except IndexError:
@@ -95,7 +73,7 @@ def get_square_from_position(grid_rows, row_index, col_index):
     try:
         square.extend(
             grid_rows[get_related_columns_for_index(row_index)[1]][
-                slice(row_sliced_from, row_sliced_to)
+                slice(mapped_square_to_columns[0], mapped_square_to_columns[1])
             ]
         )
     except IndexError:

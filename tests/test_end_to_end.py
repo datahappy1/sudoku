@@ -21,7 +21,7 @@ def test_generate_solve_eval(test_input):
     :param test_input:
     :return:
     """
-    target_file = f'/tmp/{test_input}'
+    target_file = os.sep.join((os.getcwd(), "temp", test_input))
 
     with open(target_file, 'w') as f:
         with redirect_stdout(f):
@@ -38,5 +38,3 @@ def test_generate_solve_eval(test_input):
 
     solve = run_sudoku_solver(target_file, True)
     assert isinstance(solve, int)
-
-    os.remove(target_file)

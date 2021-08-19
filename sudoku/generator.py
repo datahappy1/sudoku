@@ -40,12 +40,12 @@ def _add_row_mask(row, level):
     :param level:
     :return: row with hidden sudoku members
     """
-    if level == Level.easy:
+    if level == Level.EASY:
         hidden_members = _get_random_sample_from_list(ALL_CANDIDATES_LIST, 3)
         for members in hidden_members:
             row[row.index(members)] = 0
 
-    elif level == Level.medium:
+    elif level == Level.MEDIUM:
         count_of_hidden_members = _get_randint_from_range(4, 5)
         hidden_members = _get_random_sample_from_list(
             ALL_CANDIDATES_LIST, count_of_hidden_members
@@ -54,7 +54,7 @@ def _add_row_mask(row, level):
         for members in hidden_members:
             row[row.index(members)] = 0
 
-    elif level == Level.hard:
+    elif level == Level.HARD:
         count_of_hidden_members = _get_randint_from_range(5, 7)
         hidden_members = _get_random_sample_from_list(
             ALL_CANDIDATES_LIST, count_of_hidden_members

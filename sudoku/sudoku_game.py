@@ -56,7 +56,7 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
         :param sudoku_grid:
         :return:
         """
-        if len(sudoku_grid) != 9 or any([len(y) != 9 for y in sudoku_grid]):
+        if len(sudoku_grid) != 9 or any(len(y) != 9 for y in sudoku_grid):
             raise CustomException("InvalidGridShape")
 
         return sudoku_grid
@@ -159,9 +159,9 @@ def main():
     pretty = prepared_args["prettify"]
     runs_count = 0
 
-    if action == ActionType.generate:
+    if action == ActionType.GENERATE:
         runs_count = run_sudoku_generator(generate_level, pretty)
-    elif action == ActionType.solve:
+    elif action == ActionType.SOLVE:
         runs_count = run_sudoku_solver(sudoku_to_solve, pretty)
 
     execution_end = datetime.datetime.now()
