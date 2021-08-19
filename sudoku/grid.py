@@ -1,7 +1,6 @@
 """
 grid
 """
-import functools
 
 ALL_CANDIDATES_LIST = list(range(1, 10))
 
@@ -15,7 +14,6 @@ def get_cols_from_grid_rows(grid_rows):
     return list(map(list, zip(*grid_rows)))
 
 
-@functools.lru_cache(16)
 def get_related_columns_for_index(index):
     """
     grid offset mapping function
