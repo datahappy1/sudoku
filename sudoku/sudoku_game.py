@@ -104,7 +104,7 @@ def args_handler():
         "--action",
         type=str,
         required=True,
-        choices={choice.value for choice in ActionType}
+        choices={action.value for action in ActionType}
     )
     parser.add_argument(
         "-l",
