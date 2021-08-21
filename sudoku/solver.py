@@ -7,39 +7,9 @@ import pickle
 from sudoku.exceptions import CustomException
 from sudoku.grid import (
     get_cols_from_grid_rows,
-    get_related_columns_for_index,
     get_square_from_position,
 )
 from sudoku.printer import pretty_printer
-
-
-def _get_unique_candidate_in_grid_rows(grid_rows, row_index, sole_candidate):
-    """
-    get the unique candidate in grid state rows function
-    :param row_index:
-    :param sole_candidate:
-    :return:
-    """
-    mapped_index = get_related_columns_for_index(row_index)
-    if sole_candidate in (grid_rows[mapped_index[0]], grid_rows[mapped_index[1]]):
-        return [sole_candidate]
-    return None
-
-
-def _get_unique_candidate_in_cols(grid_rows, col_index, sole_candidate):
-    """
-    get the unique candidate in columns function
-    :param col_index:
-    :param sole_candidate:
-    :return:
-    """
-    mapped_index = get_related_columns_for_index(col_index)
-    if sole_candidate in (
-        get_cols_from_grid_rows(grid_rows)[mapped_index[0]],
-        get_cols_from_grid_rows(grid_rows)[mapped_index[1]],
-    ):
-        return [sole_candidate]
-    return None
 
 
 def _get_solver_cell_candidates(grid_rows, row_index, col_index):
@@ -57,13 +27,6 @@ def _get_solver_cell_candidates(grid_rows, row_index, col_index):
         - set(square)
         - set(get_cols_from_grid_rows(grid_rows)[col_index])
     )
-    for sole_candidate in sole_candidates:
-        if _get_unique_candidate_in_grid_rows(grid_rows, row_index, sole_candidate):
-            sole_candidates = (
-                _get_unique_candidate_in_cols(grid_rows, col_index, sole_candidate)
-                or sole_candidates
-            )
-            break
     return sole_candidates
 
 
