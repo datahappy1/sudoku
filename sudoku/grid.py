@@ -5,13 +5,14 @@ grid
 ALL_CANDIDATES_LIST = list(range(1, 10))
 
 
-def get_cols_from_grid_rows(grid_rows):
+def get_col_from_grid_rows(grid_rows, col_index):
     """
-    get columns from grid represented in rows
+    get column from grid represented in rows
     :param grid_rows:
+    :param col_index:
     :return:
     """
-    return list(map(list, zip(*grid_rows)))
+    return list(map(list, zip(*grid_rows)))[col_index]
 
 
 def _get_related_rows_for_row_index(index):
@@ -39,23 +40,15 @@ def get_square_from_position(grid_rows, row_index, col_index):
     :param col_index:
     :return:
     """
-
-    def _get_square_column_boundaries_for_column_index():
-        """
-        get square column boundaries for column index
-        :return: boundary_col_from, boundary_col_to
-        """
-        if 0 <= col_index < 3:
-            return 0, 3
-        if 3 <= col_index < 6:
-            return 3, 6
-        if 6 <= col_index < 9:
-            return 6, 9
-        return None
-
     square = []
+    square_column_boundaries = None, None
 
-    square_column_boundaries = _get_square_column_boundaries_for_column_index()
+    if col_index // 3 == 0:
+        square_column_boundaries = 0, 3
+    elif col_index // 3 == 1:
+        square_column_boundaries = 3, 6
+    elif col_index // 3 == 2:
+        square_column_boundaries = 6, 9
 
     try:
         square.extend(

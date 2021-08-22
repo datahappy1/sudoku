@@ -5,7 +5,7 @@ from random import sample, randint
 
 from sudoku.exceptions import CustomException
 from sudoku.grid import (
-    get_cols_from_grid_rows,
+    get_col_from_grid_rows,
     get_square_from_position,
     ALL_CANDIDATES_LIST,
 )
@@ -80,20 +80,20 @@ def _get_generator_cell_candidates(grid_rows, candidate_row, row_index, col_inde
     :return:
     """
     sole_candidates = set(_get_random_sample_from_list(ALL_CANDIDATES_LIST, 9))
+
     if row_index in (1, 2, 4, 5, 7, 8):
         square = get_square_from_position(grid_rows, row_index, col_index)
         sole_candidates = (
             sole_candidates
             - set(candidate_row)
             - set(square)
-            - set(get_cols_from_grid_rows(grid_rows)[col_index])
+            - set(get_col_from_grid_rows(grid_rows, col_index))
         )
-
     elif row_index in (0, 3, 6):
         sole_candidates = (
             sole_candidates
             - set(candidate_row)
-            - set(get_cols_from_grid_rows(grid_rows)[col_index])
+            - set(get_col_from_grid_rows(grid_rows, col_index))
         )
     return sole_candidates
 

@@ -6,7 +6,7 @@ import pickle
 
 from sudoku.exceptions import CustomException
 from sudoku.grid import (
-    get_cols_from_grid_rows,
+    get_col_from_grid_rows,
     get_square_from_position,
 )
 from sudoku.printer import pretty_printer
@@ -25,7 +25,7 @@ def _get_solver_cell_candidates(grid_rows, row_index, col_index):
         {1, 2, 3, 4, 5, 6, 7, 8, 9}
         - set(grid_rows[row_index])
         - set(square)
-        - set(get_cols_from_grid_rows(grid_rows)[col_index])
+        - set(get_col_from_grid_rows(grid_rows, col_index))
     )
     return sole_candidates
 
