@@ -8,6 +8,7 @@ from sudoku.exceptions import CustomException
 from sudoku.grid import (
     get_col_from_grid_rows,
     get_square_from_position,
+    ALL_CANDIDATES_SET
 )
 from sudoku.printer import pretty_printer
 
@@ -22,7 +23,7 @@ def _get_solver_cell_candidates(grid_rows, row_index, col_index):
     """
     square = get_square_from_position(grid_rows, row_index, col_index)
     sole_candidates = list(
-        {1, 2, 3, 4, 5, 6, 7, 8, 9}
+        ALL_CANDIDATES_SET
         - set(grid_rows[row_index])
         - set(square)
         - set(get_col_from_grid_rows(grid_rows, col_index))
