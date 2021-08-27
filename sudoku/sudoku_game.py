@@ -104,7 +104,7 @@ def args_handler():
         "--action",
         type=str,
         required=True,
-        choices={action.value for action in ActionType}
+        choices={action.value for action in ActionType},
     )
     parser.add_argument(
         "-l",
@@ -122,11 +122,7 @@ def args_handler():
         default="files/sudoku_easy.txt",
     )
     parser.add_argument(
-        "-p",
-        "--prettify_output",
-        type=str,
-        required=False,
-        default="false"
+        "-p", "--prettify_output", type=str, required=False, default="false"
     )
 
     parsed = parser.parse_args()

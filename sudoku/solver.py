@@ -6,9 +6,9 @@ import pickle
 
 from sudoku.exceptions import CustomException
 from sudoku.grid import (
-    get_col_from_grid_rows,
+    ALL_CANDIDATES_SET,
     get_square_from_position,
-    ALL_CANDIDATES_SET
+    get_col_from_grid_rows,
 )
 from sudoku.printer import pretty_printer
 
@@ -70,6 +70,27 @@ class Solver:
         """
         self.sudoku_solver_variations_queue.put_nowait(grid_rows)
 
+    def _handle_multiple_candidates(
+        self, grid_rows, row_index, col_index, candidates_left
+    ):
+        """
+        handle multiple candidates method
+        :param grid_rows:
+        :param row_index:
+        :param col_index:
+        :param candidates_left:
+        """
+        for candidate in candidates_left:
+            updated_rows = _update_grid_rows_with_candidate(
+                grid_rows=_deepcopy_grid_rows(grid_rows),
+                row_index=row_index,
+                col_index=col_index,
+                candidate=candidate,
+            )
+            self._put_rows_to_queue(updated_rows)
+
+        raise CustomException("TooManyCandidatesLeft")
+
     def _grid_solver(self, grid_rows):
         """
         grid solver method
@@ -90,16 +111,12 @@ class Solver:
                         row[col_index] = candidates_left[0]
 
                     else:
-                        for candidate in candidates_left:
-                            updated_rows = _update_grid_rows_with_candidate(
-                                grid_rows=_deepcopy_grid_rows(grid_rows),
-                                row_index=row_index,
-                                col_index=col_index,
-                                candidate=candidate,
-                            )
-                            self._put_rows_to_queue(updated_rows)
-
-                        raise CustomException("TooManyCandidatesLeft")
+                        self._handle_multiple_candidates(
+                            grid_rows=grid_rows,
+                            row_index=row_index,
+                            col_index=col_index,
+                            candidates_left=candidates_left,
+                        )
 
         return grid_rows
 
