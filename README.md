@@ -58,19 +58,10 @@ python sudoku\sudoku_game.py -a "solve" -f "files/sudoku_hard.txt" -p 1
 
 ### solving the worlds hardest sudoku 
 The "worlds hardest sudoku" game is described [here](https://www.conceptispuzzles.com/index.aspx?uri=info/article/424)
-and this is how the puzzle looks like:
-```
-800000000
-003600000
-070090200
-050007000
-000045700
-000100030
-001000068
-008500010
-090000400 
-```
-and this is the sudoku solver calculated solution:
+
+![](https://github.com/datahappy1/sudoku/blob/master/docs/img/worlds_hardest_sudoku.PNG)
+ 
+this is the sudoku solver calculated solution:
 ```
 812753649
 943682175

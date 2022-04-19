@@ -25,9 +25,15 @@ def _get_related_rows_for_row_index(index):
     """
     # {row_index:(related_row_index1, related_row_index2),}
     generic_grid_map = {
-        0: (1, 2), 1: (2, 0), 2: (1, 0),
-        3: (4, 5), 4: (5, 3), 5: (4, 3),
-        6: (7, 8), 7: (8, 6), 8: (7, 6),
+        0: (1, 2),
+        1: (2, 0),
+        2: (1, 0),
+        3: (4, 5),
+        4: (5, 3),
+        5: (4, 3),
+        6: (7, 8),
+        7: (8, 6),
+        8: (7, 6),
     }
     return generic_grid_map[index]
 
