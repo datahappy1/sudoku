@@ -12,7 +12,7 @@ def get_col_from_grid_rows(grid_rows, col_index):
     :param col_index:
     :return:
     """
-    return list(map(list, zip(*grid_rows)))[col_index]
+    return set(row[col_index] for row in grid_rows)
 
 
 def _get_related_rows_for_row_index(index):

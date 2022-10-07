@@ -21,13 +21,13 @@ def _get_solver_cell_candidates(grid_rows, row_index, col_index):
     :param col_index:
     :return:
     """
-    square = get_square_from_position(grid_rows, row_index, col_index)
     sole_candidates = list(
         ALL_CANDIDATES_SET
         - set(grid_rows[row_index])
-        - set(square)
+        - set(get_square_from_position(grid_rows, row_index, col_index))
         - set(get_col_from_grid_rows(grid_rows, col_index))
     )
+
     return sole_candidates
 
 

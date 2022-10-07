@@ -79,22 +79,15 @@ def _get_generator_cell_candidates(grid_rows, candidate_row, row_index, col_inde
     :param col_index:
     :return:
     """
-    sole_candidates = set(_get_random_sample_from_set(ALL_CANDIDATES_SET, 9))
+    sole_candidates = (
+        set(_get_random_sample_from_set(ALL_CANDIDATES_SET, 9))
+        - set(candidate_row)
+        - set(get_col_from_grid_rows(grid_rows, col_index))
+    )
 
     if row_index in (1, 2, 4, 5, 7, 8):
-        square = get_square_from_position(grid_rows, row_index, col_index)
-        sole_candidates = (
-            sole_candidates
-            - set(candidate_row)
-            - set(square)
-            - set(get_col_from_grid_rows(grid_rows, col_index))
-        )
-    elif row_index in (0, 3, 6):
-        sole_candidates = (
-            sole_candidates
-            - set(candidate_row)
-            - set(get_col_from_grid_rows(grid_rows, col_index))
-        )
+        sole_candidates -= set(get_square_from_position(grid_rows, row_index, col_index))
+
     return sole_candidates
 
 
