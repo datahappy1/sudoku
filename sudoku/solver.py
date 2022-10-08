@@ -3,6 +3,7 @@ solver
 """
 
 import pickle
+from typing import List, Set
 
 from sudoku.exceptions import CustomException
 from sudoku.grid import (
@@ -13,7 +14,9 @@ from sudoku.grid import (
 from sudoku.printer import pretty_printer
 
 
-def _get_solver_cell_candidates(grid_rows, row_index, col_index):
+def _get_solver_cell_candidates(
+    grid_rows: List[List[int]], row_index: int, col_index: int
+) -> Set[int]:
     """
     get solver cell candidates function
     :param grid_rows:
@@ -21,17 +24,15 @@ def _get_solver_cell_candidates(grid_rows, row_index, col_index):
     :param col_index:
     :return:
     """
-    sole_candidates = list(
+    return (
         ALL_CANDIDATES_SET
         - set(grid_rows[row_index])
-        - set(get_square_from_position(grid_rows, row_index, col_index))
-        - set(get_col_from_grid_rows(grid_rows, col_index))
+        - get_square_from_position(grid_rows, row_index, col_index)
+        - get_col_from_grid_rows(grid_rows, col_index)
     )
 
-    return sole_candidates
 
-
-def _deepcopy_grid_rows(grid_rows):
+def _deepcopy_grid_rows(grid_rows: List[List[int]]) -> List[List[int]]:
     """
     deepcopy rows with pickle loads dumps function
     :return:
@@ -39,7 +40,9 @@ def _deepcopy_grid_rows(grid_rows):
     return pickle.loads(pickle.dumps(grid_rows))
 
 
-def _update_grid_rows_with_candidate(grid_rows, row_index, col_index, candidate):
+def _update_grid_rows_with_candidate(
+    grid_rows: List[List[int]], row_index: int, col_index: int, candidate: int
+) -> List[List[int]]:
     """
     update rows with candidate function
     :param row_index:
@@ -62,7 +65,7 @@ class Solver:
     def __str__(self):
         return str(self.sudoku_solver_variations_queue)
 
-    def _put_rows_to_queue(self, grid_rows):
+    def _put_rows_to_queue(self, grid_rows: List[List[int]]) -> None:
         """
         put rows to queue method
         :param grid_rows:
@@ -71,8 +74,12 @@ class Solver:
         self.sudoku_solver_variations_queue.put_nowait(grid_rows)
 
     def _handle_multiple_candidates(
-        self, grid_rows, row_index, col_index, candidates_left
-    ):
+        self,
+        grid_rows: List[List[int]],
+        row_index: int,
+        col_index: int,
+        candidates_left: Set[int],
+    ) -> None:
         """
         handle multiple candidates method
         :param grid_rows:
@@ -91,7 +98,7 @@ class Solver:
 
         raise CustomException("TooManyCandidatesLeft")
 
-    def _grid_solver(self, grid_rows):
+    def _grid_solver(self, grid_rows: List[List[int]]) -> List[List[int]]:
         """
         grid solver method
         :param grid_rows:
@@ -108,8 +115,7 @@ class Solver:
                         raise CustomException("NoCandidatesLeft")
 
                     if len(candidates_left) == 1:
-                        row[col_index] = candidates_left[0]
-
+                        row[col_index] = candidates_left.pop()
                     else:
                         self._handle_multiple_candidates(
                             grid_rows=grid_rows,
@@ -120,7 +126,7 @@ class Solver:
 
         return grid_rows
 
-    def sudoku_solver(self, prettify, initial_grid):
+    def sudoku_solver(self, prettify: bool, initial_grid: List[List[int]]) -> int:
         """
         sudoku solver main method
         :param prettify:

@@ -2,6 +2,7 @@
 generator
 """
 from random import sample, randint
+from typing import Set, List
 
 from sudoku.exceptions import CustomException
 from sudoku.grid import (
@@ -13,7 +14,9 @@ from sudoku.level import Level
 from sudoku.printer import pretty_printer
 
 
-def _get_random_sample_from_set(set_of_input_members, count_of_output_members):
+def _get_random_sample_from_set(
+    set_of_input_members: Set[int], count_of_output_members: int
+) -> List[int]:
     """
     get random sample from a set of integers function
     :param set_of_input_members:
@@ -23,7 +26,7 @@ def _get_random_sample_from_set(set_of_input_members, count_of_output_members):
     return sample(set_of_input_members, count_of_output_members)
 
 
-def _get_randint_from_range(range_start, range_end):
+def _get_randint_from_range(range_start: int, range_end: int) -> int:
     """
     get random integer from a defined range function
     :param range_start:
@@ -33,7 +36,7 @@ def _get_randint_from_range(range_start, range_end):
     return randint(range_start, range_end)
 
 
-def _add_row_mask(row, level):
+def _add_row_mask(row: List[int], level: str) -> List[int]:
     """
     add row mask function
     :param row:
@@ -70,7 +73,9 @@ def _add_row_mask(row, level):
     return row
 
 
-def _get_generator_cell_candidates(grid_rows, candidate_row, row_index, col_index):
+def _get_generator_cell_candidates(
+    grid_rows: List[List[int]], candidate_row: List[int], row_index: int, col_index: int
+) -> Set[int]:
     """
     get generator cell candidates function
     :param grid_rows:
@@ -82,16 +87,16 @@ def _get_generator_cell_candidates(grid_rows, candidate_row, row_index, col_inde
     sole_candidates = (
         set(_get_random_sample_from_set(ALL_CANDIDATES_SET, 9))
         - set(candidate_row)
-        - set(get_col_from_grid_rows(grid_rows, col_index))
+        - get_col_from_grid_rows(grid_rows, col_index)
     )
 
     if row_index in (1, 2, 4, 5, 7, 8):
-        sole_candidates -= set(get_square_from_position(grid_rows, row_index, col_index))
+        sole_candidates -= get_square_from_position(grid_rows, row_index, col_index)
 
     return sole_candidates
 
 
-def _get_initial_grid_rows_with_first_random_row():
+def _get_initial_grid_rows_with_first_random_row() -> List[List[int]]:
     """
     get initial grid state rows with first random row
     :return:
@@ -99,7 +104,7 @@ def _get_initial_grid_rows_with_first_random_row():
     return [_get_random_sample_from_set(ALL_CANDIDATES_SET, 9)]
 
 
-def _grid_generator(grid_rows):
+def _grid_generator(grid_rows: List[List[int]]):
     """
     grid generator function
     :param grid_rows:
@@ -128,7 +133,7 @@ def _grid_generator(grid_rows):
     return grid_rows
 
 
-def sudoku_generator(prettify, level):
+def sudoku_generator(prettify: bool, level: str) -> int:
     """
     sudoku generator main function
     :param prettify:
