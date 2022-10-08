@@ -44,7 +44,22 @@ def get_square_from_position(
     grid_rows: List[List[int]], row_index: int, col_index: int
 ) -> Set[int]:
     """
-    get square from position on grid
+    get square from position on grid except for the grid members from
+    current row provided by the row_index argument.
+    i.e when row_index == 5 and col_index == 3, function returns
+    a set containing the members marked as `x` :
+
+    =========
+    =========
+    =========
+    ===xxx===
+    ===xxx===
+    ===X=====
+    =========
+    =========
+    =========
+
+
     :param grid_rows:
     :param row_index:
     :param col_index:
@@ -60,15 +75,24 @@ def get_square_from_position(
     elif col_index // 3 == 2:
         square_column_boundaries = 6, 9
 
-    for idx_bound in (0, 1):
-        try:
-            for pos in grid_rows[_get_related_rows_for_row_index(row_index)[idx_bound]][
-                slice(square_column_boundaries[0], square_column_boundaries[1])
-            ]:
-                square.add(pos)
-        except IndexError:
-            # this is expected when generating grid, index error is raised for square
-            # data lookups that are targeting rows/columns that haven't been yet populated
-            pass
+    try:
+        for pos in grid_rows[_get_related_rows_for_row_index(row_index)[0]][
+            slice(square_column_boundaries[0], square_column_boundaries[1])
+        ]:
+            square.add(pos)
+    except IndexError:
+        # this is expected when generating grid, index error is raised for square
+        # data lookups that are targeting rows/columns that haven't been yet populated
+        pass
+
+    try:
+        for pos in grid_rows[_get_related_rows_for_row_index(row_index)[1]][
+            slice(square_column_boundaries[0], square_column_boundaries[1])
+        ]:
+            square.add(pos)
+    except IndexError:
+        # this is expected when generating grid, index error is raised for square
+        # data lookups that are targeting rows/columns that haven't been yet populated
+        pass
 
     return square
