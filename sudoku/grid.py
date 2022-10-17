@@ -37,7 +37,7 @@ def _get_generic_grid_map_values_for_index(index: int) -> Tuple[int, int]:
     this function takes row/col index and returns
     the related rows/cols
     :param index:
-    :return: related_row_index1, related_row_index2
+    :return: related_row(col)_index1, related_row(col)_index2
     """
     return GENERIC_GRID_MAP[index]
 
