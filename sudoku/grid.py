@@ -10,14 +10,14 @@ ALL_CANDIDATES_SET = {1, 2, 3, 4, 5, 6, 7, 8, 9}
 # {col_index:(related_col_index1, related_col_index2),}
 GENERIC_GRID_MAP = {
     0: (1, 2),
-    1: (2, 0),
-    2: (1, 0),
+    1: (0, 2),
+    2: (0, 1),
     3: (4, 5),
-    4: (5, 3),
-    5: (4, 3),
+    4: (3, 5),
+    5: (3, 4),
     6: (7, 8),
-    7: (8, 6),
-    8: (7, 6),
+    7: (6, 8),
+    8: (6, 7),
 }
 
 
@@ -68,20 +68,20 @@ def get_square_from_position(
     :return:
     """
     square = set()
-    square_rows_indexes = _get_generic_grid_map_values_for_index(index=row_index)
-    square_column_indexes = _get_generic_grid_map_values_for_index(index=col_index)
+    related_row_index1, related_row_index2 = _get_generic_grid_map_values_for_index(index=row_index)
+    related_column_index1, related_column_index2 = _get_generic_grid_map_values_for_index(index=col_index)
 
     try:
-        square.add(grid_rows[square_rows_indexes[0]][square_column_indexes[0]])
-        square.add(grid_rows[square_rows_indexes[0]][square_column_indexes[1]])
+        square.add(grid_rows[related_row_index1][related_column_index1])
+        square.add(grid_rows[related_row_index1][related_column_index2])
     except IndexError:
         # this is expected when generating grid, index error is raised for square
         # data lookups that are targeting rows/columns that haven't been yet populated
         pass
 
     try:
-        square.add(grid_rows[square_rows_indexes[1]][square_column_indexes[0]])
-        square.add(grid_rows[square_rows_indexes[1]][square_column_indexes[1]])
+        square.add(grid_rows[related_row_index2][related_column_index1])
+        square.add(grid_rows[related_row_index2][related_column_index2])
     except IndexError:
         # this is expected when generating grid, index error is raised for square
         # data lookups that are targeting rows/columns that haven't been yet populated
