@@ -1,5 +1,4 @@
 # Sudoku game generator and solver
- ![](https://github.com/datahappy1/sudoku/blob/master/docs/img/rating.svg)
 
 - [installation and getting started](#installation-and-getting-started)
 - [running sudoku generator](#running-sudoku-generator)
