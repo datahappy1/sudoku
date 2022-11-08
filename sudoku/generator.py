@@ -91,7 +91,12 @@ def _get_generator_cell_candidates(
     )
 
     if row_index in (1, 2, 4, 5, 7, 8):
-        sole_candidates -= get_square_from_position(grid_rows, row_index, col_index)
+        try:
+            sole_candidates -= get_square_from_position(grid_rows, row_index, col_index)
+        except IndexError:
+            # this is expected when generating grid, index error is raised for square
+            # data lookups that are targeting rows/columns that haven't been yet populated
+            pass
 
     return sole_candidates
 

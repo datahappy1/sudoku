@@ -71,20 +71,10 @@ def get_square_from_position(
     related_row_index1, related_row_index2 = _get_generic_grid_map_values_for_index(index=row_index)
     related_column_index1, related_column_index2 = _get_generic_grid_map_values_for_index(index=col_index)
 
-    try:
-        square.add(grid_rows[related_row_index1][related_column_index1])
-        square.add(grid_rows[related_row_index1][related_column_index2])
-    except IndexError:
-        # this is expected when generating grid, index error is raised for square
-        # data lookups that are targeting rows/columns that haven't been yet populated
-        pass
+    square.add(grid_rows[related_row_index1][related_column_index1])
+    square.add(grid_rows[related_row_index1][related_column_index2])
 
-    try:
-        square.add(grid_rows[related_row_index2][related_column_index1])
-        square.add(grid_rows[related_row_index2][related_column_index2])
-    except IndexError:
-        # this is expected when generating grid, index error is raised for square
-        # data lookups that are targeting rows/columns that haven't been yet populated
-        pass
+    square.add(grid_rows[related_row_index2][related_column_index1])
+    square.add(grid_rows[related_row_index2][related_column_index2])
 
     return square
