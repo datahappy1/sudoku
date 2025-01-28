@@ -23,7 +23,7 @@ def _get_random_sample_from_set(
     :param count_of_output_members:
     :return: list of random integers
     """
-    return sample(set_of_input_members, count_of_output_members)
+    return sample(tuple(set_of_input_members), count_of_output_members)
 
 
 def _get_randint_from_range(range_start: int, range_end: int) -> int:
