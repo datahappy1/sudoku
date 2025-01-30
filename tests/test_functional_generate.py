@@ -3,13 +3,14 @@ functional testing generate sudoku pytest module
 """
 import pytest
 
+from sudoku.level import Level
 from sudoku.sudoku_game import run_sudoku_generator
 
 
 @pytest.mark.parametrize("test_input", [
-    "easy",
-    "medium",
-    "hard",
+    Level("easy"),
+    Level("medium"),
+    Level("hard"),
 ])
 def test_generate_eval(test_input):
     """

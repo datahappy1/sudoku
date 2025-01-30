@@ -6,13 +6,14 @@ from contextlib import redirect_stdout
 
 import pytest
 
+from sudoku.level import Level
 from sudoku.sudoku_game import run_sudoku_generator, run_sudoku_solver
 
 
 @pytest.mark.parametrize("test_input", [
-    "easy",
-    "medium",
-    "hard",
+    Level("easy"),
+    Level("medium"),
+    Level("hard"),
 ])
 def test_generate_solve_eval(test_input):
     """
@@ -21,7 +22,7 @@ def test_generate_solve_eval(test_input):
     :param test_input:
     :return:
     """
-    target_file = os.sep.join((os.getcwd(), "temp", test_input))
+    target_file = os.sep.join((os.getcwd(), "temp", test_input.value))
 
     with open(target_file, 'w') as f:
         with redirect_stdout(f):
