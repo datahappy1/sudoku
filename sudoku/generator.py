@@ -36,7 +36,7 @@ def _get_randint_from_range(range_start: int, range_end: int) -> int:
     return randint(range_start, range_end)
 
 
-def _add_row_mask(row: List[int], level: str) -> List[int]:
+def _add_row_mask(row: List[int], level: Level) -> List[int]:
     """
     add row mask function
     :param row:
