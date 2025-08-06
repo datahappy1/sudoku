@@ -107,7 +107,7 @@ class Solver:
                             row_index=row_index,
                             col_index=col_index,
                             candidates_left=candidates_left,
-                            priority=len(candidates_left),
+                            priority=len(candidates_left)//3,
                         )
         return grid_rows
 
