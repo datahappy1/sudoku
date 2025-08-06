@@ -3,8 +3,8 @@ solver
 """
 
 import pickle
+from queue import PriorityQueue
 from typing import List, Set, Union, Optional
-from collections import deque
 from sudoku.exceptions import CustomException
 from sudoku.grid import (
     GridSolveStatus,
@@ -54,29 +54,13 @@ class Solver:
     """
 
     def __init__(self):
-        self.queue = deque()
+        self.queue = PriorityQueue()
 
-    def _calculate_branch_pruning_threshold(self):
+    def _put_rows_to_queue(self, grid_rows: List[List[int]], priority: int) -> None:
         """
-        dynamic calculation to start pruning branches early based on queue size
+        put rows to queue, priority is the count of unknown grid candidates
         """
-        branch_pruning_threshold = 4
-        if len(self.queue) >= 100000:
-            _bpt = branch_pruning_threshold + 1
-            branch_pruning_threshold = min(_bpt, 9)
-        elif len(self.queue) < 100000:
-            _bpt = branch_pruning_threshold - 1
-            branch_pruning_threshold = max(0, _bpt)
-        return branch_pruning_threshold
-
-    def _put_rows_to_queue(self, grid_rows: List[List[int]], is_priority: bool) -> None:
-        """
-        put rows to deque, if not priority, append left
-        """
-        if is_priority:
-            self.queue.append(grid_rows)
-        else:
-            self.queue.appendleft(grid_rows)
+        self.queue.put((priority, grid_rows))
 
     def _handle_multiple_candidates(
         self,
@@ -84,7 +68,7 @@ class Solver:
         row_index: int,
         col_index: int,
         candidates_left: Set[int],
-        priority: bool,
+        priority: int,
     ) -> GridSolveStatus:
         """
         handle multiple candidates
@@ -100,7 +84,7 @@ class Solver:
         return GridSolveStatus.TooManyCandidatesLeft
 
     def _solve_grid(
-        self, grid_rows: List[List[int]], branch_pruning_threshold: int
+        self, grid_rows: List[List[int]]
     ) -> Union[List[List[int]], GridSolveStatus]:
         """
         grid solver method
@@ -117,21 +101,13 @@ class Solver:
 
                     if len(candidates_left) == 1:
                         row[col_index] = candidates_left.pop()
-                    elif len(candidates_left) <= branch_pruning_threshold:
-                        return self._handle_multiple_candidates(
-                            grid_rows=grid_rows,
-                            row_index=row_index,
-                            col_index=col_index,
-                            candidates_left=candidates_left,
-                            priority=True,
-                        )
                     else:
                         return self._handle_multiple_candidates(
                             grid_rows=grid_rows,
                             row_index=row_index,
                             col_index=col_index,
                             candidates_left=candidates_left,
-                            priority=False,
+                            priority=len(candidates_left),
                         )
         return grid_rows
 
@@ -142,18 +118,15 @@ class Solver:
         function responsible for the solving of the sudoku
         """
         counter = 0
-        self.queue.append(initial_grid)
-        while len(self.queue) != 0:
-            variation = self.queue.pop()
+        self.queue.put((0, initial_grid))
+        while not self.queue.empty():
+            variation = self.queue.get()[1]
             counter += 1
             if counter > MAX_ATTEMPTS:
                 raise CustomException("TooManyTries")
 
-            branch_pruning_threshold = self._calculate_branch_pruning_threshold()
-
             sudoku_grid = self._solve_grid(
                 grid_rows=_deepcopy_grid_rows(variation),
-                branch_pruning_threshold=branch_pruning_threshold,
             )
             if sudoku_grid in (
                 GridSolveStatus.NoCandidatesLeft,
