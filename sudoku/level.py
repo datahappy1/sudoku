@@ -1,6 +1,7 @@
 """
 level
 """
+
 from enum import Enum
 
 

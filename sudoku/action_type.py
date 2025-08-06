@@ -1,6 +1,7 @@
 """
 action_type
 """
+
 from enum import Enum
 
 

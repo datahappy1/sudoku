@@ -1,6 +1,7 @@
 """
 sudoku_game.py
 """
+
 import argparse
 import datetime
 
@@ -9,19 +10,11 @@ from sudoku.action_type import ActionType
 from sudoku.exceptions import CustomException
 from sudoku.generator import sudoku_generator
 from sudoku.level import Level
-from sudoku.solver_strategy import (
-    SearchStrategyFactory,
-    BreadthFirstSearchStrategy,
-    DepthFirstSearchStrategy,
-)
 
 
 def run_sudoku_solver(sudoku_to_solve, prettify):
     """
     solver function
-    :param sudoku_to_solve:
-    :param prettify:
-    :return: solved sudoku
     """
 
     def _open_file(sudoku):
@@ -29,8 +22,6 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
         open the initial sudoku
         from the txt file and return a list of lists
         with the grid items
-        :param sudoku:
-        :return:
         """
         sudoku_grid = []
         with open(sudoku) as file_handler:
@@ -41,11 +32,9 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
     def _validate_row(row):
         """
         validate row is a list of integers
-        :param row:
-        :return:
         """
         try:
-            row = [int(elem) for elem in row.join(row.split())]
+            row = [int(_) for _ in row.join(row.split())]
         except ValueError as val_err:
             raise CustomException("InvalidGridItem {}".format(val_err)) from ValueError
         return row
@@ -53,28 +42,15 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
     def _validate_grid_shape(sudoku_grid):
         """
         validate the initial sudoku grid shape is 9x9
-        :param sudoku_grid:
-        :return:
         """
-        if len(sudoku_grid) != 9 or any(len(y) != 9 for y in sudoku_grid):
+        if len(sudoku_grid) != 9 or any(len(_) != 9 for _ in sudoku_grid):
             raise CustomException("InvalidGridShape")
-
         return sudoku_grid
-
-    def _choose_default_solver_strategy():
-        """
-        choose default solver strategy function - depth first
-        :return:
-        """
-        return [DepthFirstSearchStrategy, BreadthFirstSearchStrategy][0]
 
     loaded_sudoku_grid = _open_file(sudoku_to_solve)
     validated_sudoku_grid = _validate_grid_shape(loaded_sudoku_grid)
 
-    solver_obj = solver.Solver(
-        SearchStrategyFactory(_choose_default_solver_strategy()).get_strategy()
-    )
-    counter = solver_obj.sudoku_solver(
+    counter = solver.Solver().solve_sudoku(
         prettify=prettify, initial_grid=validated_sudoku_grid
     )
     return counter
@@ -83,9 +59,6 @@ def run_sudoku_solver(sudoku_to_solve, prettify):
 def run_sudoku_generator(level, prettify):
     """
     generator function
-    :param level:
-    :param prettify:
-    :return: generated sudoku game
     """
     counter = sudoku_generator(prettify=prettify, level=level)
     return counter
@@ -94,7 +67,6 @@ def run_sudoku_generator(level, prettify):
 def args_handler():
     """
     argparse arguments handler function
-    :return: prepared_args
     """
     prepared_args = {}
     parser = argparse.ArgumentParser()
@@ -144,7 +116,6 @@ def args_handler():
 def main():
     """
     main sudoku function
-    :return:
     """
     execution_start = datetime.datetime.now()
 

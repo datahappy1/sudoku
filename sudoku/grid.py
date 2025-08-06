@@ -1,9 +1,18 @@
 """
 grid
 """
+
+from enum import Enum
 from typing import List, Set, Tuple
 
+
+class GridSolveStatus(Enum):
+    TooManyCandidatesLeft = 0
+    NoCandidatesLeft = 1
+
+
 ALL_CANDIDATES_SET = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+ROW_INDEXES_SKIP_SQUARE_CALC = (0, 3, 6)
 
 # {row_index:(related_row_index1, related_row_index2),}
 # or
@@ -24,9 +33,6 @@ GENERIC_GRID_MAP = {
 def get_col_from_grid_rows(grid_rows: List[List[int]], col_index: int) -> Set[int]:
     """
     get column from grid represented in rows
-    :param grid_rows:
-    :param col_index:
-    :return:
     """
     return set(row[col_index] for row in grid_rows)
 
@@ -36,8 +42,6 @@ def _get_generic_grid_map_values_for_index(index: int) -> Tuple[int, int]:
     grid offset mapping function
     this function takes row/col index and returns
     the related rows/cols
-    :param index:
-    :return: related_row(col)_index1, related_row(col)_index2
     """
     return GENERIC_GRID_MAP[index]
 
@@ -61,15 +65,14 @@ def get_square_from_position(
     =========
     =========
 
-
-    :param grid_rows:
-    :param row_index:
-    :param col_index:
-    :return:
     """
     square = set()
-    related_row_index1, related_row_index2 = _get_generic_grid_map_values_for_index(index=row_index)
-    related_column_index1, related_column_index2 = _get_generic_grid_map_values_for_index(index=col_index)
+    related_row_index1, related_row_index2 = _get_generic_grid_map_values_for_index(
+        index=row_index
+    )
+    related_column_index1, related_column_index2 = (
+        _get_generic_grid_map_values_for_index(index=col_index)
+    )
 
     try:
         square.add(grid_rows[related_row_index1][related_column_index1])
