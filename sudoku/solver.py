@@ -5,6 +5,7 @@ solver
 import pickle
 from queue import PriorityQueue
 from typing import List, Set, Union, Optional
+
 from sudoku.exceptions import CustomException
 from sudoku.grid import (
     GridSolveStatus,
