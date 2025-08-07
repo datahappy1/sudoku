@@ -2,7 +2,6 @@
 solver
 """
 
-import pickle
 from queue import PriorityQueue
 from typing import List, Set, Union, Optional
 
@@ -34,9 +33,9 @@ def _get_candidates(
 
 def _deepcopy_grid_rows(grid_rows: List[List[int]]) -> List[List[int]]:
     """
-    deepcopy rows with pickle loads dumps function
+    deepcopy rows
     """
-    return pickle.loads(pickle.dumps(grid_rows))
+    return [x[:] for x in grid_rows]
 
 
 def _apply_candidate(
@@ -90,6 +89,8 @@ class Solver:
         """
         grid solver method
         """
+        unknowns_count = len([e for r in grid_rows for e in r if e == 0])
+
         for row_index, row in enumerate(grid_rows):
             for col_index in range(0, 9):
                 if row[col_index] == 0:
@@ -108,7 +109,7 @@ class Solver:
                             row_index=row_index,
                             col_index=col_index,
                             candidates_left=candidates_left,
-                            priority=len(candidates_left)//3,
+                            priority=unknowns_count // 10,
                         )
         return grid_rows
 
@@ -127,7 +128,7 @@ class Solver:
                 raise CustomException("TooManyTries")
 
             sudoku_grid = self._solve_grid(
-                grid_rows=_deepcopy_grid_rows(variation),
+                grid_rows=variation,
             )
             if sudoku_grid in (
                 GridSolveStatus.NoCandidatesLeft,
