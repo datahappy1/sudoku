@@ -103,7 +103,7 @@ class Solver:
                             row_index=row_index,
                             col_index=col_index,
                             candidates_left=candidates_left,
-                            priority=unknowns_count // 10,
+                            priority=unknowns_count,
                         )
         return grid_rows
 
