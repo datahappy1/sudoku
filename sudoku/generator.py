@@ -12,7 +12,7 @@ from sudoku.grid import (
 from sudoku.level import Level
 from sudoku.printer import pretty_printer
 
-MAX_ATTEMPTS = 10000000
+MAX_ATTEMPTS = 1000000
 
 
 def _get_random_sample_from_set(

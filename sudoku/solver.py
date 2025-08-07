@@ -31,21 +31,15 @@ def _get_candidates(
     )
 
 
-def _deepcopy_grid_rows(grid_rows: List[List[int]]) -> List[List[int]]:
-    """
-    deepcopy rows
-    """
-    return [x[:] for x in grid_rows]
-
-
 def _apply_candidate(
     grid_rows: List[List[int]], row_index: int, col_index: int, candidate: int
 ) -> List[List[int]]:
     """
     update rows with candidate function
     """
-    grid_rows[row_index][col_index] = candidate
-    return grid_rows
+    new_grid_rows = [x[:] for x in grid_rows]
+    new_grid_rows[row_index][col_index] = candidate
+    return new_grid_rows
 
 
 class Solver:
@@ -58,7 +52,7 @@ class Solver:
 
     def _put_rows_to_queue(self, grid_rows: List[List[int]], priority: int) -> None:
         """
-        put rows to queue, priority is the count of unknown grid candidates
+        put rows to queue with priority
         """
         self.queue.put((priority, grid_rows))
 
@@ -75,7 +69,7 @@ class Solver:
         """
         for candidate in candidates_left:
             updated_rows = _apply_candidate(
-                grid_rows=_deepcopy_grid_rows(grid_rows),
+                grid_rows=grid_rows,
                 row_index=row_index,
                 col_index=col_index,
                 candidate=candidate,
