@@ -14,7 +14,7 @@ from sudoku.grid import (
 )
 from sudoku.printer import pretty_printer
 
-MAX_ATTEMPTS = 10000000
+MAX_ATTEMPTS = 1000000
 
 
 def _get_candidates(
@@ -63,7 +63,7 @@ class Solver:
         col_index: int,
         candidates_left: Set[int],
         priority: int,
-    ) -> GridSolveStatus:
+    ) -> None:
         """
         handle multiple candidates
         """
@@ -75,7 +75,7 @@ class Solver:
                 candidate=candidate,
             )
             self._put_rows_to_queue(updated_rows, priority)
-        return GridSolveStatus.TooManyCandidatesLeft
+        return None
 
     def _solve_grid(
         self, grid_rows: List[List[int]]
@@ -98,13 +98,14 @@ class Solver:
                     if len(candidates_left) == 1:
                         row[col_index] = candidates_left.pop()
                     else:
-                        return self._handle_multiple_candidates(
+                        self._handle_multiple_candidates(
                             grid_rows=grid_rows,
                             row_index=row_index,
                             col_index=col_index,
                             candidates_left=candidates_left,
                             priority=unknowns_count,
                         )
+                        return GridSolveStatus.TooManyCandidatesLeft
         return grid_rows
 
     def solve_sudoku(
