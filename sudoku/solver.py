@@ -75,7 +75,7 @@ class Solver:
                 candidate=candidate,
             )
             self._put_rows_to_queue(updated_rows, priority)
-        return None
+        return
 
     def _solve_grid(
         self, grid_rows: List[List[int]]
@@ -83,7 +83,7 @@ class Solver:
         """
         grid solver method
         """
-        unknowns_count = len([e for r in grid_rows for e in r if e == 0])
+        unknowns_count = len({e for r in grid_rows for e in r if e == 0})
 
         for row_index, row in enumerate(grid_rows):
             for col_index in range(0, 9):
